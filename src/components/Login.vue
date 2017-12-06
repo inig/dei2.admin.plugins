@@ -93,7 +93,7 @@
                   desc: ''
                 })
                 this.$Message.success('登录成功!')
-                this.$router.push('/ss')
+                this.$router.push('/')
               } else {
                 this.$Message.error('账号或密码不正确，请重试!')
               }
