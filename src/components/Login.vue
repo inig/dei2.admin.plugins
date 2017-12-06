@@ -5,7 +5,7 @@
     >
         <div class="login_container" @keyup.13="login">
             <Card :bordered="true" class="login_card">
-                <p slot="title">ZPM_PLUGINS后台管理系统</p>
+                <p slot="title" v-text="appName"></p>
                 <Form :ref="formRef" :model="formItems" :rules="formRules">
                     <FormItem prop="user">
                         <Input type="text" v-model="formItems.user" placeholder="用户名">
@@ -42,11 +42,13 @@
     }
 </style>
 <script>
+  import utils from '../utils/index'
   export default {
     name: 'Login',
     data () {
       return {
         formRef: 'LoginForm',
+        appName: this.$store.state.appName,
         formItems: {
           user: '',
           password: ''
@@ -78,7 +80,7 @@
     },
     methods: {
       verifyUser () {
-        return (this.formItems.user === 'ls' && this.formItems.password === '123123')
+        return (this.formItems.user === this.$store.state.username && this.formItems.password === this.$store.state.password)
       },
       login () {
         if (this.isLoggingIn) return
@@ -91,6 +93,10 @@
                 this.$Notice.success({
                   title: '登录成功!',
                   desc: ''
+                })
+                utils.storage.setItem(this.$store.state.localStorageKeys.userInfo, {
+                  username: this.formItems.user,
+                  loginDate: (new Date()).getTime()
                 })
                 this.$Message.success('登录成功!')
                 this.$router.push('/')
@@ -117,6 +123,10 @@
       }
     },
     created () {
+      let _localUserInfo = utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+      if (!utils.isEmptyObj(_localUserInfo)) {
+        this.formItems.user = _localUserInfo.username
+      }
     },
     components: {}
   }
