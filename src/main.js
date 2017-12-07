@@ -30,19 +30,19 @@ router.beforeEach((to, from, next) => {
   const _state = router.app.$options.store.state
   let _localUserInfo = utils.storage.getItem(_state.localStorageKeys.userInfo)
   if (utils.isEmptyObj(_localUserInfo)) {
-    if (to.name !== 'Login') {
-      router.push('/login')
+    if (_state.needlessLogin.indexOf(to.name) === -1) {
+      router.replace('/login')
     }
   } else {
     if ((new Date()).getTime() - _localUserInfo.loginDate > _state.loginInfo.expireTime) {
       // 登录信息已经过期，需要重新登录
-      if (to.name !== 'Login') {
+      if (_state.needlessLogin.indexOf(to.name) === -1) {
         router.app.$Message.info('登录信息已经过期，请重新登录')
-        router.push('/login')
+        router.replace('/login')
       }
     } else {
       if (_state.needlessLogin.indexOf(to.name) > -1) {
-        router.push('/')
+        router.replace('/')
       }
     }
   }

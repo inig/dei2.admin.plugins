@@ -90,16 +90,12 @@
             setTimeout(() => {
               this.isLoggingIn = false
               if (this.verifyUser()) {
-                this.$Notice.success({
-                  title: '登录成功!',
-                  desc: ''
-                })
                 utils.storage.setItem(this.$store.state.localStorageKeys.userInfo, {
                   username: this.formItems.user,
                   loginDate: (new Date()).getTime()
                 })
                 this.$Message.success('登录成功!')
-                this.$router.push('/')
+                this.$router.replace('/')
               } else {
                 this.$Message.error('账号或密码不正确，请重试!')
               }

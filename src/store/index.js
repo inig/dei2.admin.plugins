@@ -39,8 +39,6 @@ import * as actions from './actions'
 import * as mutations from './mutations'
 import * as getters from './getters'
 
-const pkg = require('../../package.json')
-
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
@@ -50,7 +48,7 @@ const store = new Vuex.Store({
   state: {
     username: 'ls',
     password: '123123',
-    appName: pkg.name,
+    appName: 'ZPM_PLUGINS后台管理系统',
     shortAppName: 'ZPM_PLUGINS',
     localStorageKeys: {
       userInfo: 'user-info'

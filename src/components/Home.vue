@@ -1,21 +1,24 @@
 <template>
-    <div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
+    <div class="layout" :class="{'layout-hide-text': spanLeft < 6}">
         <Row type="flex" class="h100p">
-            <Col :span="spanLeft" class="layout-menu-left">
-                <div class="layout-logo-left" :class="{'short': (spanLeft < 5)}" v-text="spanLeft < 5 ? shortAppName : appName"></div>
-                <Menu active-name="1" theme="dark" width="auto">
-                    <MenuItem name="1">
-                        <Icon type="ios-navigate" :size="iconSize"></Icon>
-                        <span class="layout-text">Option 1</span>
-                    </MenuItem>
-                    <MenuItem name="2">
-                        <Icon type="ios-keypad" :size="iconSize"></Icon>
-                        <span class="layout-text">Option 2</span>
-                    </MenuItem>
-                    <MenuItem name="3">
-                        <Icon type="ios-analytics" :size="iconSize"></Icon>
-                        <span class="layout-text">Option 3</span>
-                    </MenuItem>
+            <Col :span="spanLeft" class="layout-menu-left" :class="{'long': (spanLeft >= 6)}">
+                <div class="layout-logo-left" :class="{'short': (spanLeft < 6)}" v-text="spanLeft < 6 ? shortAppName : appName"></div>
+                <Menu theme="dark" width="auto">
+                    <MenuGroup title="我的插件">
+                        <MenuItem name="1">
+                            <Icon type="ios-navigate" :size="iconSize"></Icon>
+                            <span class="layout-text">ZpmToast</span>
+                        </MenuItem>
+
+                        <MenuItem name="2">
+                            <Icon type="ios-keypad" :size="iconSize"></Icon>
+                            <span class="layout-text">ZpmMovable</span>
+                        </MenuItem>
+                        <MenuItem name="3">
+                            <Icon type="ios-analytics" :size="iconSize"></Icon>
+                            <span class="layout-text">ZpmTopBar</span>
+                        </MenuItem>
+                    </MenuGroup>
                 </Menu>
             </Col>
             <Col :span="spanRight">
@@ -23,16 +26,44 @@
                     <Button type="text" @click="toggleClick">
                         <Icon type="navicon" size="32"></Icon>
                     </Button>
-                    <Badge dot class="user-badge">
-                        <Avatar size="large" :src="assets.maleAvatar" class="user-avatar"></Avatar>
-                    </Badge>
+                    <Poptip trigger="click" placement="bottom-end" width="200" class="user-badge">
+                        <Badge dot>
+                            <Avatar size="large" :src="assets.maleAvatar" class="user-avatar"></Avatar>
+                        </Badge>
+                        <div class="api" slot="content">
+                            <Card :bordered="false" :padding="0">
+                                <p slot="title" v-text="loginInfo.username"></p>
+                                <a href="#" slot="extra" @click.prevent="logout">
+                                    退出
+                                    <Icon type="log-out"></Icon>
+                                </a>
+                                <Menu width="200">
+                                    <MenuItem name="1">
+                                        <Icon type="clipboard"></Icon>
+                                        个人中心
+                                    </MenuItem>
+                                    <MenuItem name="2">
+                                        <Icon type="settings"></Icon>
+                                        设置
+                                    </MenuItem>
+                                </Menu>
+                            </Card>
+                        </div>
+                    </Poptip>
                 </div>
-                <div class="layout-breadcrumb">
+                <div class="layout-breadcrumb" style="line-height: 32px;">
                     <Breadcrumb>
                         <BreadcrumbItem href="#">Index</BreadcrumbItem>
                         <BreadcrumbItem href="#">Apps</BreadcrumbItem>
                         <BreadcrumbItem>App</BreadcrumbItem>
                     </Breadcrumb>
+                    <Input class="plugin-search"
+                           :class="{'plugin-search-active': (pluginSearch.active || pluginSearch.text.trim() !== ''), 'plugin-search-inactive': (!pluginSearch.active && pluginSearch.text.trim() === '')}"
+                           v-model="pluginSearch.text"
+                           placeholder="插件搜索"
+                           @on-focus="focusPluginSearch"
+                           @on-blur="blurPluginSearch"
+                           icon="ios-search-strong"/>
                 </div>
                 <div class="layout-content">
                     <div class="layout-content-main">Content</div>
@@ -44,7 +75,7 @@
         </Row>
     </div>
 </template>
-<style scoped>
+<style>
     .h100p {
         height: 100%;
     }
@@ -88,6 +119,50 @@
         display: flex;
         align-items: center;
     }
+    .plugin-search {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none;
+        -webkit-transition: width .3s cubic-bezier(.215,1.21,.355,1);
+        -moz-transition: width .3s cubic-bezier(.215,1.21,.355,1);
+        -ms-transition: width .3s cubic-bezier(.215,1.21,.355,1);
+        -o-transition: width .3s cubic-bezier(.215,1.21,.355,1);
+        transition: width .3s cubic-bezier(.215,1.21,.355,1);
+        transform-origin: 0 50%;
+        position: absolute;
+        right: 15px;
+        margin-top: -32px;
+    }
+    .plugin-search .ivu-input {
+        border: none;
+        /*border-radius: 0;*/
+        /*border-bottom: 1px solid #dddee1;*/
+    }
+    .plugin-search-active {
+        width: 200px;
+    }
+    .plugin-search-active .ivu-input:focus {
+        border-color: #dddee1;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    }
+    .plugin-search-active .ivu-input:hover {
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    }
+    .plugin-search-inactive {
+        width: 100px;
+    }
+    .plugin-search-inactive .ivu-input {
+        border: none;
+    }
+    .plugin-search-inactive .ivu-input:hover {
+        border-color: #dddee1;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    }
     .user-badge {
         position: absolute;
         right: 30px;
@@ -114,6 +189,7 @@
     .layout-logo-left.short {
         font-size: 12px;
     }
+
     .layout-ceiling-main a{
         color: #9ba7b5;
     }
@@ -121,7 +197,10 @@
         display: none;
     }
     .ivu-col{
-        transition: width .2s ease-in-out;
+        transition: width .2s cubic-bezier(.215,.61,.355,1);
+    }
+    .user-badge .ivu-poptip-body {
+        padding: 0!important;
     }
 </style>
 <script>
@@ -133,13 +212,17 @@
         appName: this.$store.state.appName,
         shortAppName: this.$store.state.shortAppName,
         assets: this.$store.state.assets,
-        spanLeft: 5,
-        spanRight: 19
+        pluginSearch: {
+          text: '',
+          active: false
+        },
+        spanLeft: 6,
+        spanRight: 18
       }
     },
     computed: {
       iconSize () {
-        return this.spanLeft === 5 ? 14 : 24
+        return this.spanLeft === 6 ? 14 : 24
       },
       loginInfo () {
         return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
@@ -147,13 +230,26 @@
     },
     methods: {
       toggleClick () {
-        if (this.spanLeft === 5) {
+        if (this.spanLeft === 6) {
           this.spanLeft = 2
           this.spanRight = 22
         } else {
-          this.spanLeft = 5
-          this.spanRight = 19
+          this.spanLeft = 6
+          this.spanRight = 18
         }
+      },
+      logout () {
+        if (!utils.isEmptyObj(this.loginInfo)) {
+          utils.storage.clear()
+          this.$Message.success('您已经退出')
+          this.$router.replace('/login')
+        }
+      },
+      focusPluginSearch () {
+        this.pluginSearch.active = true
+      },
+      blurPluginSearch () {
+        this.pluginSearch.active = false
       }
     },
     components: {}
