@@ -3,11 +3,11 @@
         <Row type="flex" class="h100p">
             <Col :span="spanLeft" class="layout-menu-left" :class="{'long': (spanLeft >= 6)}">
                 <div class="layout-logo-left" :class="{'short': (spanLeft < 6)}" v-text="spanLeft < 6 ? shortAppName : appName"></div>
-                <Menu theme="dark" width="auto">
+                <Menu theme="dark" width="auto" @on-select="navToPluginView('ZpmToast')">
                     <MenuGroup title="我的插件">
                         <MenuItem name="1">
                             <Icon type="ios-navigate" :size="iconSize"></Icon>
-                            <span class="layout-text">ZpmToast</span>
+                            <span class="layout-text">ZpmToast2</span>
                         </MenuItem>
 
                         <MenuItem name="2">
@@ -66,7 +66,7 @@
                            icon="ios-search-strong"/>
                 </div>
                 <div class="layout-content">
-                    <div class="layout-content-main">Content</div>
+                    <router-view name="ContentRouter"/>
                 </div>
                 <div class="layout-copy">
                     2011-2018 &copy; Keith
@@ -93,10 +93,12 @@
     }
     .layout-content{
         min-height: 200px;
+        height: calc(100% - 165px);
         margin: 15px;
         overflow: hidden;
         background: #fff;
         border-radius: 4px;
+        text-shadow: 0 1px 0 #ffffff;
     }
     .layout-content-main{
         padding: 10px;
@@ -250,6 +252,9 @@
       },
       blurPluginSearch () {
         this.pluginSearch.active = false
+      },
+      navToPluginView (plugin) {
+        this.$router.replace('/plugins')
       }
     },
     components: {}
