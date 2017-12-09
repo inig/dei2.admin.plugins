@@ -19,7 +19,7 @@
                     </Button>
                     <Poptip trigger="click" placement="bottom-end" width="200" class="user-badge">
                         <Badge dot>
-                            <Avatar size="large" :src="assets.maleAvatar" class="user-avatar"></Avatar>
+                            <Avatar size="large" :src="assets.femaleAvatar" class="user-avatar"></Avatar>
                         </Badge>
                         <div class="api" slot="content">
                             <Card :bordered="false" :padding="0">
