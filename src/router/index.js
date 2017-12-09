@@ -5,19 +5,13 @@ import Login from '../components/Login.vue'
 import NotFound from '../components/404.vue'
 import Plugins from '../components/Plugins.vue'
 import Plugin from '../components/Plugin.vue'
+import MainContent from '../components/MainContent.vue'
 
 Vue.use(Router)
 
 export default new Router({
   mode: 'history',
   routes: [
-    {
-      path: '/',
-      name: 'Home',
-      components: {
-        HomeRouter: Home
-      }
-    },
     {
       path: '/login',
       name: 'Login',
@@ -26,17 +20,37 @@ export default new Router({
       }
     },
     {
-      path: '/plugins',
-      name: 'Plugins',
+      path: '/',
+      name: 'Home',
       components: {
-        ContentRouter: Plugins
+        HomeRouter: Home
       },
       children: [
         {
-          path: '/:pluginName',
+          path: 'plugins',
+          name: 'Plugins',
+          components: {
+            ContentRouter: Plugins
+          }
+        },
+        {
+          path: 'plugin/:pluginName',
           name: 'Plugin',
           components: {
             ContentRouter: Plugin
+          }
+        },
+        {
+          path: '',
+          components: {
+            ContentRouter: MainContent
+          }
+        },
+        {
+          path: '*',
+          name: 'NotFound',
+          components: {
+            ContentRouter: NotFound
           }
         }
       ]
