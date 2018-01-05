@@ -69,7 +69,7 @@
                     <router-view name="ContentRouter"/>
                 </div>
                 <div class="layout-copy">
-                    2011-2018 &copy; Keith
+                    2011-2018 &copy; {{author}}
                 </div>
             </Col>
         </Row>
@@ -211,6 +211,7 @@
     name: 'Home',
     data () {
       return {
+        author: this.$store.state.author,
         appName: this.$store.state.appName,
         shortAppName: this.$store.state.shortAppName,
         assets: this.$store.state.assets,

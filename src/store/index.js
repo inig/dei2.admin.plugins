@@ -47,6 +47,7 @@ const store = new Vuex.Store({
   getters: getters.getters,
   state: {
     username: 'ls',
+    author: '智愚',
     password: '123123',
     appName: 'ZPM_PLUGINS后台管理系统',
     shortAppName: 'ZPM_PLUGINS',
