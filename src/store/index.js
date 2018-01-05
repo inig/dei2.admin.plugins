@@ -49,7 +49,7 @@ const store = new Vuex.Store({
     username: 'ls',
     author: '智愚',
     password: '123123',
-    appName: 'ZPM_PLUGINS后台管理系统',
+    appName: 'ZPM_PLUGINS后台管理系统2',
     shortAppName: 'ZPM_PLUGINS',
     localStorageKeys: {
       userInfo: 'user-info'

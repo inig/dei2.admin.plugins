@@ -3,20 +3,11 @@
         <Row type="flex" class="h100p">
             <Col :span="spanLeft" class="layout-menu-left" :class="{'long': (spanLeft >= 6)}">
                 <div class="layout-logo-left" :class="{'short': (spanLeft < 6)}" v-text="spanLeft < 6 ? shortAppName : appName"></div>
-                <Menu theme="dark" width="auto" @on-select="navToPluginView('ZpmToast')">
+                <Menu theme="dark" width="auto" @on-select="navToPluginView" :active-name="currentPlugin">
                     <MenuGroup title="我的插件">
-                        <MenuItem name="1">
+                        <MenuItem v-for="(item, index) in myPlugins" :key="index" :name="item.name">
                             <Icon type="ios-navigate" :size="iconSize"></Icon>
-                            <span class="layout-text">ZpmToast2</span>
-                        </MenuItem>
-
-                        <MenuItem name="2">
-                            <Icon type="ios-keypad" :size="iconSize"></Icon>
-                            <span class="layout-text">ZpmMovable</span>
-                        </MenuItem>
-                        <MenuItem name="3">
-                            <Icon type="ios-analytics" :size="iconSize"></Icon>
-                            <span class="layout-text">ZpmTopBar</span>
+                            <span class="layout-text" v-text="item.name"></span>
                         </MenuItem>
                     </MenuGroup>
                 </Menu>
@@ -28,7 +19,7 @@
                     </Button>
                     <Poptip trigger="click" placement="bottom-end" width="200" class="user-badge">
                         <Badge dot>
-                            <Avatar size="large" :src="assets.maleAvatar" class="user-avatar"></Avatar>
+                            <Avatar size="large" :src="assets.femaleAvatar" class="user-avatar"></Avatar>
                         </Badge>
                         <div class="api" slot="content">
                             <Card :bordered="false" :padding="0">
@@ -66,7 +57,14 @@
                            icon="ios-search-strong"/>
                 </div>
                 <div class="layout-content">
-                    <router-view name="ContentRouter"/>
+                    <transition name="content-router-transition"
+                                enter-active-class="animated fadeIn"
+                                leave-active-class="animated fadeOut"
+                    >
+                        <keep-alive>
+                            <router-view class="content_router_view" name="ContentRouter"/>
+                        </keep-alive>
+                    </transition>
                 </div>
                 <div class="layout-copy">
                     2011-2018 &copy; {{author}}
@@ -204,6 +202,11 @@
     .user-badge .ivu-poptip-body {
         padding: 0!important;
     }
+
+    .content_router_view {
+        width: 100%;
+        height: 100%;
+    }
 </style>
 <script>
   import utils from '../utils'
@@ -219,6 +222,20 @@
           text: '',
           active: false
         },
+        myPlugins: [
+          {
+            name: 'ZpmToast'
+          },
+          {
+            name: 'ZpmBox'
+          },
+          {
+            name: 'ZpmMsgBox'
+          },
+          {
+            name: 'ZpmTopBar'
+          }
+        ],
         spanLeft: 6,
         spanRight: 18
       }
@@ -229,7 +246,12 @@
       },
       loginInfo () {
         return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+      },
+      currentPlugin () {
+        return this.$route.params ? this.$route.params.pluginName : ''
       }
+    },
+    created () {
     },
     methods: {
       toggleClick () {
@@ -254,8 +276,8 @@
       blurPluginSearch () {
         this.pluginSearch.active = false
       },
-      navToPluginView (plugin) {
-        this.$router.replace('/plugins')
+      navToPluginView (e) {
+        this.$router.replace(`/plugin/${e}`)
       }
     },
     components: {}
