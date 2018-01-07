@@ -43,6 +43,7 @@
 </style>
 <script>
   import utils from '../utils/index'
+  import * as types from '../store/mutation-types'
   export default {
     name: 'Login',
     data () {
@@ -83,23 +84,41 @@
         return (this.formItems.user === this.$store.state.username && this.formItems.password === this.$store.state.password)
       },
       login () {
+        const that = this
         if (this.isLoggingIn) return
         this.isLoggingIn = true
         this.$refs[this.formRef].validate((valid) => {
           if (valid) {
-            setTimeout(() => {
-              this.isLoggingIn = false
-              if (this.verifyUser()) {
-                utils.storage.setItem(this.$store.state.localStorageKeys.userInfo, {
-                  username: this.formItems.user,
-                  loginDate: (new Date()).getTime()
-                })
-                this.$Message.success('登录成功!')
-                this.$router.replace('/')
-              } else {
-                this.$Message.error('账号或密码不正确，请重试!')
+            // setTimeout(() => {
+            this.isLoggingIn = false
+            global.store.dispatch(types.LOGIN, {
+              username: this.formItems.user,
+              password: this.formItems.password,
+              callback (res) {
+                if (Number(res.status) === 200) {
+                  // 登录成功
+                  that.$Message.success('登录成功!')
+                  that.$router.replace('/')
+                  utils.storage.setItem(that.$store.state.localStorageKeys.userInfo, res.data)
+                } else {
+                  that.$Message.error('登录失败：' + res.message)
+                }
+              },
+              error (err) {
+                that.$Message.error('登录失败：' + err)
               }
-            }, 3000)
+            })
+              // if (this.verifyUser()) {
+              //   utils.storage.setItem(this.$store.state.localStorageKeys.userInfo, {
+              //     username: this.formItems.user,
+              //     loginDate: (new Date()).getTime()
+              //   })
+              //   this.$Message.success('登录成功!')
+              //   this.$router.replace('/')
+              // } else {
+              //   this.$Message.error('账号或密码不正确，请重试!')
+              // }
+            // }, 3000)
           } else {
             this.isLoggingIn = false
             this.$Message.error('表单填写不正确!')

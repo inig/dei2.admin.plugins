@@ -35,3 +35,12 @@
  */
 
 export const SHOW_POPUP = 'SHOW_POPUP'
+
+// 登录
+export const LOGIN = 'LOGIN'
+
+// 获取插件列表
+export const LIST_PLUGINS = 'LIST_PLUGINS'
+
+// 预览文件内容
+export const VIEW_FILE = 'VIEW_FILE'

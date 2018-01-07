@@ -33,5 +33,80 @@
 /**
  * Created by liangshan on 2017/7/13.
  */
+import * as types from './mutation-types'
+import axios from 'axios'
+const querystring = require('querystring')
+const instance = axios.create({
+  timeout: 3000
+})
+const noop = function () {}
 export const actions = {
+  async [types.LOGIN] ({commit, state}, data) {
+    let callback = noop
+    let error = noop
+    if (data.callback) {
+      callback = data.callback
+      delete data.callback
+    }
+    if (data.error) {
+      error = data.error
+      delete data.error
+    }
+    let loginData = await instance({
+      method: 'post',
+      baseURL: state.requestInfo.baseUrl,
+      url: state.requestInfo.login,
+      data: querystring.stringify(data)
+    })
+    if (loginData.config) {
+      delete loginData.config
+    }
+    if (loginData.status === 200) {
+      callback(loginData.data)
+    } else {
+      error(loginData)
+    }
+  },
+  [types.LIST_PLUGINS] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      instance({
+        method: 'post',
+        baseURL: state.requestInfo.baseUrl,
+        url: state.requestInfo.listPlugins,
+        data: querystring.stringify(data)
+      }).then((pluginsData) => {
+        if (pluginsData.config) {
+          delete pluginsData.config
+        }
+        if (pluginsData.status === 200) {
+          resolve(pluginsData.data)
+        } else {
+          reject(pluginsData)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  [types.VIEW_FILE] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      instance({
+        method: 'post',
+        baseURL: state.requestInfo.baseUrl,
+        url: state.requestInfo.viewFile,
+        data: querystring.stringify(data)
+      }).then(fileContentData => {
+        if (fileContentData.config) {
+          delete fileContentData.config
+        }
+        if (fileContentData.status === 200) {
+          resolve(fileContentData.data)
+        } else {
+          reject(fileContentData)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
 }

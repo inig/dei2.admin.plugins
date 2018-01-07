@@ -58,6 +58,12 @@ const store = new Vuex.Store({
       maleAvatar: 'static/images/avatar_male_1.jpg',
       femaleAvatar: 'static/images/avatar_female_1.jpg'
     },
+    requestInfo: {
+      baseUrl: 'https://talkapi.dei2.com',
+      login: '/Zpm/user/login',
+      listPlugins: '/Zpm/plugin/list',
+      viewFile: '/Zpm/plugin/content'
+    },
     loginInfo: {
       expireTime: 24 * 60 * 60 * 1000, // 登录失效时间
       data: {}

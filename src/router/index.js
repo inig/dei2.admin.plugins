@@ -34,7 +34,7 @@ export default new Router({
           }
         },
         {
-          path: 'plugin/:pluginName',
+          path: 'plugin/:pluginName/:fileName',
           name: 'Plugin',
           components: {
             ContentRouter: Plugin

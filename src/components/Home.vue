@@ -3,23 +3,24 @@
         <Row type="flex" class="h100p">
             <Col :span="spanLeft" class="layout-menu-left" :class="{'long': (spanLeft >= 6)}">
                 <div class="layout-logo-left" :class="{'short': (spanLeft < 6)}" v-text="spanLeft < 6 ? shortAppName : appName"></div>
-                <Menu theme="dark" width="auto" @on-select="navToPluginView" :active-name="currentPlugin">
-                    <MenuGroup title="我的插件">
-                        <MenuItem v-for="(item, index) in myPlugins" :key="index" :name="item.name">
-                            <Icon type="ios-navigate" :size="iconSize"></Icon>
-                            <span class="layout-text" v-text="item.name"></span>
-                        </MenuItem>
-                    </MenuGroup>
-                </Menu>
+                <!--<Menu theme="dark" width="auto" @on-select="navToPluginView" :active-name="currentPlugin">-->
+                    <!--<MenuGroup title="我的插件">-->
+                        <!--<MenuItem v-for="(item, index) in myPlugins" :key="index" :name="item.name">-->
+                            <!--<Icon type="ios-navigate" :size="iconSize"></Icon>-->
+                            <!--<span class="layout-text" v-text="item.name"></span>-->
+                        <!--</MenuItem>-->
+                    <!--</MenuGroup>-->
+                <!--</Menu>-->
+                <main-menu :plugins="loginInfo.plugins"></main-menu>
             </Col>
             <Col :span="spanRight">
                 <div class="layout-header">
-                    <Button type="text" @click="toggleClick">
-                        <Icon type="navicon" size="32"></Icon>
-                    </Button>
+                    <!--<Button type="text" @click="toggleClick">-->
+                        <!--<Icon type="navicon" size="32"></Icon>-->
+                    <!--</Button>-->
                     <Poptip trigger="click" placement="bottom-end" width="200" class="user-badge">
                         <Badge dot>
-                            <Avatar size="large" :src="assets.femaleAvatar" class="user-avatar"></Avatar>
+                            <Avatar size="large" :src="loginInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar" class="user-avatar"></Avatar>
                         </Badge>
                         <div class="api" slot="content">
                             <Card :bordered="false" :padding="0">
@@ -210,6 +211,7 @@
 </style>
 <script>
   import utils from '../utils'
+  import MainMenu from './MainMenu.vue'
   export default {
     name: 'Home',
     data () {
@@ -280,6 +282,8 @@
         this.$router.replace(`/plugin/${e}`)
       }
     },
-    components: {}
+    components: {
+      MainMenu
+    }
   }
 </script>
