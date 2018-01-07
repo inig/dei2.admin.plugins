@@ -9,6 +9,8 @@ import * as filters from './filters'
 import mixins from './mixins'
 import iView from 'iview'
 import utils from './utils/index'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/zenburn.css'
 import 'iview/dist/styles/iview.css'
 import './assets/css/animate.css/animate.min.css'
 
@@ -25,6 +27,16 @@ Object.keys(filters).forEach(key => {
 Vue.mixin(mixins)
 
 Vue.use(iView)
+
+Vue.directive('highlight', {
+  componentUpdated: function (el) {
+    let blocks = el.querySelectorAll('pre code')
+    console.log('>>>>>', hljs)
+    blocks.forEach(block => {
+      hljs.highlightBlock(block)
+    })
+  }
+})
 
 router.beforeEach((to, from, next) => {
   const _state = router.app.$options.store.state
