@@ -3,14 +3,6 @@
         <Row type="flex" class="h100p">
             <Col :span="spanLeft" class="layout-menu-left" :class="{'long': (spanLeft >= 6)}">
                 <div class="layout-logo-left" :class="{'short': (spanLeft < 6)}" v-text="spanLeft < 6 ? shortAppName : appName"></div>
-                <!--<Menu theme="dark" width="auto" @on-select="navToPluginView" :active-name="currentPlugin">-->
-                    <!--<MenuGroup title="我的插件">-->
-                        <!--<MenuItem v-for="(item, index) in myPlugins" :key="index" :name="item.name">-->
-                            <!--<Icon type="ios-navigate" :size="iconSize"></Icon>-->
-                            <!--<span class="layout-text" v-text="item.name"></span>-->
-                        <!--</MenuItem>-->
-                    <!--</MenuGroup>-->
-                <!--</Menu>-->
                 <main-menu :plugins="loginInfo.plugins"></main-menu>
             </Col>
             <Col :span="spanRight">
@@ -224,20 +216,6 @@
           text: '',
           active: false
         },
-        myPlugins: [
-          {
-            name: 'ZpmToast'
-          },
-          {
-            name: 'ZpmBox'
-          },
-          {
-            name: 'ZpmMsgBox'
-          },
-          {
-            name: 'ZpmTopBar'
-          }
-        ],
         spanLeft: 6,
         spanRight: 18
       }

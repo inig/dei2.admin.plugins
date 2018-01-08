@@ -41,5 +41,8 @@ export const mutations = {
     state.popup = Object.assign({}, state.popup, data, {
       shown: true
     })
+  },
+  [types.SET_ALL_PLUGINS] (state, data) {
+    state.allPlugins = data.allPlugins
   }
 }

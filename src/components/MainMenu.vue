@@ -1,7 +1,7 @@
 <template>
     <Menu theme="dark" width="auto" @on-select="navToPluginView" :active-name="currentPlugin">
       <MenuGroup title="我的插件">
-        <Submenu v-for="(item, index) in myPlugins" :key="index" :name="item.name">
+        <Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum == item.author">
           <template slot="title">
             <Icon type="ios-paper"></Icon>
             {{item.name}}
@@ -12,7 +12,7 @@
         </Submenu>
       </MenuGroup>
       <MenuGroup title="别人家的插件">
-        <Submenu v-for="(item, index) in otherPlugins" :key="index" :name="item.name">
+        <Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum != item.author">
           <template slot="title">
             <Icon type="ios-paper"></Icon>
             {{item.name}}
@@ -31,42 +31,29 @@
   import * as types from '../store/mutation-types'
   import utils from '../utils'
   export default {
-    props: ['plugins'],
     name: 'MainMenu',
     data () {
       return {
-        otherPlugins: []
+        allPlugins: []
       }
     },
     computed: {
       loginInfo () {
         return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
-      },
-      myPlugins () {
-        if (this.plugins === '') {
-          return []
-        }
-        let _plugins = this.plugins.split(';')
-        let _myPlugins = []
-        let i = 0
-        for (i; i < _plugins.length; i++) {
-          _myPlugins.push({
-            name: _plugins[i],
-            children: ['index.vue', 'package.json', 'README.md']
-          })
-        }
-        return _myPlugins
       }
     },
     async created () {
-      this.otherPlugins = await this.getOtherPlugins()
+      this.allPlugins = await this.getAllPlugins()
+      this.$store.commit(types.SET_ALL_PLUGINS, {
+        allPlugins: this.allPlugins
+      })
     },
     methods: {
-      async getOtherPlugins () {
+      async getAllPlugins () {
         let pluginData = await this.$store.dispatch(types.LIST_PLUGINS, {
           phonenum: this.loginInfo.phonenum,
           token: this.loginInfo.token,
-          type: 'other'
+          type: 'all'
         })
         let _otherPlugins = []
         if (Number(pluginData.status) === 200) {

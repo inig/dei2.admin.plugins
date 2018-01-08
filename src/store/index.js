@@ -68,6 +68,7 @@ const store = new Vuex.Store({
       expireTime: 24 * 60 * 60 * 1000, // 登录失效时间
       data: {}
     },
+    allPlugins: [],
     needlessLogin: ['Login', 'Register', 'Forget'] // 不需要登录的页面
   }
 })

@@ -36,6 +36,9 @@
 
 export const SHOW_POPUP = 'SHOW_POPUP'
 
+// 保存所有插件
+export const SET_ALL_PLUGINS = 'SET_ALL_PLUGINS'
+
 // 登录
 export const LOGIN = 'LOGIN'
 
