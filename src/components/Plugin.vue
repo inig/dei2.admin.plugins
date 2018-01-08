@@ -1,6 +1,6 @@
 <template>
     <div class="plugin_container">
-      <pre class="code_container" v-highlight="fileContent"><code>{{fileContent}}</code></pre>
+      <pre class="code_container" v-highlight="fileContent" contenteditable><code>{{fileContent}}</code></pre>
     </div>
 </template>
 <style scoped>
