@@ -29,6 +29,6 @@ export default {
   height: 100%;
 }
   .CodeMirror {
-    height: 100%;
+    height: 100%!important;
   }
 </style>
