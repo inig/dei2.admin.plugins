@@ -18,9 +18,6 @@
       /*height: 633px;*/
       height: 100%;
   }
-    .CodeMirror {
-        height: 100%;
-    }
 </style>
 <script>
   import * as types from '../store/mutation-types'
