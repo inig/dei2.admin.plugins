@@ -42,6 +42,9 @@ export const SET_ALL_PLUGINS = 'SET_ALL_PLUGINS'
 // 登录
 export const LOGIN = 'LOGIN'
 
+// 注册
+export const REGISTER = 'REGISTER'
+
 // 获取插件列表
 export const LIST_PLUGINS = 'LIST_PLUGINS'
 

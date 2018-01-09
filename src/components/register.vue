@@ -3,12 +3,12 @@
                 enter-active-class="animated fadeIn"
                 leave-active-class="animated fadeOut"
     >
-        <div class="login_container" @keyup.13="login">
-            <Card :bordered="true" class="login_card">
+        <div class="register_container" @keyup.13="register">
+            <Card :bordered="true" class="register_card">
                 <p slot="title" v-text="appName"></p>
                 <Form :ref="formRef" :model="formItems" :rules="formRules">
                     <FormItem prop="user">
-                        <Input type="text" v-model="formItems.user" placeholder="用户名或手机号">
+                        <Input type="text" v-model="formItems.user" placeholder="手机号">
                             <Icon type="ios-person-outline" slot="prepend"></Icon>
                         </Input>
                     </FormItem>
@@ -18,18 +18,15 @@
                         </Input>
                     </FormItem>
                     <FormItem>
-                        <Button type="primary" :loading="isLoggingIn" long @click="login">
-                            <span v-if="!isLoggingIn">登录</span>
-                            <span v-else>登录中</span>
+                        <Button type="primary" :loading="isRegistering" long @click="register">
+                            <span v-if="!isRegistering">注册</span>
+                            <span v-else>注册中</span>
                         </Button>
                     </FormItem>
                 </Form>
-                <div class="login_bar">
-                  <router-link to="/register">
-                    <span>忘记密码</span>
-                  </router-link>
-                  <router-link to="/register">
-                    <span>注册</span>
+                <div class="register_bar">
+                  <router-link to="/login">
+                    <span>已有账号，去登录</span>
                   </router-link>
                 </div>
             </Card>
@@ -37,26 +34,25 @@
     </transition>
 </template>
 <style>
-    .login_container {
-        width: 100%;
-        height: 100%;
-        background-color: #f5f5f5;
-        display: flex;
-        align-items: center;
-        background-image: url('https://static.dei2.com/plugins_admin/img/bg.jpg');
-        background-size: cover;
-        background-attachment: fixed;
-        background-position: 50% 50%;
+    .register_container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      background-image: url('https://static.dei2.com/plugins_admin/img/bg.jpg');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: 50% 50%;
     }
-    .login_card {
-        width: 320px;
-        margin-left: 18%;
+    .register_card {
+      width: 320px;
+      margin-left: 18%;
     }
-    .login_bar {
+    .register_bar {
       height: 20px;
       display: flex;
       flex-direction: row;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
     }
 </style>
@@ -66,6 +62,16 @@
   export default {
     name: 'Login',
     data () {
+      const validatePhonenum = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入手机号'));
+        } else {
+          if (!value.match(/^1[345789]\d{9}$/)) {
+            callback(new Error('手机号格式不正确'));
+          }
+          callback();
+        }
+      };
       return {
         formRef: 'LoginForm',
         appName: this.$store.state.appName,
@@ -76,15 +82,14 @@
         formRules: {
           user: [
             {
-              required: true,
-              message: '请输入您的用户名',
+              validator: validatePhonenum,
               trigger: 'blur'
             }
           ],
           password: [
             {
               required: true,
-              message: '请输入您的密码',
+              message: '请输入密码',
               trigger: 'blur'
             },
             {
@@ -95,49 +100,47 @@
             }
           ]
         },
-        isLoggingIn: false
+        isRegistering: false
       }
     },
     methods: {
-      verifyUser () {
-        return (this.formItems.user === this.$store.state.username && this.formItems.password === this.$store.state.password)
-      },
-      login () {
+      register () {
         const that = this
-        if (this.isLoggingIn) return
-        this.isLoggingIn = true
+        if (this.isRegistering) return
+        this.isRegistering = true
         this.$refs[this.formRef].validate((valid) => {
           if (valid) {
-            this.isLoggingIn = false
-            global.store.dispatch(types.LOGIN, {
-              username: this.formItems.user,
+            this.isRegistering = false
+            global.store.dispatch(types.REGISTER, {
+              phonenum: this.formItems.user,
               password: this.formItems.password,
               callback (res) {
                 if (Number(res.status) === 200) {
-                  // 登录成功
-                  that.$Message.success('登录成功!')
-                  that.$router.replace('/')
-                  utils.storage.setItem(that.$store.state.localStorageKeys.userInfo, res.data)
+                  // 注册成功
+                  that.$Message.success('注册成功!')
+                  setTimeout(() => {
+                    that.$router.replace('/login')
+                  }, 800);
                 } else {
-                  that.$Message.error('登录失败：' + res.message)
+                  that.$Message.error('注册失败：' +  res.message)
                 }
               },
               error (err) {
-                that.$Message.error('登录失败：' + err)
+                that.$Message.error('注册失败：' + err)
               }
             })
           } else {
-            this.isLoggingIn = false
+            this.isRegistering = false
             this.$Message.error('表单填写不正确!')
           }
         })
       }
     },
     watch: {
-      'isLoggingIn': function (value) {
+      'isRegistering': function (value) {
         if (value) {
           this.$Message.loading({
-            content: '登录中，请稍后...',
+            content: '注册中，请稍后...',
             duration: 2
           })
         } else {

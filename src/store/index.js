@@ -61,6 +61,7 @@ const store = new Vuex.Store({
     requestInfo: {
       baseUrl: 'https://talkapi.dei2.com',
       login: '/Zpm/user/login',
+      register: '/Zpm/user/register',
       listPlugins: '/Zpm/plugin/list',
       viewFile: '/Zpm/plugin/content'
     },

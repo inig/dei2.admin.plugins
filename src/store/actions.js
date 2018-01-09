@@ -67,6 +67,32 @@ export const actions = {
       error(loginData)
     }
   },
+  async [types.REGISTER] ({commit, state}, data) {
+    let callback = noop
+    let error = noop
+    if (data.callback) {
+      callback = data.callback
+      delete data.callback
+    }
+    if (data.error) {
+      error = data.error
+      delete data.error
+    }
+    let registerData = await instance({
+      method: 'post',
+      baseURL: state.requestInfo.baseUrl,
+      url: state.requestInfo.register,
+      data: querystring.stringify(data)
+    })
+    if (registerData.config) {
+      delete registerData.config
+    }
+    if (registerData.status === 200) {
+      callback(registerData.data)
+    } else {
+      error(registerData)
+    }
+  },
   [types.LIST_PLUGINS] ({commit, state}, data) {
     return new Promise((resolve, reject) => {
       instance({

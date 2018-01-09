@@ -6,6 +6,7 @@ import NotFound from '../components/404.vue'
 import Plugins from '../components/Plugins.vue'
 import Plugin from '../components/Plugin.vue'
 import MainContent from '../components/MainContent.vue'
+import Register from '../components/Register.vue'
 
 Vue.use(Router)
 
@@ -17,6 +18,13 @@ export default new Router({
       name: 'Login',
       components: {
         HomeRouter: Login
+      }
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      components: {
+        HomeRouter: Register
       }
     },
     {
