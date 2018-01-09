@@ -3,7 +3,7 @@
     <Upload
         multiple
         type="drag"
-        :action="'http://127.0.0.1:3000/Zpm/plugin/upload?p=' + currentPlugin + '&token=' + loginInfo.token + '&ms=' + formData.maxSize + '&accept=' + formData.format.join(';')"
+        :action="'https://talkapi.dei2.com/Zpm/plugin/upload?p=' + currentPlugin + '&token=' + loginInfo.token + '&ms=' + formData.maxSize + '&accept=' + formData.format.join(';')"
         :max-size="formData.maxSize"
         :format="formData.format"
         :on-exceeded-size="handleMaxSize"
