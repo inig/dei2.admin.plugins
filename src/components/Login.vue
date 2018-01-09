@@ -25,9 +25,9 @@
                     </FormItem>
                 </Form>
                 <div class="login_bar">
-                  <router-link to="/register">
+                  <!-- <router-link to="/register">
                     <span>忘记密码</span>
-                  </router-link>
+                  </router-link> -->
                   <router-link to="/register">
                     <span>注册</span>
                   </router-link>
@@ -56,7 +56,7 @@
       height: 20px;
       display: flex;
       flex-direction: row;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
     }
 </style>
