@@ -60,18 +60,18 @@
   import utils from '../utils/index'
   import * as types from '../store/mutation-types'
   export default {
-    name: 'Login',
+    name: 'Register',
     data () {
       const validatePhonenum = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('请输入手机号'));
+          callback(new Error('请输入手机号'))
         } else {
           if (!value.match(/^1[345789]\d{9}$/)) {
-            callback(new Error('手机号格式不正确'));
+            callback(new Error('手机号格式不正确'))
           }
-          callback();
+          callback()
         }
-      };
+      }
       return {
         formRef: 'LoginForm',
         appName: this.$store.state.appName,
@@ -120,9 +120,9 @@
                   that.$Message.success('注册成功!')
                   setTimeout(() => {
                     that.$router.replace('/login')
-                  }, 800);
+                  }, 800)
                 } else {
-                  that.$Message.error('注册失败：' +  res.message)
+                  that.$Message.error('注册失败：' + res.message)
                 }
               },
               error (err) {
