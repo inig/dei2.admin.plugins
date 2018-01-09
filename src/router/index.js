@@ -7,6 +7,7 @@ import Plugins from '../components/Plugins.vue'
 import Plugin from '../components/Plugin.vue'
 import MainContent from '../components/MainContent.vue'
 import Register from '../components/Register.vue'
+import PersonalCenter from '../components/PersonalCenter.vue'
 
 Vue.use(Router)
 
@@ -46,6 +47,13 @@ export default new Router({
           name: 'Plugin',
           components: {
             ContentRouter: Plugin
+          }
+        },
+        {
+          path: '/personal',
+          name: 'Personal',
+          components: {
+            ContentRouter: PersonalCenter
           }
         },
         {

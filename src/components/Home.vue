@@ -12,7 +12,7 @@
                     <!--</Button>-->
                     <Poptip trigger="click" placement="bottom-end" width="200" class="user-badge">
                         <Badge dot>
-                            <Avatar size="large" :src="loginInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar" class="user-avatar"></Avatar>
+                            <Avatar size="large" :src="loginInfo.headIcon || (loginInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)" class="user-avatar"></Avatar>
                         </Badge>
                         <div class="api" slot="content">
                             <Card :bordered="false" :padding="0">
@@ -21,12 +21,12 @@
                                     退出
                                     <Icon type="log-out"></Icon>
                                 </a>
-                                <Menu width="200">
-                                    <MenuItem name="1">
+                                <Menu width="200" @on-select="navToUserSet">
+                                    <MenuItem name="personal">
                                         <Icon type="clipboard"></Icon>
                                         个人中心
                                     </MenuItem>
-                                    <MenuItem name="2">
+                                    <MenuItem name="setting">
                                         <Icon type="settings"></Icon>
                                         设置
                                     </MenuItem>
@@ -258,6 +258,9 @@
       },
       navToPluginView (e) {
         this.$router.replace(`/plugin/${e}`)
+      },
+      navToUserSet (e) {
+        this.$router.replace(`/${e}`)
       }
     },
     components: {
