@@ -63,7 +63,8 @@ const store = new Vuex.Store({
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
       listPlugins: '/Zpm/plugin/list',
-      viewFile: '/Zpm/plugin/content'
+      viewFile: '/Zpm/plugin/content',
+      updateUserInfo: '/Zpm/user/updateUserInfo'
     },
     loginInfo: {
       expireTime: 24 * 60 * 60 * 1000, // 登录失效时间

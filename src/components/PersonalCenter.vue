@@ -8,22 +8,35 @@
           <div class="user_avatar_wrap">
             <img class="user_avatar" :src="userInfo.headIcon || (userInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)" alt="头像">
           </div>
-          <Form class="personal_center_form" :model="formLeft" label-position="left" :label-width="70">
-            <FormItem label="用户名">
+          <Form :ref="formRef" class="personal_center_form" :model="userInfo" :rules="userInfoValidate" label-position="left" :label-width="70">
+            <FormItem label="用户名" prop="username">
               <Input v-model="userInfo.username" type="text"></Input>
             </FormItem>
-            <FormItem label="昵称">
+            <FormItem label="昵称" prop="nickname">
               <Input v-model="userInfo.nickname" type="text"></Input>
             </FormItem>
-            <FormItem label="邮箱">
+            <FormItem label="邮箱" prop="email">
               <Input v-model="userInfo.email" type="email"></Input>
             </FormItem>
             <FormItem label="手机">
-              <Input v-model="userInfo.phonenum" disabled type="text"></Input>
+              <p>{{userInfo.phonenum}}</p>
+              <!-- <Input v-model="userInfo.phonenum" disabled type="text"></Input> -->
             </FormItem>
-            <FormItem label="生日" type="text">
-              <Input v-model="birthdayFormat"></Input>
-            </FormItem>
+            <Row>
+              <Col span="12">
+                <FormItem label="生日" prop="email">
+                  <DatePicker :value="birthdayFormat" format="yyyy-MM-dd" type="date" placeholder="请选择日期" style="width: 200px"></DatePicker>
+                </FormItem>
+              </Col>
+              <Col span="12">
+                <FormItem label="性别" prop="gender">
+                  <RadioGroup v-model="userInfo.gender">
+                    <Radio class="user_gender" label="1">男</Radio>
+                    <Radio class="user_gender" label="2">女</Radio>
+                  </RadioGroup>
+                </FormItem>
+              </Col>
+            </Row>
             <FormItem label="个人网站">
               <Input v-model="userInfo.website"  type="text"></Input>
             </FormItem>
@@ -78,6 +91,9 @@
     .personal_center_sure_btn {
       margin-left: 30px;
     }
+    .user_gender {
+      margin-right: 30px;
+    }
 </style>
 <script>
   import utils from '../utils/index'
@@ -86,15 +102,53 @@
     name: 'PersonalCenter',
     data () {
       return {
+        formRef: 'personalCenter',
         assets: this.$store.state.assets,
         userInfo: {
-          name: 'wq',
+          username: 'wq',
           nickname: 'wwwww',
           email: 'test@email.com',
           phonenum: '15634839020',
           headIcon: '',
           birthday: '',
+          gender: 1,
           website: 'http://plugins.admin.dei2.com'
+        },
+        userInfoValidate: {
+          username: [
+            {
+              required: true,
+              message: '此项为必填项',
+              trigger: 'blur'
+            }
+          ],
+          nickname: [
+            {
+              required: true,
+              message: '此项为必填项',
+              trigger: 'blur'
+            }
+          ],
+          email: [
+            {
+              required: true,
+              message: '此项为必填项',
+              trigger: 'blur'
+            },
+            {
+              type: 'email',
+              required: true,
+              message: '邮箱格式错误',
+              trigger: 'blur'
+            }
+          ],
+          gender: [
+            {
+              required: true,
+              message: '此项为必填项',
+              trigger: 'blur'
+            }
+          ]
         }
       }
     },
@@ -105,7 +159,7 @@
           let date = new Date(Number(this.userInfo.birthday))
           let Y = date.getFullYear()
           let M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
-          let D = date.getDate()
+          let D = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
           outData = `${Y}-${M}-${D}`
         }
         return outData
@@ -116,13 +170,33 @@
     },
     methods: {
       getUserInfo () {
-        this.userInfo = utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+        let userDate = Object.assign({}, utils.storage.getItem(this.$store.state.localStorageKeys.userInfo))
+        for (const key in this.userInfo) {
+          if (userDate.hasOwnProperty(key)) {
+            this.userInfo[key] = userDate[key]
+          }
+        }
       },
       cancelBtn () {
         this.$router.back(-1)
       },
       updataUserInfo () {
+        // console.log(this.userInfo)
+        this.$refs[this.formRef].validate((valid) => {
+          if (valid) {
+            this.$Message.success('Success!')
+          } else {
+            this.$Message.error('Fail!')
+          }
+        })
+        /* global.store.dispatch(types.UPDATE_USER_INFO, {
+          callback (res) {
 
+          },
+          error (err) {
+
+          }
+        }) */
       }
     },
     watch: {

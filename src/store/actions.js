@@ -134,5 +134,27 @@ export const actions = {
         reject(err)
       })
     })
+  },
+  // 更新用户信息
+  [types.UPDATE_USER_INFO] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      instance({
+        method: 'post',
+        baseURL: state.requestInfo.baseUrl,
+        url: state.requestInfo.updateUserInfo,
+        data: querystring.stringify(data)
+      }).then(userDate => {
+        if (userDate.config) {
+          delete userDate.config
+        }
+        if (userDate.status === 200) {
+          resolve(userDate.data)
+        } else {
+          reject(userDate)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }

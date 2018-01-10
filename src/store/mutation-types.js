@@ -50,3 +50,6 @@ export const LIST_PLUGINS = 'LIST_PLUGINS'
 
 // 预览文件内容
 export const VIEW_FILE = 'VIEW_FILE'
+
+// 更新用户信息
+export const UPDATE_USER_INFO = 'UPDATE_USER_INFO'

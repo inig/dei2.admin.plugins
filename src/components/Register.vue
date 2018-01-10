@@ -73,7 +73,7 @@
         }
       }
       return {
-        formRef: 'LoginForm',
+        formRef: 'RegisterForm',
         appName: this.$store.state.appName,
         formItems: {
           user: '',
