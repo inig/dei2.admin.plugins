@@ -67,6 +67,7 @@
                             <router-view class="content_router_view" :style="{height: showFileUploader ? 'calc(100% - 100px)' : '100%'}" name="ContentRouter"/>
                         </keep-alive>
                     </transition>
+                    <loading class="layout-content-loader" :data-ref="contentRouterViewLoader"></loading>
                 </div>
                 <div class="layout-copy">
                     2011-2018 &copy; {{author}}
@@ -92,6 +93,7 @@
         padding: 10px 15px 0;
     }
     .layout-content{
+        position: relative;
         min-height: 200px;
         height: calc(100% - 90px);
         margin: 15px;
@@ -102,6 +104,13 @@
     }
     .layout-content-main{
         padding: 10px;
+    }
+    .layout-content-loader {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 999;
+        background-color: rgba(0, 0, 0, 0.8);
     }
     .layout-copy{
         position: absolute;
@@ -217,10 +226,12 @@
   import utils from '../utils'
   import MainMenu from './MainMenu.vue'
   import UploadFile from './UploadFile.vue'
+  import Loading from './Loading.vue'
   export default {
     name: 'Home',
     data () {
       return {
+        contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
         author: this.$store.state.author,
         appName: this.$store.state.appName,
         shortAppName: this.$store.state.shortAppName,
@@ -290,10 +301,12 @@
     },
     components: {
       MainMenu,
-      UploadFile
+      UploadFile,
+      Loading
     },
     watch: {
       '$route': function (value) {
+        this.$store.state.loaders[this.contentRouterViewLoader].show()
         this.currentPlugin = value.params.pluginName
         this.currentFileName = value.params.fileName
         let pluginInfo = this.findPluginInfoByName(this.currentPlugin)

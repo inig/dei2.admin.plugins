@@ -29,10 +29,13 @@
     name: 'Plugins',
     data () {
       return {
+        contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
         codeContainerRef: 'code-container-ref',
         currentPlugin: '',
         currentFileName: '',
         fileContent: '',
+        eventHub: this.$store.state.eventHub,
+        events: this.$store.state.events,
         configs: {
           common: {
             theme: 'zenburn',
@@ -76,21 +79,20 @@
     async created () {
       this.currentPlugin = this.$route.params.pluginName
       this.currentFileName = this.$route.params.fileName
-      this.fileContent = await this.getFileContent({
+      this.eventHub.$on(this.events.updatePluginFileContent, await this.updatePluginFileContent)
+      await this.updatePluginFileContent({
         plugin: this.currentPlugin,
         filename: this.currentFileName
       })
-      this.beautifyCode()
     },
     watch: {
       '$route': async function (value) {
         this.currentPlugin = value.params.pluginName
         this.currentFileName = value.params.fileName
-        this.fileContent = await this.getFileContent({
+        await this.updatePluginFileContent({
           plugin: this.currentPlugin,
           filename: this.currentFileName
         })
-        this.beautifyCode()
       }
     },
     methods: {
@@ -99,7 +101,26 @@
           plugin: args.plugin,
           filename: args.filename
         })
-        return fileContent.data.content
+        return fileContent
+      },
+      async updatePluginFileContent (args) {
+        const that = this
+//        that.eventHub.$off(that.events.updatePluginFileContent)
+        try {
+          let _fileData = await this.getFileContent({
+            plugin: args.plugin,
+            filename: args.filename
+          })
+          if (_fileData.data.plugin === args.plugin && _fileData.data.filename === args.filename) {
+            this.fileContent = _fileData.data.content
+          }
+        } catch (err) {
+          this.fileContent = ''
+        }
+        this.beautifyCode()
+        setTimeout(() => {
+          that.$store.state.loaders[that.contentRouterViewLoader].hide()
+        }, 800)
       },
       findPluginInfoByName (pluginName) {
         let outPlugin = {}

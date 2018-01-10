@@ -34,10 +34,19 @@
  * Created by liangshan on 2017/7/13.
  */
 
+// >>>> mutations:
 export const SHOW_POPUP = 'SHOW_POPUP'
 
 // 保存所有插件
 export const SET_ALL_PLUGINS = 'SET_ALL_PLUGINS'
+
+// 挂载loader
+export const SET_LOADER = 'SET_LOADER'
+
+// 卸载loader
+export const DEL_LOADER = 'DEL_LOADER'
+
+// >>>> actions:
 
 // 登录
 export const LOGIN = 'LOGIN'
