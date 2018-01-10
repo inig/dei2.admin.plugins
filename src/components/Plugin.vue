@@ -1,5 +1,13 @@
 <template>
     <div class="plugin_container">
+      <div class="plugin_operation_container">
+          <Tooltip content="下载" placement="bottom">
+              <Icon type="arrow-down-a" class="operation_item" :class="['operation_item_enable_' + enableDownload]" size="18"></Icon>
+          </Tooltip>
+          <Tooltip content="保存" placement="bottom">
+              <Icon type="arrow-up-a" class="operation_item" :class="['operation_item_enable_' + enableSave]" size="18"></Icon>
+          </Tooltip>
+      </div>
       <pre class="code_container" :ref="codeContainerRef"></pre>
     </div>
 </template>
@@ -9,9 +17,38 @@
         /*display: flex;*/
         /*align-items: center;*/
         /*justify-content: center;*/
+        position: relative;
         font-size: 14px;
       box-sizing: border-box;
       overflow: auto;
+    }
+    .plugin_operation_container {
+        position: absolute;
+        right: 40px;
+        top: 0;
+        width: 40px;
+        height: 32px;
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        /*background-color: rgba(255, 255, 255, 0.5);*/
+    }
+    .operation_item {
+        color: #ffffff;
+    }
+    .operation_item_enable_false {
+        opacity: 0.05;
+    }
+    .operation_item_enable_true {
+        opacity: 0.4;
+    }
+    .operation_item_enable_true:hover {
+        opacity: 1;
+        cursor: pointer;
+    }
+    .operation_item_enable_false:hover {
+        cursor: not-allowed;
     }
   .code_container {
     text-shadow: none;
@@ -36,6 +73,8 @@
         fileContent: '',
         eventHub: this.$store.state.eventHub,
         events: this.$store.state.events,
+        enableSave: true,
+        enableDownload: true,
         configs: {
           common: {
             theme: 'zenburn',
