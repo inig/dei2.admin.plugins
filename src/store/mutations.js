@@ -44,5 +44,13 @@ export const mutations = {
   },
   [types.SET_ALL_PLUGINS] (state, data) {
     state.allPlugins = data.allPlugins
+  },
+  [types.SET_LOADER] (state, data) {
+    state.loaders[data.name] = data.value.vm
+  },
+  [types.DEL_LOADER] (state, data) {
+    if (state.loaders[data.name]) {
+      delete state.loaders[data.name]
+    }
   }
 }

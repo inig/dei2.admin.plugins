@@ -54,6 +54,10 @@ const store = new Vuex.Store({
     localStorageKeys: {
       userInfo: 'user-info'
     },
+    eventHub: new Vue(),
+    events: {
+      updatePluginFileContent: 'update-plugin-file-content' // 更新插件内容
+    },
     assets: {
       maleAvatar: 'static/images/avatar_male_1.jpg',
       femaleAvatar: 'static/images/avatar_female_1.jpg'
@@ -70,6 +74,10 @@ const store = new Vuex.Store({
       expireTime: 24 * 60 * 60 * 1000, // 登录失效时间
       data: {}
     },
+    loaders: {}, // 页面中所有loader对象
+    contentRouterViewLoader: 'content-router-view-loader',
+    homeRouterViewLoader: 'home-router-view-loader',
+    loadingType: 'ball-triangle-path', // loading样式
     allPlugins: [],
     needlessLogin: ['Login', 'Register', 'Forget'] // 不需要登录的页面
   }

@@ -13,7 +13,7 @@
         >
         <div class="upload-file-area" :style="{height: height + 'px' || '300px', width: width + 'px' || '100%'}">
             <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-            <p>点击或拖拽上传文件</p>
+            <p>点击或拖拽上传文件 (请上传 <span class="suffix_emphasize" v-text="fileSuffix.toUpperCase()"></span> 格式的文件)</p>
         </div>
     </Upload>
   </div>
@@ -31,6 +31,10 @@
       justify-content: center;
       flex-direction: column;
   }
+    .suffix_emphasize {
+        color: #ee5500;
+        font-size: 16px;
+    }
 </style>
 <script>
   import utils from '../utils'
@@ -44,12 +48,17 @@
           format: []
         },
         currentPlugin: '',
-        currentFileName: ''
+        currentFileName: '',
+        eventHub: this.$store.state.eventHub,
+        events: this.$store.state.events
       }
     },
     computed: {
       loginInfo () {
         return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+      },
+      fileSuffix () {
+        return '.' + this.currentFileName.split('.').pop()
       }
     },
     methods: {
@@ -58,6 +67,10 @@
           this.$Notice.success({
             title: '文件上传成功',
             desc: file.name + '上传成功'
+          })
+          this.eventHub.$emit(this.events.updatePluginFileContent, {
+            plugin: this.currentPlugin,
+            filename: this.currentFileName
           })
         } else {
           this.$Notice.error({
