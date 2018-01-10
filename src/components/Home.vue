@@ -35,27 +35,36 @@
                         </div>
                     </Poptip>
                 </div>
-                <div class="layout-breadcrumb" style="line-height: 32px;">
-                    <Breadcrumb>
-                        <BreadcrumbItem href="#">Index</BreadcrumbItem>
-                        <BreadcrumbItem href="#">Apps</BreadcrumbItem>
-                        <BreadcrumbItem>App</BreadcrumbItem>
-                    </Breadcrumb>
-                    <Input class="plugin-search"
-                           :class="{'plugin-search-active': (pluginSearch.active || pluginSearch.text.trim() !== ''), 'plugin-search-inactive': (!pluginSearch.active && pluginSearch.text.trim() === '')}"
-                           v-model="pluginSearch.text"
-                           placeholder="插件搜索"
-                           @on-focus="focusPluginSearch"
-                           @on-blur="blurPluginSearch"
-                           icon="ios-search-strong"/>
-                </div>
+                <!--<div class="layout-breadcrumb" style="line-height: 32px;">-->
+                    <!--<Breadcrumb>-->
+                        <!--<BreadcrumbItem href="#">Index</BreadcrumbItem>-->
+                        <!--<BreadcrumbItem href="#">Apps</BreadcrumbItem>-->
+                        <!--<BreadcrumbItem>App</BreadcrumbItem>-->
+                    <!--</Breadcrumb>-->
+                    <!--<Input class="plugin-search"-->
+                           <!--:class="{'plugin-search-active': (pluginSearch.active || pluginSearch.text.trim() !== ''), 'plugin-search-inactive': (!pluginSearch.active && pluginSearch.text.trim() === '')}"-->
+                           <!--v-model="pluginSearch.text"-->
+                           <!--placeholder="插件搜索"-->
+                           <!--@on-focus="focusPluginSearch"-->
+                           <!--@on-blur="blurPluginSearch"-->
+                           <!--icon="ios-search-strong"/>-->
+                <!--</div>-->
                 <div class="layout-content">
+                    <transition
+                            name="file-upload-transition"
+                            enter-active-class="animated fadeIn"
+                            leave-active-class="animated fadeOut"
+                    >
+                        <div class="file_uploader_container" v-if="showFileUploader">
+                            <upload-file height="100"></upload-file>
+                        </div>
+                    </transition>
                     <transition name="content-router-transition"
                                 enter-active-class="animated fadeIn"
                                 leave-active-class="animated fadeOut"
                     >
                         <keep-alive>
-                            <router-view class="content_router_view" name="ContentRouter"/>
+                            <router-view class="content_router_view" :style="{height: showFileUploader ? 'calc(100% - 100px)' : '100%'}" name="ContentRouter"/>
                         </keep-alive>
                     </transition>
                 </div>
@@ -84,7 +93,7 @@
     }
     .layout-content{
         min-height: 200px;
-        height: calc(100% - 165px);
+        height: calc(100% - 90px);
         margin: 15px;
         overflow: hidden;
         background: #fff;
@@ -196,14 +205,18 @@
         padding: 0!important;
     }
 
+    .file_uploader_container {
+        width: 100%;
+        height: 100px;
+    }
     .content_router_view {
         width: 100%;
-        height: 100%;
     }
 </style>
 <script>
   import utils from '../utils'
   import MainMenu from './MainMenu.vue'
+  import UploadFile from './UploadFile.vue'
   export default {
     name: 'Home',
     data () {
@@ -216,8 +229,11 @@
           text: '',
           active: false
         },
+        showFileUploader: false, // 是否显示文件上传控件
         spanLeft: 6,
-        spanRight: 18
+        spanRight: 18,
+        currentPlugin: '',
+        currentFileName: ''
       }
     },
     computed: {
@@ -227,8 +243,8 @@
       loginInfo () {
         return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
       },
-      currentPlugin () {
-        return this.$route.params ? this.$route.params.pluginName : ''
+      allPlugins () {
+        return this.$store.state.allPlugins
       }
     },
     created () {
@@ -259,12 +275,33 @@
       navToPluginView (e) {
         this.$router.replace(`/plugin/${e}`)
       },
+      findPluginInfoByName (pluginName) {
+        let outPlugin = {}
+        let allPlugins = this.allPlugins
+        let i = 0
+        for (i; i < allPlugins.length; i++) {
+          if (allPlugins[i].name === pluginName) {
+            outPlugin = allPlugins[i]
+            i = allPlugins.length
+          }
+        }
+        return outPlugin
+      },
       navToUserSet (e) {
         this.$router.replace(`/${e}`)
       }
     },
     components: {
-      MainMenu
+      MainMenu,
+      UploadFile
+    },
+    watch: {
+      '$route': function (value) {
+        this.currentPlugin = value.params.pluginName
+        this.currentFileName = value.params.fileName
+        let pluginInfo = this.findPluginInfoByName(this.currentPlugin)
+        this.showFileUploader = (String(pluginInfo.author) === String(this.loginInfo.phonenum))
+      }
     }
   }
 </script>
