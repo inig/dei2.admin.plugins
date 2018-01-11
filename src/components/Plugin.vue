@@ -1,12 +1,8 @@
 <template>
     <div class="plugin_container">
       <div class="plugin_operation_container">
-          <Tooltip content="下载" placement="bottom">
-              <Icon type="arrow-down-a" class="operation_item" :class="['operation_item_enable_' + enableDownload]" size="18"></Icon>
-          </Tooltip>
-          <Tooltip content="保存" placement="bottom">
-              <Icon type="arrow-up-a" class="operation_item" :class="['operation_item_enable_' + enableSave]" size="18"></Icon>
-          </Tooltip>
+          <Icon type="arrow-down-a" title="下载文件" class="operation_item" :class="['operation_item_enable_' + enableDownload]" size="18" @click="downloadFile"></Icon>
+          <Icon type="arrow-up-a" title="保存文件" class="operation_item" :class="['operation_item_enable_' + enableSave]" size="18" @click="saveFile"></Icon>
       </div>
       <pre class="code_container" :ref="codeContainerRef"></pre>
     </div>
@@ -218,6 +214,13 @@
             value: that.fileContent
           }, configs))
         })
+      },
+      downloadFile (evt) {
+        alert('.....')
+        console.log('download file....', evt)
+      },
+      saveFile (evt) {
+        console.log('save file....', evt)
       }
     },
     components: {}

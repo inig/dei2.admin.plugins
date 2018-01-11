@@ -306,7 +306,6 @@
     },
     watch: {
       '$route': function (value) {
-        this.$store.state.loaders[this.contentRouterViewLoader].show()
         this.currentPlugin = value.params.pluginName
         this.currentFileName = value.params.fileName
         let pluginInfo = this.findPluginInfoByName(this.currentPlugin)
