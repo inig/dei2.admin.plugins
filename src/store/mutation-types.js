@@ -62,3 +62,6 @@ export const VIEW_FILE = 'VIEW_FILE'
 
 // 更新用户信息
 export const UPDATE_USER_INFO = 'UPDATE_USER_INFO'
+
+// 获取用户信息
+export const GET_USER_INFO = 'GET_USER_INFO'

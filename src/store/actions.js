@@ -135,26 +135,78 @@ export const actions = {
       })
     })
   },
-  // 更新用户信息
-  [types.UPDATE_USER_INFO] ({commit, state}, data) {
-    return new Promise((resolve, reject) => {
+
+  // 获取用户信息
+  async [types.GET_USER_INFO] ({commit, state}, data) {
+    let callback = noop
+    let error = noop
+    if (data.callback) {
+      callback = data.callback
+      delete data.callback
+    }
+    if (data.error) {
+      error = data.error
+      delete data.error
+    }
+    let userData = await instance({
+      method: 'post',
+      baseURL: state.requestInfo.baseUrl,
+      url: state.requestInfo.getUserInfo,
+      data: querystring.stringify(data)
+    })
+    if (userData.config) {
+      delete userData.config
+    }
+    if (userData.status === 200) {
+      callback(userData.data)
+    } else {
+      error(userData)
+    }
+    /* return new Promise((resolve, reject) => {
       instance({
         method: 'post',
         baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.updateUserInfo,
+        url: state.requestInfo.getUserInfo,
         data: querystring.stringify(data)
-      }).then(userDate => {
-        if (userDate.config) {
-          delete userDate.config
+      }).then(userData => {
+        if (userData.config) {
+          delete userData.config
         }
-        if (userDate.status === 200) {
-          resolve(userDate.data)
+        if (userData.status === 200) {
+          callback(userData.data)
         } else {
-          reject(userDate)
+          error(userData)
         }
       }).catch(err => {
         reject(err)
       })
+    }) */
+  },
+  // 更新用户信息
+  async [types.UPDATE_USER_INFO] ({commit, state}, data) {
+    let callback = noop
+    let error = noop
+    if (data.callback) {
+      callback = data.callback
+      delete data.callback
+    }
+    if (data.error) {
+      error = data.error
+      delete data.error
+    }
+    let userData = await instance({
+      method: 'post',
+      baseURL: state.requestInfo.baseUrl,
+      url: state.requestInfo.updateUserInfo,
+      data: querystring.stringify(data)
     })
+    if (userData.config) {
+      delete userData.config
+    }
+    if (userData.status === 200) {
+      callback(userData.data)
+    } else {
+      error(userData)
+    }
   }
 }

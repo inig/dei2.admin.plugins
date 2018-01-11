@@ -24,12 +24,12 @@
             </FormItem>
             <Row>
               <Col span="12">
-                <FormItem label="生日" prop="email">
-                  <DatePicker :value="birthdayFormat" format="yyyy-MM-dd" type="date" placeholder="请选择日期" style="width: 200px"></DatePicker>
+                <FormItem label="生日">
+                  <DatePicker :value="birthdayFormat" @on-change="birthdayChange" format="yyyy-MM-dd" :clearable=false type="date" placeholder="请选择日期" style="width: 200px"></DatePicker>
                 </FormItem>
               </Col>
               <Col span="12">
-                <FormItem label="性别" prop="gender">
+                <FormItem label="性别">
                   <RadioGroup v-model="userInfo.gender">
                     <Radio class="user_gender" label="1">男</Radio>
                     <Radio class="user_gender" label="2">女</Radio>
@@ -41,7 +41,7 @@
               <Input v-model="userInfo.website"  type="text"></Input>
             </FormItem>
             <FormItem>
-              <Button class="personal_center_cancel_btn" @click="cancelBtn" type="ghost" size="large">取消</Button>
+              <Button class="personal_center_cancel_btn" @click="cancelUpdataUserInfo" type="ghost" size="large">取消</Button>
               <Button class="personal_center_sure_btn" @click="updataUserInfo" type="primary" size="large">确定</Button>
             </FormItem>
           </Form>
@@ -97,16 +97,19 @@
 </style>
 <script>
   import utils from '../utils/index'
-  // import * as types from '../store/mutation-types'
+  import * as types from '../store/mutation-types'
+  import jwt from 'jsonwebtoken'
   export default {
     name: 'PersonalCenter',
     data () {
       return {
+        contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
         formRef: 'personalCenter',
         assets: this.$store.state.assets,
+        localUserData: {},
         userInfo: {
           username: 'wq',
-          nickname: 'wwwww',
+          nickname: 'www',
           email: 'test@email.com',
           phonenum: '15634839020',
           headIcon: '',
@@ -131,21 +134,9 @@
           ],
           email: [
             {
-              required: true,
-              message: '此项为必填项',
-              trigger: 'blur'
-            },
-            {
               type: 'email',
               required: true,
               message: '邮箱格式错误',
-              trigger: 'blur'
-            }
-          ],
-          gender: [
-            {
-              required: true,
-              message: '此项为必填项',
               trigger: 'blur'
             }
           ]
@@ -166,40 +157,105 @@
       }
     },
     created () {
+      this.$Message.config({
+        top: 50,
+        duration: 2.5
+      })
+      // 获取本地个人信息
+      this.localUserData = utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+      // 获取数据库个人信息
       this.getUserInfo()
     },
     methods: {
-      getUserInfo () {
-        let userDate = Object.assign({}, utils.storage.getItem(this.$store.state.localStorageKeys.userInfo))
-        for (const key in this.userInfo) {
-          if (userDate.hasOwnProperty(key)) {
-            this.userInfo[key] = userDate[key]
-          }
+      _checkToken () {
+        const that = this
+        const secret = 'com.dei2'
+        let tokenStatus = jwt.verify(that.localUserData.token, secret, function (err, decoded) {
+          return err || {}
+        })
+        if (tokenStatus.name === 'TokenExpiredError') {
+          return false
+        } else {
+          return true
         }
       },
-      cancelBtn () {
+      birthdayChange (date) {
+        this.userInfo.birthday = +new Date(date)
+        console.log(this.userInfo.birthday)
+        this.$Message.info(`birthday已修改为${date}`)
+      },
+      async getUserInfo () {
+        const that = this
+        if (!that._checkToken()) {
+          that.$Message.error('登录过期，请重新登录!')
+          return false
+        }
+        await global.store.dispatch(types.GET_USER_INFO, {
+          token: that.localUserData.token,
+          phonenum: that.localUserData.phonenum,
+          callback (res) {
+            if (res.status === 200) {
+              let userDate = res.data
+              for (const key in that.userInfo) {
+                if (userDate.hasOwnProperty(key)) {
+                  that.userInfo[key] = userDate[key]
+                }
+              }
+            }
+          },
+          error (err) {
+            console.log('获取个人信息失败：' + err)
+          }
+        })
+      },
+      cancelUpdataUserInfo () {
         this.$router.back(-1)
       },
       updataUserInfo () {
-        // console.log(this.userInfo)
-        this.$refs[this.formRef].validate((valid) => {
+        const that = this
+        that.$refs[that.formRef].validate(async (valid) => {
+          console.log('表单数据：', that.userInfo)
           if (valid) {
-            this.$Message.success('Success!')
+            if (!that._checkToken()) {
+              that.$Message.error('登录过期，请重新登录!')
+              return false
+            }
+            await global.store.dispatch(types.UPDATE_USER_INFO,
+              Object.assign({}, that.userInfo, {
+                token: that.localUserData.token,
+                phonenum: that.localUserData.phonenum,
+                callback (res) {
+                  console.log('更新：', res)
+                  if (res.status === 200) {
+                    let userDate = res.data
+                    // 更新个人信息后存储本地
+                    utils.storage.setItem(that.$store.state.localStorageKeys.userInfo, res.data)
+                    for (const key in that.userInfo) {
+                      if (userDate.hasOwnProperty(key)) {
+                        that.userInfo[key] = userDate[key]
+                      }
+                    }
+                    that.$Message.success('修改成功')
+                  } else {
+                    that.$Message.error('修改失败')
+                  }
+                },
+                error (err) {
+                  console.log(err)
+                  that.$Message.error('修改失败')
+                }
+              })
+            )
           } else {
-            this.$Message.error('Fail!')
+            that.$Message.warning('请正确填写每一项')
           }
         })
-        /* global.store.dispatch(types.UPDATE_USER_INFO, {
-          callback (res) {
-
-          },
-          error (err) {
-
-          }
-        }) */
       }
     },
     watch: {
+      /* '$route': function (value) {
+        this.$store.state.loaders[this.contentRouterViewLoader].hide()
+      } */
     },
     components: {}
   }
