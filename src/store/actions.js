@@ -135,6 +135,27 @@ export const actions = {
       })
     })
   },
+  [types.UPDATE_PLUGIN_FILE_CONTENT] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      instance({
+        method: 'post',
+        baseURL: 'http://127.0.0.1:3000', // state.requestInfo.baseUrl,
+        url: state.requestInfo.updatePluginFileContent,
+        data: querystring.stringify(data)
+      }).then(updateData => {
+        if (updateData.config) {
+          delete updateData.config
+        }
+        if (updateData.status === 200) {
+          resolve(updateData.data)
+        } else {
+          reject(updateData)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
 
   // 获取用户信息
   async [types.GET_USER_INFO] ({commit, state}, data) {
