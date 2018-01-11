@@ -2,8 +2,17 @@
     <div class="layout" :class="{'layout-hide-text': spanLeft < 6}">
         <Row type="flex" class="h100p">
             <Col :span="spanLeft" class="layout-menu-left" :class="{'long': (spanLeft >= 6)}">
-                <div class="layout-logo-left" :class="{'short': (spanLeft < 6)}" v-text="spanLeft < 6 ? shortAppName : appName"></div>
-                <main-menu :plugins="loginInfo.plugins"></main-menu>
+                <router-link :to="{path: '/'}">
+                    <div class="layout-logo-left" :class="{'short': (spanLeft < 6)}" v-text="spanLeft < 6 ? shortAppName : appName"></div>
+                </router-link>
+                <div class="main_menu_wrapper">
+                    <main-menu></main-menu>
+                </div>
+                <div class="add_new_plugin_container">
+                    <Tooltip class="tooltip_container" content="上传一个插件（*.zip）" placement="top">
+                        <upload-plugin height="60"></upload-plugin>
+                    </Tooltip>
+                </div>
             </Col>
             <Col :span="spanRight">
                 <div class="layout-header">
@@ -184,11 +193,12 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
     .layout-logo-left {
-        width: 90%;
-        height: 30px;
+        width: 100%;
+        height: 60px;
         /*background: #5b6270;*/
         border-radius: 3px;
-        margin: 15px auto;
+        margin: 0 auto;
+        padding: 15px 0;
         color: #FFFFFF;
         line-height: 30px;
         text-align: center;
@@ -196,9 +206,31 @@
         font-weight: 500;
         text-shadow: 0 0 10px #ffffff;
         overflow: hidden;
+        border-bottom: 1px solid rgba(30, 36, 50, 0.36);
     }
     .layout-logo-left.short {
         font-size: 12px;
+    }
+    .main_menu_wrapper {
+        height: calc(100% - 60px - 60px);
+        overflow-y: auto;
+    }
+    .add_new_plugin_container {
+        height: 60px;
+        cursor: pointer;
+        border-top: 1px solid rgba(0, 0, 0, .1);
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    .tooltip_container {
+        width: 100%;
+        height: 60px;
+    }
+    .tooltip_container .ivu-tooltip-rel {
+        width: 100%;
     }
 
     .layout-ceiling-main a{
@@ -216,7 +248,7 @@
 
     .file_uploader_container {
         width: 100%;
-        height: 100px;
+        height: 102px;
     }
     .content_router_view {
         width: 100%;
@@ -226,6 +258,7 @@
   import utils from '../utils'
   import MainMenu from './MainMenu.vue'
   import UploadFile from './UploadFile.vue'
+  import UploadPlugin from './UploadPlugin.vue'
   import Loading from './Loading.vue'
   export default {
     name: 'Home',
@@ -305,7 +338,8 @@
     components: {
       MainMenu,
       UploadFile,
-      Loading
+      Loading,
+      UploadPlugin
     },
     watch: {
       '$route': function (value) {

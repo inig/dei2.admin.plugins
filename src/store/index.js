@@ -56,7 +56,8 @@ const store = new Vuex.Store({
     },
     eventHub: new Vue(),
     events: {
-      updatePluginFileContent: 'update-plugin-file-content' // 更新插件内容
+      updatePluginFileContent: 'update-plugin-file-content', // 更新插件内容
+      updatePluginList: 'update-plugin-list' // 更新我的插件列表
     },
     assets: {
       maleAvatar: 'static/images/avatar_male_1.jpg',

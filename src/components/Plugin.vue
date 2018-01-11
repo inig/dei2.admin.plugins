@@ -31,7 +31,7 @@
         z-index: 999;
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-end;
     }
     .operation_item {
         width: 20px;
