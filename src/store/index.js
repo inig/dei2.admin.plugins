@@ -64,7 +64,7 @@ const store = new Vuex.Store({
       femaleAvatar: 'static/images/avatar_female_1.jpg'
     },
     requestInfo: {
-      baseUrl: 'http://127.0.0.1:3000',
+      baseUrl: 'https://talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
       modifyPassword: '/Zpm/user/modifyPassword',
