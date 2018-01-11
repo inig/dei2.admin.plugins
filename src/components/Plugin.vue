@@ -1,22 +1,26 @@
 <template>
     <div class="plugin_container">
       <div class="plugin_operation_container">
-          <Icon type="arrow-down-a" title="下载文件" class="operation_item" :class="['operation_item_enable_' + enableDownload]" size="18" @click="downloadFile"></Icon>
-          <Icon type="arrow-up-a" title="保存文件" class="operation_item" :class="['operation_item_enable_' + enableSave]" size="18" @click="saveFile"></Icon>
+          <a :href="'https://static.dei2.com/plugins/' + currentPlugin + '/' + currentFileName" class="operation_item">
+              <Tooltip content="下载文件" placement="bottom">
+                  <Icon type="arrow-down-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableDownload]" size="18"></Icon>
+              </Tooltip>
+          </a>
+          <div class="operation_item" @click="saveFile">
+              <Tooltip content="保存文件" placement="bottom">
+                  <Icon type="arrow-up-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableSave]" size="18"></Icon>
+              </Tooltip>
+          </div>
       </div>
       <pre class="code_container" :ref="codeContainerRef"></pre>
     </div>
 </template>
 <style>
     .plugin_container {
-        /*background-color: lightcyan;*/
-        /*display: flex;*/
-        /*align-items: center;*/
-        /*justify-content: center;*/
         position: relative;
         font-size: 14px;
-      box-sizing: border-box;
-      overflow: auto;
+        box-sizing: border-box;
+        overflow: auto;
     }
     .plugin_operation_container {
         position: absolute;
@@ -28,22 +32,28 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        /*background-color: rgba(255, 255, 255, 0.5);*/
     }
     .operation_item {
+        width: 20px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .operation_item_icon {
         color: #ffffff;
     }
-    .operation_item_enable_false {
+    .operation_item_icon_enable_false {
         opacity: 0.05;
     }
-    .operation_item_enable_true {
+    .operation_item_icon_enable_true {
         opacity: 0.4;
     }
-    .operation_item_enable_true:hover {
+    .operation_item_icon_enable_true:hover {
         opacity: 1;
         cursor: pointer;
     }
-    .operation_item_enable_false:hover {
+    .operation_item_icon_enable_false:hover {
         cursor: not-allowed;
     }
   .code_container {
@@ -62,6 +72,7 @@
     name: 'Plugins',
     data () {
       return {
+        editor: {},
         contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
         codeContainerRef: 'code-container-ref',
         currentPlugin: '',
@@ -210,17 +221,32 @@
           'codemirror/addon/edit/matchtags',
           'codemirror/keymap/sublime'
         ], function (CodeMirror) {
-          CodeMirror(ele, Object.assign({
+          that.editor = CodeMirror(ele, Object.assign({
             value: that.fileContent
           }, configs))
         })
       },
-      downloadFile (evt) {
-        alert('.....')
-        console.log('download file....', evt)
-      },
-      saveFile (evt) {
-        console.log('save file....', evt)
+      async saveFile () {
+        let _newFileContent = this.editor.doc.getValue()
+        try {
+          let updateFileContent = await this.$store.dispatch(types.UPDATE_PLUGIN_FILE_CONTENT, {
+            token: this.loginInfo.token,
+            phonenum: this.loginInfo.phonenum,
+            plugin: this.currentPlugin,
+            filename: this.currentFileName,
+            content: _newFileContent
+          })
+          if (Number(updateFileContent.status) === 200) {
+            this.$Message.success(updateFileContent.message)
+          } else {
+            this.$Message.error(updateFileContent.message)
+            if (updateFileContent.data.needLogin) {
+              this.$router.replace('/login')
+            }
+          }
+        } catch (err) {
+          this.$Message.error(err)
+        }
       }
     },
     components: {}

@@ -68,6 +68,7 @@ const store = new Vuex.Store({
       register: '/Zpm/user/register',
       listPlugins: '/Zpm/plugin/list',
       viewFile: '/Zpm/plugin/content',
+      updatePluginFileContent: '/Zpm/plugin/update',
       getUserInfo: '/Zpm/user/getUserInfo',
       updateUserInfo: '/Zpm/user/updateUserInfo'
     },

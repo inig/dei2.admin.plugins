@@ -60,6 +60,9 @@ export const LIST_PLUGINS = 'LIST_PLUGINS'
 // 预览文件内容
 export const VIEW_FILE = 'VIEW_FILE'
 
+// 更新插件某文件内容
+export const UPDATE_PLUGIN_FILE_CONTENT = 'UPDATE_PLUGIN_FILE_CONTENT'
+
 // 更新用户信息
 export const UPDATE_USER_INFO = 'UPDATE_USER_INFO'
 

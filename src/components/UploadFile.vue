@@ -3,7 +3,7 @@
     <Upload
         multiple
         type="drag"
-        :action="'https://talkapi.dei2.com/Zpm/plugin/upload?p=' + currentPlugin + '&u=' + loginInfo.phonenum + '&token=' + loginInfo.token + '&ms=' + formData.maxSize + '&accept=' + formData.format.join(';')"
+        :action="'https://talkapi.dei2.com/Zpm/plugin/upload?p=' + currentPlugin + '&phonenum=' + loginInfo.phonenum + '&token=' + loginInfo.token + '&ms=' + formData.maxSize + '&accept=' + formData.format.join(';')"
         :max-size="formData.maxSize"
         :format="formData.format"
         :on-exceeded-size="handleMaxSize"
