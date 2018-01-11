@@ -6,7 +6,7 @@
                   <Icon type="arrow-down-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableDownload]" size="18"></Icon>
               </Tooltip>
           </a>
-          <div class="operation_item" @click="saveFile">
+          <div class="operation_item" @click="saveFile" v-if="isMyPlugin">
               <Tooltip content="保存文件" placement="bottom">
                   <Icon type="arrow-up-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableSave]" size="18"></Icon>
               </Tooltip>
@@ -82,6 +82,7 @@
         events: this.$store.state.events,
         enableSave: true,
         enableDownload: true,
+        isMyPlugin: false,
         configs: {
           common: {
             theme: 'zenburn',
@@ -184,6 +185,7 @@
         const that = this
         let pluginInfo = this.findPluginInfoByName(this.currentPlugin)
         let isMyPlugin = (String(pluginInfo.author) === String(this.loginInfo.phonenum))
+        this.isMyPlugin = isMyPlugin
         let mode = ''
         let fileSuffix = this.currentFileName.replace(/^.+\.(.+)$/, '$1').toLowerCase()
         switch (fileSuffix) {
