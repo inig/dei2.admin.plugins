@@ -3,7 +3,7 @@
     <Upload
         multiple
         type="drag"
-        :action="'https://talkapi.dei2.com/Zpm/plugin/upload?p=' + currentPlugin + '&token=' + loginInfo.token + '&ms=' + formData.maxSize + '&accept=' + formData.format.join(';')"
+        :action="'https://talkapi.dei2.com/Zpm/plugin/upload?p=' + currentPlugin + '&u=' + loginInfo.phonenum + '&token=' + loginInfo.token + '&ms=' + formData.maxSize + '&accept=' + formData.format.join(';')"
         :max-size="formData.maxSize"
         :format="formData.format"
         :on-exceeded-size="handleMaxSize"
@@ -77,6 +77,10 @@
             title: '文件上传失败',
             desc: file.name + '上传失败：' + event.message || ''
           })
+          if (event.data.needLogin) {
+            // 跳转至登录
+            this.$router.replace('/login')
+          }
         }
       },
       uploadFail (event, file, fileList) {

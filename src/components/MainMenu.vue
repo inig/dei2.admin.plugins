@@ -1,5 +1,5 @@
 <template>
-    <Menu theme="dark" width="auto" @on-select="navToPluginView" :active-name="currentPlugin">
+    <Menu theme="dark" width="auto" @on-select="navToPluginView" :active-name="`${currentPlugin}-${currentFileName}`">
       <MenuGroup title="我的插件">
         <Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum == item.author">
           <template slot="title">
@@ -34,12 +34,19 @@
     name: 'MainMenu',
     data () {
       return {
-        allPlugins: []
+        allPlugins: [],
+        contentRouterViewLoader: this.$store.state.contentRouterViewLoader
       }
     },
     computed: {
       loginInfo () {
         return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+      },
+      currentPlugin () {
+        return this.$route.params.pluginName
+      },
+      currentFileName () {
+        return this.$route.params.fileName
       }
     },
     async created () {
@@ -70,6 +77,7 @@
         return _otherPlugins
       },
       navToPluginView (e) {
+        this.$store.state.loaders[this.contentRouterViewLoader].show()
         this.$router.replace(`/plugin/${e.split('-')[0]}/${e.split('-')[1]}`)
       }
     },
