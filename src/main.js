@@ -46,6 +46,7 @@ router.beforeEach((to, from, next) => {
         router.replace('/login')
       }
     } else {
+      console.log('>>>>>', _localUserInfo)
       if (_state.needlessLogin.indexOf(to.name) > -1) {
         router.replace('/')
       }

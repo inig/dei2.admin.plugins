@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '../components/Home.vue'
 import Login from '../components/Login.vue'
 import NotFound from '../components/404.vue'
-import Plugins from '../components/Plugins.vue'
-import Plugin from '../components/Plugin.vue'
-import MainContent from '../components/MainContent.vue'
+import Plugins from '../components/developer/Plugins.vue'
+import Plugin from '../components/developer/Plugin.vue'
+import MainContent from '../components/developer/MainContent.vue'
 import Register from '../components/Register.vue'
-import PersonalCenter from '../components/PersonalCenter.vue'
+import PersonalCenter from '../components/developer/PersonalCenter.vue'
+
+import Home from '../components/Home.vue'
 
 Vue.use(Router)
 

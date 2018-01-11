@@ -31,8 +31,8 @@
 }
 </style>
 <script>
-  import * as types from '../store/mutation-types'
-  import utils from '../utils'
+  import * as types from '../../store/mutation-types'
+  import utils from '../../utils/index'
   export default {
     name: 'MainMenu',
     data () {

@@ -171,8 +171,8 @@
   }
 </style>
 <script>
-  import utils from '../utils/index'
-  import * as types from '../store/mutation-types'
+  import utils from '../../utils/index'
+  import * as types from '../../store/mutation-types'
   import jwt from 'jsonwebtoken'
   export default {
     name: 'PersonalCenter',
