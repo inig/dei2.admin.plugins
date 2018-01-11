@@ -208,5 +208,32 @@ export const actions = {
     } else {
       error(userData)
     }
+  },
+  // 修改密码
+  async [types.MODIFY_PASSWORD] ({commit, state}, data) {
+    let callback = noop
+    let error = noop
+    if (data.callback) {
+      callback = data.callback
+      delete data.callback
+    }
+    if (data.error) {
+      error = data.error
+      delete data.error
+    }
+    let userData = await instance({
+      method: 'post',
+      baseURL: state.requestInfo.baseUrl,
+      url: state.requestInfo.modifyPassword,
+      data: querystring.stringify(data)
+    })
+    if (userData.config) {
+      delete userData.config
+    }
+    if (userData.status === 200) {
+      callback(userData.data)
+    } else {
+      error(userData)
+    }
   }
 }

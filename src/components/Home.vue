@@ -299,7 +299,7 @@
         return outPlugin
       },
       navToUserSet (e) {
-        this.$router.replace(`/${e}`)
+        this.$router.push(`/${e}`)
       }
     },
     components: {

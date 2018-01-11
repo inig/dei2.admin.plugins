@@ -66,6 +66,7 @@ const store = new Vuex.Store({
       baseUrl: 'https://talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
+      modifyPassword: '/Zpm/user/modifyPassword',
       listPlugins: '/Zpm/plugin/list',
       viewFile: '/Zpm/plugin/content',
       getUserInfo: '/Zpm/user/getUserInfo',

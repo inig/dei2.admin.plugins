@@ -54,6 +54,9 @@ export const LOGIN = 'LOGIN'
 // 注册
 export const REGISTER = 'REGISTER'
 
+// 修改密码
+export const MODIFY_PASSWORD = 'MODIFY_PASSWORD'
+
 // 获取插件列表
 export const LIST_PLUGINS = 'LIST_PLUGINS'
 
