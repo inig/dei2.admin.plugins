@@ -39,8 +39,8 @@
             <p class="user_info_item modify_password" @click="showModifyPassword">修改密码</p>
           </FormItem>
           <FormItem>
-            <Button class="personal_center_cancel_btn" @click="cancelUpdataUserInfo" type="ghost" size="large">取消</Button>
-            <Button class="personal_center_sure_btn" @click="updataUserInfo" type="primary" size="large">确定</Button>
+            <Button class="personal_center_cancel_btn" @click="cancelUpdateUserInfo" type="ghost" size="large">取消</Button>
+            <Button class="personal_center_sure_btn" @click="updateUserInfo" type="primary" size="large">确定</Button>
           </FormItem>
         </Form>
       </div>
@@ -110,8 +110,7 @@
     display: flex;
     justify-content: center;
   }
-
-  .personal_center_edit_content, .personal_center_preview_content{
+  .personal_center_content{
     width: 800px;
     height: 100%;
     border: 1px solid #eee;
@@ -262,7 +261,7 @@
         if (this.userInfo.gender) {
           return Number(this.userInfo.gender) === 1 ? '男' : '女'
         } else {
-          return '那你是啥？'
+          return ''
         }
       }
     },
@@ -337,10 +336,10 @@
           }
         })
       },
-      cancelUpdataUserInfo () {
+      cancelUpdateUserInfo () {
         this.editStatus = false
       },
-      async updataUserInfo () {
+      async updateUserInfo () {
         const that = this
         if (!that._checkToken()) {
           that.$Message.error('登录过期，请重新登录!')
