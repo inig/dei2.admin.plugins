@@ -69,7 +69,7 @@
   import * as types from '../../store/mutation-types'
   import utils from '../../utils/index'
   export default {
-    name: 'Plugins',
+    name: 'Plugin',
     data () {
       return {
         editor: {},

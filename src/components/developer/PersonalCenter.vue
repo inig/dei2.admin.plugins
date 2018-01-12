@@ -175,7 +175,7 @@
   import * as types from '../../store/mutation-types'
   import jwt from 'jsonwebtoken'
   export default {
-    name: 'PersonalCenter',
+    name: 'personal',
     data () {
       const valideRePassword = (rule, value, callback) => {
         if (value !== this.modifyPasswordForm.newPass) {

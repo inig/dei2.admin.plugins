@@ -5,7 +5,7 @@
         <app-side-menu></app-side-menu>
       </Col>
       <Col :span="spanRight">
-
+        <app-main-content></app-main-content>
       </Col>
     </Row>
   </div>
@@ -39,7 +39,8 @@
       }
     },
     components: {
-      AppSideMenu: () => import('./AppSideMenu.vue')
+      AppSideMenu: () => import('./AppSideMenu.vue'),
+      AppMainContent: () => import('./AppMainContent.vue')
     }
   }
 </script>

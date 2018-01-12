@@ -1,13 +1,10 @@
 <template>
     <div class="root_side_menu_container">
         <Menu theme="dark" width="auto">
-            <Submenu name="user">
-                <template slot="title">
-                    <Icon type="ios-people"></Icon>
-                    用户管理
-                </template>
-            </Submenu>
-            <MenuGroup title="用户管理"></MenuGroup>
+            <MenuItem name="user">
+                <Icon type="ios-people"></Icon>
+                用户管理
+            </MenuItem>
         </Menu>
     </div>
 </template>
