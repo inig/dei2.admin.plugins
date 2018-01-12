@@ -187,13 +187,13 @@
           callback()
         }
       }
-      /* const valideNewPassword = (rule, value, callback) => {
-        if (value !== this.modifyPasswordForm.oldPass) {
+      const valideNewPassword = (rule, value, callback) => {
+        if (value === this.modifyPasswordForm.oldPass) {
           callback(new Error('新密码不能和原密码一致'))
         } else {
           callback()
         }
-      } */
+      }
       return {
         eventHub: this.$store.state.eventHub,
         events: this.$store.state.events,
@@ -204,24 +204,24 @@
         assets: this.$store.state.assets,
         localUserData: {},
         userInfo: {
-          username: 'wq',
-          nickname: 'www',
-          email: 'test@email.com',
-          phonenum: '15634839020',
+          username: '',
+          nickname: '',
+          email: '',
+          phonenum: '',
           headIcon: '',
           birthday: '',
           gender: 1,
-          website: 'http://plugins.admin.dei2.com'
+          website: ''
         },
         cacheUserInfo: {
-          username: 'wq',
-          nickname: 'www',
-          email: 'test@email.com',
-          phonenum: '15634839020',
+          username: '',
+          nickname: '',
+          email: '',
+          phonenum: '',
           headIcon: '',
           birthday: '',
           gender: 1,
-          website: 'http://plugins.admin.dei2.com'
+          website: ''
         },
         modifyPasswordModal: false,
         savePassLoading: false,
@@ -236,8 +236,8 @@
           ],
           newPass: [
             { required: true, message: '请输入新密码', trigger: 'blur' },
-            { min: 6, message: '请至少输入6个字符', trigger: 'blur' }
-            /* { validator: valideNewPassword, trigger: 'blur' } */
+            { min: 6, message: '请至少输入6个字符', trigger: 'blur' },
+            { validator: valideNewPassword, trigger: 'blur' }
           ],
           rePass: [
             { required: true, message: '请再次输入新密码', trigger: 'blur' },
@@ -305,19 +305,23 @@
       },
       birthdayChange (date) {
         this.userInfo.birthday = +new Date(date)
-        console.log(this.userInfo.birthday)
         this.$Message.info(`birthday已修改为${date}`)
       },
       async getUserInfo () {
         const that = this
         if (!that._checkToken()) {
           that.$Message.error('登录过期，请重新登录!')
+          that.$router.replace('/login')
           return false
         }
         await global.store.dispatch(types.GET_USER_INFO, {
           token: that.localUserData.token,
           phonenum: that.localUserData.phonenum,
           callback (res) {
+            if (res.data.needLogin) {
+              that.$router.replace('/login')
+              return false
+            }
             if (res.status === 200) {
               let userDate = res.data
               for (const key in that.userInfo) {
@@ -340,6 +344,7 @@
         const that = this
         if (!that._checkToken()) {
           that.$Message.error('登录过期，请重新登录!')
+          that.$router.replace('/login')
           return false
         }
         await global.store.dispatch(types.UPDATE_USER_INFO,
@@ -347,7 +352,10 @@
             token: that.localUserData.token,
             phonenum: that.localUserData.phonenum,
             callback (res) {
-              console.log('更新：', res)
+              if (res.data.needLogin) {
+                that.$router.replace('/login')
+                return false
+              }
               if (res.status === 200) {
                 let userDate = res.data
                 // 更新个人信息后存储本地
@@ -372,6 +380,7 @@
       },
       cancelModifyPass () {
         this.modifyPasswordModal = false
+        this.savePassLoading = true
       },
       saveModifyPass () {
         const that = this

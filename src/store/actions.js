@@ -139,7 +139,7 @@ export const actions = {
     return new Promise((resolve, reject) => {
       instance({
         method: 'post',
-        baseURL: 'http://127.0.0.1:3000', // state.requestInfo.baseUrl,
+        baseURL: state.requestInfo.baseUrl,
         url: state.requestInfo.updatePluginFileContent,
         data: querystring.stringify(data)
       }).then(updateData => {
