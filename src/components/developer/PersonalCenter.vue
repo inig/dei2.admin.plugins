@@ -6,7 +6,9 @@
     <div class="personal_center_container">
       <div v-if="editStatus" key="edit" class="personal_center_content personal_center_edit_content">
         <div class="user_avatar_wrap">
-          <img class="user_avatar" :src="userInfo.headIcon || (userInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)" alt="头像">
+          <upload-avatar width="80" height="80">
+            <img class="user_avatar" style="opacity: 1!important;" :src="cacheUserInfo.headIcon || (userInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)" alt="头像">
+          </upload-avatar>
         </div>
         <Form :ref="userInfoFormRef" class="personal_center_form" :model="cacheUserInfo" label-position="left" :label-width="80">
           <FormItem label="用户名">
@@ -174,6 +176,7 @@
   import utils from '../../utils/index'
   import * as types from '../../store/mutation-types'
   import jwt from 'jsonwebtoken'
+  import UploadAvatar from './UploadAvatar.vue'
   export default {
     name: 'PersonalCenter',
     data () {
@@ -192,6 +195,8 @@
         }
       } */
       return {
+        eventHub: this.$store.state.eventHub,
+        events: this.$store.state.events,
         editStatus: false,
         contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
         userInfoFormRef: 'personalCenter',
@@ -262,16 +267,18 @@
       }
     },
     created () {
-      this.$Message.config({
-        top: 50,
-        duration: 2.5
-      })
+      this.eventHub.$on(this.events.updateAvatar, this.updateAvatar)
       // 获取本地个人信息
       this.localUserData = utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
       // 获取数据库个人信息
       this.getUserInfo()
     },
     methods: {
+      updateAvatar (args) {
+        this.cacheUserInfo.headIcon = args.path
+        this.userInfo.headIcon = args.path
+        // utils.storage.setItem(this.$store.state.localStorageKeys.userInfo, this.userInfo)
+      },
       showModifyPassword () {
         this.modifyPasswordModal = true
         this.modifyPasswordForm = {
@@ -362,43 +369,6 @@
             }
           })
         )
-        /* that.$refs[that.userInfoFormRef].validate(async (valid) => {
-          console.log('表单数据：', that.userInfo)
-          if (valid) {
-            if (!that._checkToken()) {
-              that.$Message.error('登录过期，请重新登录!')
-              return false
-            }
-            await global.store.dispatch(types.UPDATE_USER_INFO,
-              Object.assign({}, that.cacheUserInfo, {
-                token: that.localUserData.token,
-                phonenum: that.localUserData.phonenum,
-                callback (res) {
-                  console.log('更新：', res)
-                  if (res.status === 200) {
-                    let userDate = res.data
-                    // 更新个人信息后存储本地
-                    utils.storage.setItem(that.$store.state.localStorageKeys.userInfo, res.data)
-                    for (const key in that.userInfo) {
-                      if (userDate.hasOwnProperty(key)) {
-                        that.userInfo[key] = userDate[key]
-                      }
-                    }
-                    that.$Message.success('修改成功')
-                  } else {
-                    that.$Message.error('修改失败')
-                  }
-                },
-                error (err) {
-                  console.log(err)
-                  that.$Message.error('修改失败')
-                }
-              })
-            )
-          } else {
-            that.$Message.warning('请正确填写每一项')
-          }
-        }) */
       },
       cancelModifyPass () {
         this.modifyPasswordModal = false
@@ -434,8 +404,8 @@
         })
       }
     },
-    watch: {
-    },
-    components: {}
+    components: {
+      UploadAvatar
+    }
   }
 </script>

@@ -21,7 +21,7 @@
                     <!--</Button>-->
                     <Poptip trigger="click" placement="bottom-end" width="200" class="user-badge">
                         <Badge dot>
-                            <Avatar size="large" :src="loginInfo.headIcon || (loginInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)" class="user-avatar"></Avatar>
+                            <Avatar size="large" :src="newAvatar || loginInfo.headIcon || (loginInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)" class="user-avatar"></Avatar>
                         </Badge>
                         <div class="api" slot="content">
                             <Card :bordered="false" :padding="0">
@@ -264,6 +264,8 @@
     name: 'Home',
     data () {
       return {
+        eventHub: this.$store.state.eventHub,
+        events: this.$store.state.events,
         contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
         author: this.$store.state.author,
         appName: this.$store.state.appName,
@@ -277,7 +279,8 @@
         spanLeft: 6,
         spanRight: 18,
         currentPlugin: '',
-        currentFileName: ''
+        currentFileName: '',
+        newAvatar: ''
       }
     },
     computed: {
@@ -292,8 +295,12 @@
       }
     },
     created () {
+      this.eventHub.$on(this.events.updateAvatar, this.updateAvatar)
     },
     methods: {
+      updateAvatar (args) {
+        this.newAvatar = args.path
+      },
       toggleClick () {
         if (this.spanLeft === 6) {
           this.spanLeft = 2

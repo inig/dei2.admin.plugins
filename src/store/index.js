@@ -57,13 +57,15 @@ const store = new Vuex.Store({
     eventHub: new Vue(),
     events: {
       updatePluginFileContent: 'update-plugin-file-content', // 更新插件内容
-      updatePluginList: 'update-plugin-list' // 更新我的插件列表
+      updatePluginList: 'update-plugin-list', // 更新我的插件列表
+      updateAvatar: 'update-avatat' // 更新我的头像
     },
     assets: {
       maleAvatar: 'static/images/avatar_male_1.jpg',
       femaleAvatar: 'static/images/avatar_female_1.jpg'
     },
     requestInfo: {
+      // baseUrl: 'http://127.0.0.1:3000',
       baseUrl: 'https://talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
