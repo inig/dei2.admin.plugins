@@ -2,7 +2,7 @@
   <div class="app_content">
     <Row type="flex" class="h100p">
       <Col :span="spanLeft">
-        <side-menu></side-menu>
+        <app-side-menu></app-side-menu>
       </Col>
       <Col :span="spanRight">
 
@@ -39,7 +39,7 @@
       }
     },
     components: {
-      SideMenu: () => import('./AppSideMenu.vue')
+      AppSideMenu: () => import('./AppSideMenu.vue')
     }
   }
 </script>

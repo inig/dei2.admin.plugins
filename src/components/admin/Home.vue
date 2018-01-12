@@ -1,16 +1,13 @@
 <template>
   <div class="admin_container">
     <app-header></app-header>
+    <app-content></app-content>
   </div>
 </template>
 <style>
   .admin_container {
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
   }
 </style>
 <script>
@@ -19,7 +16,8 @@
       return {}
     },
     components: {
-      AppHeader: () => import('../AppHeader.vue')
+      AppHeader: () => import('../AppHeader.vue'),
+      AppContent: () => import('../AppContent.vue')
     }
   }
 </script>
