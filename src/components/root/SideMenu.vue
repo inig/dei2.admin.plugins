@@ -1,7 +1,7 @@
 <template>
     <div class="root_side_menu_container">
-        <Menu theme="dark" width="auto">
-            <MenuItem name="user">
+        <Menu theme="dark" width="auto" :active-name="activeName" @on-select="navToPage">
+            <MenuItem name="Users">
                 <Icon type="ios-people"></Icon>
                 用户管理
             </MenuItem>
@@ -20,6 +20,16 @@
     name: 'SideMenu',
     data () {
       return {
+      }
+    },
+    computed: {
+      activeName () {
+        return this.$route.name || ''
+      }
+    },
+    methods: {
+      navToPage (evt) {
+        this.$router.replace(evt)
       }
     },
     components: {}

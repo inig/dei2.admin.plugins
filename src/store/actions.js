@@ -139,7 +139,7 @@ export const actions = {
     return new Promise((resolve, reject) => {
       instance({
         method: 'post',
-        baseURL: 'http://127.0.0.1:3000', // state.requestInfo.baseUrl,
+        baseURL: state.requestInfo.baseUrl,
         url: state.requestInfo.updatePluginFileContent,
         data: querystring.stringify(data)
       }).then(updateData => {
@@ -256,5 +256,68 @@ export const actions = {
     } else {
       error(userData)
     }
+  },
+  async [types.LIST_USERS] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      instance({
+        method: 'post',
+        baseURL: state.requestInfo.baseUrl,
+        url: state.requestInfo.listUsers,
+        data: querystring.stringify(data)
+      }).then(listData => {
+        if (listData.config) {
+          delete listData.config
+        }
+        if (listData.status === 200) {
+          resolve(listData.data)
+        } else {
+          reject(listData)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  async [types.UPDATE_USER_SETTINGS] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      instance({
+        method: 'post',
+        baseURL: state.requestInfo.baseUrl,
+        url: state.requestInfo.updateUserSettings,
+        data: querystring.stringify(data)
+      }).then(updateData => {
+        if (updateData.config) {
+          delete updateData.config
+        }
+        if (updateData.status === 200) {
+          resolve(updateData.data)
+        } else {
+          reject(updateData)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  async [types.DELETE_USER] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      instance({
+        method: 'post',
+        baseURL: state.requestInfo.baseUrl,
+        url: state.requestInfo.deleteUser,
+        data: querystring.stringify(data)
+      }).then(deleteData => {
+        if (deleteData.config) {
+          delete deleteData.config
+        }
+        if (deleteData.status === 200) {
+          resolve(deleteData.data)
+        } else {
+          reject(deleteData)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }

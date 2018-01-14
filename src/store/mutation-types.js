@@ -60,6 +60,15 @@ export const MODIFY_PASSWORD = 'MODIFY_PASSWORD'
 // 获取插件列表
 export const LIST_PLUGINS = 'LIST_PLUGINS'
 
+// 查询用户列表
+export const LIST_USERS = 'LIST_USERS'
+
+// 更改用户设置
+export const UPDATE_USER_SETTINGS = 'UPDATE_USER_SETTINGS'
+
+// 删除用户
+export const DELETE_USER = 'DELETE_USER'
+
 // 预览文件内容
 export const VIEW_FILE = 'VIEW_FILE'
 
