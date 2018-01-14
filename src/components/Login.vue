@@ -115,9 +115,17 @@
               callback (res) {
                 if (Number(res.status) === 200) {
                   // 登录成功
-                  that.$Message.success('登录成功!')
-                  that.$router.replace('/')
-                  utils.storage.setItem(that.$store.state.localStorageKeys.userInfo, res.data)
+                  if (res.data.status === 1) {
+                    that.$Message.success('登录成功!')
+                    that.$router.replace('/')
+                    utils.storage.setItem(that.$store.state.localStorageKeys.userInfo, res.data)
+                  } else {
+                    utils.storage.removeItem(that.$store.state.localStorageKeys.userInfo)
+                    that.$Notice.error({
+                      title: '登录错误',
+                      desc: '您的账号已经被锁定，请联系管理员'
+                    })
+                  }
                 } else {
                   that.$Message.error('登录失败：' + res.message)
                 }

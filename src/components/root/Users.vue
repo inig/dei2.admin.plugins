@@ -26,7 +26,7 @@
         </Form>
       </div>
       <div class="root_user_list_table">
-        <Table border :columns="userKeys" :data="users" stripe="true"></Table>
+        <Table border :columns="userKeys" :data="users" :stripe="true"></Table>
         <div class="root_user_pages_container">
           <Page :total="totalCounts" size="small"
                 :page-size="currentPage.size"
