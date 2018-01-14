@@ -359,8 +359,8 @@
         if (deleteUserData.status === 200) {
           // 删除成功
           await this.getUserListByPage({
-            index: this.currentPage.index,
-            size: this.currentPage.size
+            pageIndex: this.currentPage.index,
+            pageSize: this.currentPage.size
           })
           this.$Message.success('删除成功')
         } else {

@@ -45,7 +45,8 @@
       }
     },
     components: {
-      RootMainContent: () => import('./root/MainContent.vue')
+      RootMainContent: () => import('./root/MainContent.vue'),
+      AdminMainContent: () => import('./admin/MainContent.vue')
     }
   }
 </script>

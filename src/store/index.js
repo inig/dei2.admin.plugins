@@ -69,7 +69,10 @@ const store = new Vuex.Store({
       register: '/Zpm/user/register',
       modifyPassword: '/Zpm/user/modifyPassword',
       listUsers: 'Zpm/user/list',
+      listAllPlugins: 'Zpm/plugin/listAll', // 插件列表，用于root、admin插件管理
       updateUserSettings: 'Zpm/user/updateUserSettings',
+      updatePluginSettings: 'Zpm/plugin/updatePluginSettings', // 审核插件
+      deletePlugin: 'Zpm/plugin/deletePlugin',
       deleteUser: 'Zpm/user/deleteUser',
       listPlugins: '/Zpm/plugin/list',
       viewFile: '/Zpm/plugin/content',

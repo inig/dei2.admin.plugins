@@ -35,13 +35,10 @@ router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   const _state = router.app.$options.store.state
   let _localUserInfo = utils.storage.getItem(_state.localStorageKeys.userInfo)
-  console.log('...', to, _localUserInfo, (String(to.meta.role) !== String(_localUserInfo.role)))
-
   if (to.meta && to.meta.title) {
     utils.kit.title(to.meta.title)
   }
-
-  if (to.meta && to.meta.role && String(to.meta.role) !== String(_localUserInfo.role)) {
+  if (to.meta && to.meta.role && to.meta.role.indexOf(_localUserInfo.role) < 0) {
     next({
       replace: true,
       name: 'NotFound'

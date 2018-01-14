@@ -319,5 +319,68 @@ export const actions = {
         reject(err)
       })
     })
+  },
+  async [types.LIST_ALL_PLUGINS] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      instance({
+        method: 'post',
+        baseURL: state.requestInfo.baseUrl,
+        url: state.requestInfo.listAllPlugins,
+        data: querystring.stringify(data)
+      }).then(listData => {
+        if (listData.config) {
+          delete listData.config
+        }
+        if (listData.status === 200) {
+          resolve(listData.data)
+        } else {
+          reject(listData)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  async [types.UPDATE_PLUGIN_SETTINGS] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      instance({
+        method: 'post',
+        baseURL: state.requestInfo.baseUrl,
+        url: state.requestInfo.updatePluginSettings,
+        data: querystring.stringify(data)
+      }).then(updateData => {
+        if (updateData.config) {
+          delete updateData.config
+        }
+        if (updateData.status === 200) {
+          resolve(updateData.data)
+        } else {
+          reject(updateData)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  async [types.DELETE_PLUGIN] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      instance({
+        method: 'post',
+        baseURL: state.requestInfo.baseUrl,
+        url: state.requestInfo.deletePlugin,
+        data: querystring.stringify(data)
+      }).then(deleteData => {
+        if (deleteData.config) {
+          delete deleteData.config
+        }
+        if (deleteData.status === 200) {
+          resolve(deleteData.data)
+        } else {
+          reject(deleteData)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }

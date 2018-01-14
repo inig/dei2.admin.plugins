@@ -45,7 +45,8 @@
       }
     },
     components: {
-      RootSideMenu: () => import('./root/SideMenu.vue')
+      RootSideMenu: () => import('./root/SideMenu.vue'),
+      AdminSideMenu: () => import('./admin/SideMenu.vue')
     }
   }
 </script>

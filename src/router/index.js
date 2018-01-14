@@ -85,11 +85,22 @@ export const contentRouter = {
       path: '/users',
       name: 'Users',
       meta: {
-        role: 1,
+        role: [1],
         title: '用户列表'
       },
       components: {
         ContentRouter: () => import('../components/root/Users.vue')
+      }
+    },
+    {
+      path: '/plugins',
+      name: 'Plugins',
+      meta: {
+        role: [1, 2],
+        title: '插件管理'
+      },
+      components: {
+        ContentRouter: () => import('../components/admin/Plugins.vue')
       }
     }
   ]
