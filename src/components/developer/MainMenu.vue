@@ -5,6 +5,7 @@
           <template slot="title">
             <Icon type="ios-paper"></Icon>
             {{item.name}}
+            <span class="plugin_status_tag" :class="{'reject': (item.status === 0 || item.status === 2), 'inreview': (item.status === 1), 'passed': (item.status === 3)}">{{item.status | formatStatus}}</span>
           </template>
           <MenuItem v-for="(itm, idx) in item.children" :key="idx" :name="item.name + '-' + itm">
             {{itm}}
@@ -12,7 +13,7 @@
         </Submenu>
       </MenuGroup>
       <MenuGroup title="别人家的插件" style="border-top: 1px solid rgba(30, 36, 50, 0.1);">
-        <Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum != item.author">
+        <Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum != item.author && item.status === 3">
           <template slot="title">
             <Icon type="ios-paper"></Icon>
             {{item.name}}
@@ -29,6 +30,23 @@
   /*top: 60px;*/
   /*overflow: auto;*/
 }
+  .plugin_status_tag {
+    position: absolute;
+    right: 50px;
+    display: inline-block;
+    padding: 0 5px;
+    font-size: 10px;
+    border-radius: 3px;
+  }
+  .plugin_status_tag.inreview {
+    background-color: #ff9900;
+  }
+  .plugin_status_tag.passed {
+    background-color: #19be6b;
+  }
+  .plugin_status_tag.reject {
+    background-color: #ed3f14;
+  }
 </style>
 <script>
   import * as types from '../../store/mutation-types'
@@ -92,6 +110,31 @@
         this.$store.commit(types.SET_ALL_PLUGINS, {
           allPlugins: this.allPlugins
         })
+      }
+    },
+    filters: {
+      formatStatus: function (value) {
+        let outText = ''
+        switch (String(value)) {
+          case '0':
+            // 不可用
+            outText = '不可用'
+            break
+          case '1':
+            // 已经提交审核
+            outText = '审核中'
+            break
+          case '2':
+            // 已拒绝
+            outText = '已拒绝'
+            break
+          case '3':
+            outText = '已通过'
+            break
+          default:
+            break
+        }
+        return outText
       }
     },
     components: {}
