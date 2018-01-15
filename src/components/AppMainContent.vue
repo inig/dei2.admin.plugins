@@ -1,19 +1,19 @@
 <template>
-  <div class="app_side_menu_container">
-    <component :is="currentSideMenu"></component>
+  <div class="app_main_content_container">
+    <component :is="currentMainContent"></component>
   </div>
 </template>
 <style scoped>
-  .app_side_menu_container {
+  .app_main_content_container {
     width: 100%;
     height: 100%;
-    background-color: #464c5b;
+    background-color: transparent;
   }
 </style>
 <script>
   import utils from '../utils'
   export default {
-    name: 'AppSideMenu',
+    name: 'AppMainContent',
     data () {
       return {
       }
@@ -22,31 +22,31 @@
       loginInfo () {
         return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
       },
-      currentSideMenu () {
+      currentMainContent () {
         let _role = this.loginInfo.role
-        let _currentSideMenu = ''
+        let _currentMainContent = ''
         switch (_role) {
           case 1:
-            _currentSideMenu = 'RootSideMenu'
+            _currentMainContent = 'RootMainContent'
             break
           case 2:
-            _currentSideMenu = 'AdminSideMenu'
+            _currentMainContent = 'AdminMainContent'
             break
           case 3:
-            _currentSideMenu = 'DeveloperSideMenu'
+            _currentMainContent = 'DeveloperMainContent'
             break
           case 4:
-            _currentSideMenu = 'UserSideMenu'
+            _currentMainContent = 'UserMainContent'
             break
           default:
             break
         }
-        return _currentSideMenu
+        return _currentMainContent
       }
     },
     components: {
-      RootSideMenu: () => import('./root/SideMenu.vue'),
-      AdminSideMenu: () => import('./admin/SideMenu.vue')
+      RootMainContent: () => import('./root/MainContent.vue'),
+      AdminMainContent: () => import('./admin/MainContent.vue')
     }
   }
 </script>

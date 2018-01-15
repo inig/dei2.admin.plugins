@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import { sync } from 'vuex-router-sync'
-import router from './router'
+import router from './router/index'
 import store from './store'
 import * as filters from './filters'
 import mixins from './mixins'
@@ -32,27 +32,44 @@ Vue.mixin(mixins)
 Vue.use(iView)
 
 router.beforeEach((to, from, next) => {
+  iView.LoadingBar.start()
   const _state = router.app.$options.store.state
   let _localUserInfo = utils.storage.getItem(_state.localStorageKeys.userInfo)
-  if (utils.isEmptyObj(_localUserInfo)) {
-    if (_state.needlessLogin.indexOf(to.name) === -1) {
-      router.replace('/login')
-    }
+  if (to.meta && to.meta.title) {
+    utils.kit.title(to.meta.title)
+  }
+  if (to.meta && to.meta.role && to.meta.role.indexOf(_localUserInfo.role) < 0) {
+    next({
+      replace: true,
+      name: 'NotFound'
+    })
   } else {
-    if ((new Date()).getTime() - _localUserInfo.loginDate > _state.loginInfo.expireTime) {
-      // 登录信息已经过期，需要重新登录
+    if (utils.isEmptyObj(_localUserInfo)) {
       if (_state.needlessLogin.indexOf(to.name) === -1) {
-        router.app.$Message.info('登录信息已经过期，请重新登录')
-        router.replace('/login')
+        next({
+          replace: true,
+          name: 'Login'
+        })
       }
     } else {
-      console.log('>>>>>', _localUserInfo)
-      if (_state.needlessLogin.indexOf(to.name) > -1) {
-        router.replace('/')
+      if ((new Date()).getTime() - _localUserInfo.loginDate > _state.loginInfo.expireTime) {
+        // 登录信息已经过期，需要重新登录
+        if (_state.needlessLogin.indexOf(to.name) === -1) {
+          router.app.$Message.info('登录信息已经过期，请重新登录')
+          router.replace('/Login')
+        }
+      } else {
+        if (_state.needlessLogin.indexOf(to.name) > -1) {
+          router.replace('/')
+        }
       }
     }
+    next()
   }
-  next()
+})
+
+router.afterEach(to => {
+  iView.LoadingBar.finish()
 })
 
 /* eslint-disable no-new */

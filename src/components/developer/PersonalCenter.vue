@@ -177,7 +177,7 @@
   import jwt from 'jsonwebtoken'
   import UploadAvatar from './UploadAvatar.vue'
   export default {
-    name: 'PersonalCenter',
+    name: 'personal',
     data () {
       const valideRePassword = (rule, value, callback) => {
         if (value !== this.modifyPasswordForm.newPass) {

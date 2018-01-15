@@ -8,6 +8,7 @@
       </Col>
       <Col :span="spanRight">
         <div class="layout-header">
+          <div class="user_role" v-text="currentRole"></div>
           <Poptip trigger="click" placement="bottom-end" width="200" class="user-badge">
             <Badge dot>
               <Avatar size="large" :src="loginInfo.headIcon || (loginInfo.gender == 1 ? assets.maleAvatar : assets.femaleAvatar)" class="user-avatar"></Avatar>
@@ -72,6 +73,10 @@
     background-color: #87d068;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
+  .user_role {
+    position: absolute;
+    right: 80px;
+  }
   .layout-logo-left {
     width: 100%;
     height: 60px;
@@ -110,6 +115,27 @@
     computed: {
       loginInfo () {
         return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+      },
+      currentRole () {
+        let _role = this.loginInfo.role
+        let _currentRole = ''
+        switch (_role) {
+          case 1:
+            _currentRole = '超级管理员'
+            break
+          case 2:
+            _currentRole = '管理员'
+            break
+          case 3:
+            _currentRole = '开发者'
+            break
+          case 4:
+            _currentRole = '用户'
+            break
+          default:
+            break
+        }
+        return _currentRole
       }
     },
     methods: {

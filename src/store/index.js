@@ -70,6 +70,12 @@ const store = new Vuex.Store({
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
       modifyPassword: '/Zpm/user/modifyPassword',
+      listUsers: 'Zpm/user/list',
+      listAllPlugins: 'Zpm/plugin/listAll', // 插件列表，用于root、admin插件管理
+      updateUserSettings: 'Zpm/user/updateUserSettings',
+      updatePluginSettings: 'Zpm/plugin/updatePluginSettings', // 审核插件
+      deletePlugin: 'Zpm/plugin/deletePlugin',
+      deleteUser: 'Zpm/user/deleteUser',
       listPlugins: '/Zpm/plugin/list',
       viewFile: '/Zpm/plugin/content',
       updatePluginFileContent: '/Zpm/plugin/update',
@@ -85,6 +91,24 @@ const store = new Vuex.Store({
     homeRouterViewLoader: 'home-router-view-loader',
     loadingType: 'ball-triangle-path', // loading样式
     allPlugins: [],
+    allRoles: [
+      {
+        value: 1,
+        name: '超级管理员'
+      },
+      {
+        value: 2,
+        name: '管理员'
+      },
+      {
+        value: 3,
+        name: '开发者'
+      },
+      {
+        value: 4,
+        name: '普通用户'
+      }
+    ],
     needlessLogin: ['Login', 'Register', 'Forget'] // 不需要登录的页面
   }
 })

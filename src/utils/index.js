@@ -44,7 +44,13 @@ const _isEmptyObj = function (obj) {
   return !0
 }
 
+let kit = {}
+kit.title = function (title) {
+  window.document.title = (title || '智愚')
+}
+
 export default {
   storage: _storage,
-  isEmptyObj: _isEmptyObj
+  isEmptyObj: _isEmptyObj,
+  kit: kit
 }
