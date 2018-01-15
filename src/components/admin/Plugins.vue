@@ -114,11 +114,23 @@
 <script>
   import * as types from '../../store/mutation-types'
   import utils from '../../utils'
+  import TableExpand from './TableExpand.vue'
   export default {
     name: 'plugins',
     data () {
       return {
         pluginKeys: [
+          {
+            type: 'expand',
+            width: 50,
+            render: (h, params) => {
+              return h(TableExpand, {
+                props: {
+                  row: params.row
+                }
+              })
+            }
+          },
           {
             title: '插件名',
             key: 'name'
@@ -334,6 +346,8 @@
         })
       }
     },
-    components: {}
+    components: {
+      TableExpand
+    }
   }
 </script>
