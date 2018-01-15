@@ -51,11 +51,13 @@ const store = new Vuex.Store({
     password: '123123',
     appName: 'ZPM_PLUGINS后台管理系统2',
     shortAppName: 'ZPM_PLUGINS',
+    socket: {},
     localStorageKeys: {
       userInfo: 'user-info'
     },
     eventHub: new Vue(),
     events: {
+      getNewMessage: 'get-new-message', // 获取到新消息
       updatePluginFileContent: 'update-plugin-file-content', // 更新插件内容
       updatePluginList: 'update-plugin-list', // 更新我的插件列表
       updateAvatar: 'update-avatat' // 更新我的头像
@@ -80,7 +82,10 @@ const store = new Vuex.Store({
       viewFile: '/Zpm/plugin/content',
       updatePluginFileContent: '/Zpm/plugin/update',
       getUserInfo: '/Zpm/user/getUserInfo',
-      updateUserInfo: '/Zpm/user/updateUserInfo'
+      updateUserInfo: '/Zpm/user/updateUserInfo',
+      queryUsers: '/Zpm/user/queryUsers', // 查询用户列表，模糊查询。不需要管理员权限
+      saveMessage: '/Zpm/message/save', // 保存消息
+      readMessage: '/Zpm/message/read' // 将消息置为已读
     },
     loginInfo: {
       expireTime: 24 * 60 * 60 * 1000, // 登录失效时间

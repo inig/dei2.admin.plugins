@@ -1,31 +1,101 @@
 <template>
-    <div class="main_content_container">
-        <!--<iframe src="http://open.iqiyi.com/developer/player_js/coopPlayerIndex.html?vid=5f28e8e45cccae190d01d2c6d4752189&tvId=6284373009&accessToken=2.f22860a2479ad60d8da7697274de9346&appKey=3955c3425820435e86d0f4cdfe56f5e7&appId=1368&height=100%&width=100%" frameborder="0" allowfullscreen="true" width="100%" height="100%"></iframe>-->
-        <!--<video class="main_content_video" :src="resourceUrl" autoplay controls></video>-->
+  <div class="developer_main_content_container">
+    <div class="layout-content">
+      <transition
+        name="file-upload-transition"
+        enter-active-class="animated fadeIn"
+        leave-active-class="animated fadeOut"
+      >
+        <div class="file_uploader_container" v-if="showFileUploader">
+          <upload-file :height="100"></upload-file>
+        </div>
+      </transition>
+      <transition name="content-router-transition"
+                  enter-active-class="animated fadeIn"
+                  leave-active-class="animated fadeOut"
+      >
+        <keep-alive>
+          <router-view class="content_router_view" :style="{height: showFileUploader ? 'calc(100% - 100px)' : '100%'}" name="ContentRouter"/>
+        </keep-alive>
+      </transition>
+      <loading class="layout-content-loader" :data-ref="contentRouterViewLoader"></loading>
     </div>
+  </div>
 </template>
 <style scoped>
-    .main_content_container {
-        width: 100%;
-        height: 100%;
-        background-color: #000000;
-    }
-    .main_content_video {
-        width: 100%;
-        height: 100%;
-    }
+  .developer_main_content_container {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+  }
+  .layout-content {
+    position: relative;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    margin: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .layout-content-loader {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.9);
+  }
 </style>
 <script>
+  import utils from '../../utils'
+  import UploadFile from './UploadFile.vue'
+  import UploadPlugin from './UploadPlugin.vue'
+  import Loading from '../Loading.vue'
   export default {
     name: 'MainContent',
     data () {
       return {
-//        resourceUrl: 'https://v.douyu.com/show/ByVmjvBJYQ6vqkNb'
-//        resourceUrl: 'http://godsong.bs2dl.yy.com/dmJkMmEyZTFlNmMyMzg3YzQ4YzcwMWFiNDY4YjBmMDgwMTc2MTMxNjIyOG1j'
-        resourceUrl: 'http://hc.yinyuetai.com/uploads/videos/common/11F7015986558CF69A397108877633A7.mp4?sc=b210a88d4bc6863b'
-//        resourceUrl: 'http://hd.yinyuetai.com/uploads/videos/common/147E015FEB4ADB9A9375BFDEAE157BC4.mp4?sc=501b5ed6b1566f67'
+        showFileUploader: false, // 是否显示文件上传控件
+        currentPlugin: '',
+        currentFileName: '',
+        contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
+        showDefaultContent: true
       }
     },
-    components: {}
+    computed: {
+      loginInfo () {
+        return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+      },
+      allPlugins () {
+        return this.$store.state.allPlugins
+      }
+    },
+    components: {
+      UploadFile,
+      UploadPlugin,
+      Loading
+    },
+    methods: {
+      findPluginInfoByName (pluginName) {
+        let outPlugin = {}
+        let allPlugins = this.allPlugins
+        let i = 0
+        for (i; i < allPlugins.length; i++) {
+          if (allPlugins[i].name === pluginName) {
+            outPlugin = allPlugins[i]
+            i = allPlugins.length
+          }
+        }
+        return outPlugin
+      }
+    },
+    watch: {
+      '$route': function (value) {
+        this.currentPlugin = value.params.pluginName
+        this.currentFileName = value.params.fileName
+        let pluginInfo = this.findPluginInfoByName(this.currentPlugin)
+        this.showFileUploader = (String(pluginInfo.author) === String(this.loginInfo.phonenum))
+      }
+    }
   }
 </script>

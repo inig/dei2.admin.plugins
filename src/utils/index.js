@@ -2,6 +2,13 @@
  * Created by liangshan on 2017/12/6.
  */
 
+function S4 () {
+  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
+}
+function getUUID () {
+  return (S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4())
+}
+
 const _getItem = function (name) {
   let _value = localStorage.getItem(name) || ''
   try {
@@ -52,5 +59,6 @@ kit.title = function (title) {
 export default {
   storage: _storage,
   isEmptyObj: _isEmptyObj,
+  getUUID: getUUID,
   kit: kit
 }

@@ -35,6 +35,7 @@
  */
 import * as types from './mutation-types'
 import axios from 'axios'
+import utils from '../utils'
 const querystring = require('querystring')
 const instance = axios.create({
   timeout: 3000
@@ -382,5 +383,76 @@ export const actions = {
         reject(err)
       })
     })
+  },
+  async [types.QUERY_USERS] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      instance({
+        method: 'post',
+        baseURL: state.requestInfo.baseUrl,
+        url: state.requestInfo.queryUsers,
+        data: querystring.stringify(data)
+      }).then(queryData => {
+        if (queryData.config) {
+          delete queryData.config
+        }
+        if (queryData.status === 200) {
+          resolve(queryData.data)
+        } else {
+          reject(queryData)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  async [types.SAVE_MESSAGE] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      data.uuid = utils.getUUID()
+      instance({
+        method: 'post',
+        baseURL: state.requestInfo.baseUrl,
+        url: state.requestInfo.saveMessage,
+        data: querystring.stringify(data)
+      }).then(saveData => {
+        if (saveData.config) {
+          delete saveData.config
+        }
+        if (saveData.status === 200) {
+          resolve(saveData.data)
+        } else {
+          reject(saveData)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  async [types.READ_MESSAGE] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      instance({
+        method: 'post',
+        baseURL: state.requestInfo.baseUrl,
+        url: state.requestInfo.readMessage,
+        data: querystring.stringify(data)
+      }).then(readData => {
+        if (readData.config) {
+          delete readData.config
+        }
+        if (readData.status === 200) {
+          resolve(readData.data)
+        } else {
+          reject(readData)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  [types.SEND_MESSAGE] ({commit, state}, data) {
+    let _data = JSON.parse(JSON.stringify(data))
+    Object.assign(_data.message, {
+      sendTime: (+new Date())
+    })
+    state.socket.emit('enkel-message', _data)
   }
 }
