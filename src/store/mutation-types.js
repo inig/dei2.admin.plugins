@@ -46,6 +46,9 @@ export const SET_LOADER = 'SET_LOADER'
 // 卸载loader
 export const DEL_LOADER = 'DEL_LOADER'
 
+// 挂载socket
+export const SET_SOCKET = 'SET_SOCKET'
+
 // >>>> actions:
 
 // 登录
@@ -89,3 +92,15 @@ export const UPDATE_USER_INFO = 'UPDATE_USER_INFO'
 
 // 获取用户信息
 export const GET_USER_INFO = 'GET_USER_INFO'
+
+// 发送消息
+export const SEND_MESSAGE = 'SEND_MESSAGE'
+
+// 保存消息
+export const SAVE_MESSAGE = 'SAVE_MESSAGE'
+
+// 消息置为已读
+export const READ_MESSAGE = 'READ_MESSAGE'
+
+// 查询用户列表，模糊查询。不需要管理员权限
+export const QUERY_USERS = 'QUERY_USERS'

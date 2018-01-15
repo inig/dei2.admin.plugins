@@ -52,5 +52,8 @@ export const mutations = {
     if (state.loaders[data.name]) {
       delete state.loaders[data.name]
     }
+  },
+  [types.SET_SOCKET] (state, data) {
+    state.socket = data.socket
   }
 }
