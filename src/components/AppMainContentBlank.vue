@@ -69,6 +69,7 @@
             role: -1
           },
           message: {
+            title: '新消息',
             value: ''
           }
         }
@@ -107,7 +108,10 @@
       }
     },
     created () {
-      this.eventHub.$on(this.events.getNewMessage, this.getNewMessage)
+      this.$nextTick(() => {
+        this.eventHub.$off(this.events.getNewMessage)
+        this.eventHub.$on(this.events.getNewMessage, this.getNewMessage)
+      })
     },
     methods: {
       chooseUser (evt) {
@@ -172,6 +176,12 @@
       },
       getNewMessage (evt) {
         console.log('.......获取到新消息：', evt)
+        if (String(evt.to.phonenum) === String(this.loginInfo.phonenum)) {
+          this.$Notice.success({
+            title: evt.message.title || `来自于 ${evt.from.username} 的消息`,
+            desc: evt.message.value
+          })
+        }
       }
     },
     components: {
