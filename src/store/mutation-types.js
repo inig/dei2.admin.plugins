@@ -104,3 +104,6 @@ export const READ_MESSAGE = 'READ_MESSAGE'
 
 // 查询用户列表，模糊查询。不需要管理员权限
 export const QUERY_USERS = 'QUERY_USERS'
+
+// 查询消息列表，不需要权限
+export const QUERY_MESSAGE = 'QUERY_MESSAGE'

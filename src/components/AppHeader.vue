@@ -8,6 +8,13 @@
       </Col>
       <Col :span="spanRight">
         <div class="layout-header">
+          <div class="layout-header-icon-container">
+            <div @click="navToMessage" class="message-icon">
+              <Badge :count="messageValue" class-name="message-count-badge">
+                <Icon type="ios-bell" :size="22"></Icon>
+              </Badge>
+            </div>
+          </div>
           <div class="user_role" v-text="currentRole"></div>
           <Poptip trigger="click" placement="bottom-end" width="200" class="user-badge">
             <Badge dot>
@@ -63,10 +70,32 @@
     box-shadow: 0 1px 1px rgba(0,0,0,.1);
     display: flex;
     align-items: center;
+    justify-content: flex-end;
+  }
+  .layout-header-icon-container {
+    height: 100%;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+  }
+  .message-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .message-icon .message-count-badge {
+    right: -6px;
   }
   .user-badge {
-    position: absolute;
-    right: 30px;
+    /* position: absolute;
+    right: 30px; */
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-right: 30px;
     cursor: pointer;
   }
   .user-avatar {
@@ -74,8 +103,12 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   .user_role {
-    position: absolute;
-    right: 80px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-right: 16px;
+    /* position: absolute;
+    right: 80px; */
   }
   .layout-logo-left {
     width: 100%;
@@ -109,7 +142,8 @@
         appName: this.$store.state.appName,
         assets: this.$store.state.assets,
         spanLeft: 6,
-        spanRight: 18
+        spanRight: 18,
+        messageValue: 100
       }
     },
     computed: {
@@ -148,6 +182,9 @@
       },
       navToUserSet (e) {
         this.$router.push(`/${e}`)
+      },
+      navToMessage () {
+        this.$router.push(`/message`)
       }
     },
     components: {}

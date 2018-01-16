@@ -85,7 +85,8 @@ const store = new Vuex.Store({
       updateUserInfo: '/Zpm/user/updateUserInfo',
       queryUsers: '/Zpm/user/queryUsers', // 查询用户列表，模糊查询。不需要管理员权限
       saveMessage: '/Zpm/message/save', // 保存消息
-      readMessage: '/Zpm/message/read' // 将消息置为已读
+      readMessage: '/Zpm/message/read', // 将消息置为已读
+      queryMessage: '/Zpm/message/list' // 查询消息列表
     },
     loginInfo: {
       expireTime: 24 * 60 * 60 * 1000, // 登录失效时间

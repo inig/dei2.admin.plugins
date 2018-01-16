@@ -102,6 +102,17 @@ export const contentRouter = {
       components: {
         ContentRouter: () => import('../components/admin/Plugins.vue')
       }
+    },
+    {
+      path: '/message',
+      name: 'Message',
+      meta: {
+        role: [1, 2, 3],
+        title: '消息管理'
+      },
+      components: {
+        ContentRouter: () => import('../components/AppMessage.vue')
+      }
     }
   ]
 }

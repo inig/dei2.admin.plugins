@@ -119,6 +119,7 @@ export const actions = {
     return new Promise((resolve, reject) => {
       instance({
         method: 'post',
+        // baseURL: 'https://talkapi.dei2.com',
         baseURL: state.requestInfo.baseUrl,
         url: state.requestInfo.viewFile,
         data: querystring.stringify(data)
@@ -454,5 +455,26 @@ export const actions = {
       sendTime: (+new Date())
     })
     state.socket.emit('enkel-message', _data)
+  },
+  async [types.QUERY_MESSAGE] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      instance({
+        method: 'post',
+        baseURL: state.requestInfo.baseUrl,
+        url: state.requestInfo.queryMessage,
+        data: querystring.stringify(data)
+      }).then(saveData => {
+        if (saveData.config) {
+          delete saveData.config
+        }
+        if (saveData.status === 200) {
+          resolve(saveData.data)
+        } else {
+          reject(saveData)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }
