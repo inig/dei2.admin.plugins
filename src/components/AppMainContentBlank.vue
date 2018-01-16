@@ -5,13 +5,13 @@
         <p slot="title">发消息</p>
         <Form :label-width="80">
           <FormItem label="发送给">
-            <Select v-model="formData.to.phonenum"
-                    filterable
+            <Select filterable
                     remote
                     :remote-method="getUsers"
                     :loading="getUserLoading"
+                    @on-change="chooseUser"
             >
-              <Option v-for="(item, index) in users" :key="index" :value="item.phonenum">{{item.username}}</Option>
+              <Option v-for="(item, index) in users" :key="index" :value="index">{{item.username}}</Option>
             </Select>
           </FormItem>
           <FormItem label="消息正文">
@@ -110,6 +110,34 @@
       this.eventHub.$on(this.events.getNewMessage, this.getNewMessage)
     },
     methods: {
+      chooseUser (evt) {
+        if (evt > -1) {
+          let chosenUser = this.users[Number(evt)]
+          this.formData.to = {
+            username: chosenUser.username,
+            phonenum: chosenUser.phonenum,
+            role: Number(chosenUser.role)
+          }
+        } else {
+          this.formData.to = {
+            username: '',
+            phonenum: '',
+            role: -1
+          }
+        }
+      },
+      findUserByPhonenum (phonenum) {
+        let i = 0
+        let outUser = {}
+        let users = JSON.parse(JSON.stringify(this.users))
+        for (i; i < users.length; i++) {
+          if (String(users[i].phonenum) === String(phonenum)) {
+            outUser = users[i]
+            i = users.length
+          }
+        }
+        return outUser
+      },
       async getUsers (query) {
         if (query !== '') {
           this.getUserLoading = true

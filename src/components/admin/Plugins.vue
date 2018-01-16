@@ -5,7 +5,7 @@
         <span class="root_plugin_list_title_text">插件管理</span>
         <Form class="root_plugin_list_filter_container" :label-width="70">
           <FormItem class="root_plugin_list_filter_item" label="插件名">
-            <Input v-model="filterConditions.name" placeholder="请输入用户名" @on-enter="filterConditionsChanged"/>
+            <Input v-model="filterConditions.name" placeholder="请输入插件名" @on-enter="filterConditionsChanged"/>
           </FormItem>
           <FormItem class="root_plugin_list_filter_item" label="作者">
             <Input v-model="filterConditions.author" placeholder="请输入手机号" @on-enter="filterConditionsChanged"/>
@@ -140,6 +140,20 @@
             key: 'author'
           },
           {
+            title: '上传时间',
+            key: 'createTime',
+            render: (h, params) => {
+              return h('span', this.formatTime(params.row.createTime))
+            }
+          },
+          {
+            title: '更新时间',
+            key: 'updateTime',
+            render: (h, params) => {
+              return h('span', this.formatTime(params.row.updateTime))
+            }
+          },
+          {
             title: '状态',
             key: 'status',
             render: (h, params) => {
@@ -247,6 +261,46 @@
       })
     },
     methods: {
+      formatTime (time) {
+        /**
+         * 刚刚     T <= 5 * 60 * 1000  (5分钟内)
+         * 5分钟之前 5 * 60 * 10 < T <= 10 * 60 * 1000 (5-10分钟)
+         * 10分钟之前 10 * 60 * 1000 < T <= 30 * 60 * 1000 (10-30分钟)
+         * 半小时之前 30 * 60 * 1000 < T <= 60 * 60 *1000 (30-60分钟)
+         * 1小时之前 60 * 60 * 1000 < T <= 2 * 60 * 60 * 1000 (1-2小时)
+         * 今天xx时xx分xx秒
+         * YYYY-MM-DD hh:mm:ss
+         */
+        let outText = ''
+        let _nowTs = +new Date()
+        let _targetTs = Number(time)
+        let _todayTs = new Date(new Date().toLocaleDateString()).getTime()
+        let date = new Date()
+        date.setTime(time)
+        let _year = date.getFullYear()
+        let _month = ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1))
+        let _day = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
+        let _hour = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours())
+        let _minute = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
+        let _second = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds())
+        if (_targetTs + 5 * 60 * 1000 >= _nowTs) {
+          outText = '刚刚'
+        } else if (_targetTs + 5 * 60 * 1000 < _nowTs && _targetTs + 10 * 60 * 1000 >= _nowTs) {
+          outText = '5分钟之前'
+        } else if (_targetTs + 10 * 60 * 1000 < _nowTs && _targetTs + 30 * 60 * 1000 >= _nowTs) {
+          outText = '10分钟之前'
+        } else if (_targetTs + 30 * 60 * 1000 < _nowTs && _targetTs + 60 * 60 * 1000 >= _nowTs) {
+          outText = '半小时之前'
+        } else if (_targetTs + 60 * 60 * 1000 < _nowTs && _targetTs + 2 * 60 * 60 * 1000 >= _nowTs) {
+          outText = '1小时之前'
+        } else if (_targetTs >= _todayTs) {
+          outText = `今天${_hour}:${_minute}:${_second}`
+        } else {
+          outText = `${_year}-${_month}-${_day} ${_hour}:${_minute}:${_second}`
+        }
+
+        return outText
+      },
       async getPluginList (args) {
         let _userList = await this.$store.dispatch(types.LIST_ALL_PLUGINS, Object.assign({}, {
           token: this.loginInfo.token,
