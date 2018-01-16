@@ -94,6 +94,7 @@ const store = new Vuex.Store({
     loaders: {}, // 页面中所有loader对象
     contentRouterViewLoader: 'content-router-view-loader',
     homeRouterViewLoader: 'home-router-view-loader',
+    previewLoader: 'preview-loader',
     loadingType: 'ball-triangle-path', // loading样式
     allPlugins: [],
     allRoles: [

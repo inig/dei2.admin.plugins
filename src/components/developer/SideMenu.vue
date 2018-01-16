@@ -135,7 +135,9 @@
         return _otherPlugins
       },
       navToPluginView (e) {
-        this.$store.state.loaders[this.contentRouterViewLoader].show()
+        try {
+          this.$store.state.loaders[this.contentRouterViewLoader].show()
+        } catch (err) {}
         this.$router.replace(`/plugin/${e.split('-')[0]}/${e.split('-')[1]}`)
 //        this.$router.replace({
 //          path: 'Plugin',

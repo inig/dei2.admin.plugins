@@ -56,8 +56,8 @@
     data () {
       return {
         showFileUploader: false, // 是否显示文件上传控件
-        currentPlugin: '',
-        currentFileName: '',
+//        currentPlugin: '',
+//        currentFileName: '',
         contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
         showDefaultContent: true
       }
@@ -89,11 +89,19 @@
         return outPlugin
       }
     },
+    created () {
+//      this.currentPlugin = this.$route.params.pluginName
+//      this.currentFileName = this.fileName
+      this.$nextTick(() => {
+        let pluginInfo = this.findPluginInfoByName(this.$route.params.pluginName)
+        this.showFileUploader = (String(pluginInfo.author) === String(this.loginInfo.phonenum))
+      })
+    },
     watch: {
       '$route': function (value) {
-        this.currentPlugin = value.params.pluginName
-        this.currentFileName = value.params.fileName
-        let pluginInfo = this.findPluginInfoByName(this.currentPlugin)
+//        this.currentPlugin = value.params.pluginName
+//        this.currentFileName = value.params.fileName
+        let pluginInfo = this.findPluginInfoByName(this.$route.params.pluginName)
         this.showFileUploader = (String(pluginInfo.author) === String(this.loginInfo.phonenum))
       }
     }
