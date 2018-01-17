@@ -268,7 +268,7 @@
     created () {
       this.eventHub.$on(this.events.updateAvatar, this.updateAvatar)
       // 获取本地个人信息
-      this.localUserData = utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+      this.localUserData = this.$store.state.loginInfo
       // 获取数据库个人信息
       this.getUserInfo()
     },

@@ -118,7 +118,7 @@
 </style>
 <script>
   import * as types from '../../store/mutation-types'
-  import utils from '../../utils'
+  // import utils from '../../utils'
   export default {
     name: 'Users',
     data () {
@@ -260,12 +260,13 @@
           status: -1,
           targetPhonenum: '',
           username: ''
-        }
+        },
+        socketEvents: this.$store.state.socketEvents
       }
     },
     computed: {
       loginInfo () {
-        return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+        return this.$store.state.loginInfo
       }
     },
     async created () {
@@ -367,6 +368,7 @@
               role: this.currentUser.role
             },
             message: {
+              type: this.socketEvents.changeUserRole,
               data: this.currentUser,
               title: '账号权限变更',
               value: `您的账号权限变为【${this.getUserRoleText(this.currentUser.role)}】`

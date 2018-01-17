@@ -113,7 +113,7 @@
 </style>
 <script>
   import * as types from '../../store/mutation-types'
-  import utils from '../../utils'
+  // import utils from '../../utils'
   import TableExpand from './TableExpand.vue'
   export default {
     name: 'plugins',
@@ -247,12 +247,13 @@
           status: -1,
           author: '',
           name: ''
-        }
+        },
+        socketEvents: this.$store.state.socketEvents
       }
     },
     computed: {
       loginInfo () {
-        return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+        return this.$store.state.loginInfo
       }
     },
     async created () {
@@ -394,6 +395,7 @@
               role: -1
             },
             message: {
+              type: this.socketEvents.reviewPlugin,
               data: this.currentPlugin,
               title: '插件审核结果',
               value: `【${this.getStatusText(this.currentPlugin.status)}】\n${_remarks}\n${JSON.stringify(this.currentPlugin)}`

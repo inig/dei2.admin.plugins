@@ -5,7 +5,7 @@
 
 </style>
 <script>
-  import utils from '../utils'
+  // import utils from '../utils'
   import * as types from '../store/mutation-types'
   const io = require('socket.io-client')
   export default {
@@ -19,7 +19,7 @@
     },
     computed: {
       loginInfo () {
-        return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+        return this.$store.state.loginInfo
       },
       currentHome () {
         let _role = this.loginInfo.role
@@ -58,7 +58,7 @@
         this.$store.commit(types.SET_SOCKET, {
           socket: socket
         })
-        socket.on('enkel-message', this.handlerMessage)
+        socket.on(this.socket.event, this.handlerMessage)
       })
     },
     methods: {

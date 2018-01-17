@@ -47,7 +47,7 @@
   }
 </style>
 <script>
-  import utils from '../utils'
+  // import utils from '../utils'
   import * as types from '../store/mutation-types'
   export default {
     name: 'AppMainContentBlank',
@@ -77,7 +77,7 @@
     },
     computed: {
       loginInfo () {
-        let _loginInfo = utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+        let _loginInfo = this.$store.state.loginInfo
         this.formData.from = {
           username: _loginInfo.username,
           phonenum: _loginInfo.phonenum,

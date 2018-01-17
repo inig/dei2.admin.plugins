@@ -11,7 +11,7 @@
   }
 </style>
 <script>
-  import utils from '../utils'
+  // import utils from '../utils'
   export default {
     name: 'AppMainContent',
     data () {
@@ -21,7 +21,7 @@
     },
     computed: {
       loginInfo () {
-        return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+        return this.$store.state.loginInfo
       },
       currentMainContent () {
         let _role = this.loginInfo.role

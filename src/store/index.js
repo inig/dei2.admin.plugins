@@ -56,7 +56,13 @@ const store = new Vuex.Store({
       server: 'http://127.0.0.1',
       port: '3010',
       path: '/sk',
+      event: 'enkel-message',
       client: {}
+    },
+    socketEvents: {
+      changeUserRole: 'change-user-role',
+      reviewPlugin: 'review-plugin',
+      sendMessage: 'send-message'
     },
     localStorageKeys: {
       userInfo: 'user-info'
