@@ -18,6 +18,20 @@
             <Table ref="messageList" :columns="mesTitleColumns" :data="currentMesList" :no-data-text="messageType[currentMessageType].nodataText"></Table>
           </div>
         </transition>
+        <transition name="back-message-list">
+          <div v-if="!showMesTitleList" class="message-view-content">
+            <div class="message-view-content-top-bar">
+              <span class="mes-back-btn-con">
+                <Button type="text" @click="backMesTitleList"><Icon type="chevron-left"></Icon>&nbsp;&nbsp;返回</Button>
+              </span>
+              <h3 class="mes-title">{{ mes.title }}</h3>
+            </div>
+            <p class="mes-time-con"><Icon type="android-time"></Icon>&nbsp;&nbsp;{{ mes.time }}</p>
+            <div class="message-content-body">
+              <p class="message-content">{{ mes.desc }}</p>
+            </div>
+          </div>
+        </transition>
       </div>
     </div>
   </div>
@@ -51,21 +65,80 @@
   .app-message-mainlist .message-count-badge {
     right: -10px;
   }
-  .mes-current-type-btn-enter, .mes-current-type-btn-leave-to{
+  .mes-current-type-btn-enter, .mes-current-type-btn-leave-to {
     opacity: 0;
     width: 0;
   }
-  .mes-current-type-btn-enter-active, .mes-current-type-btn-leave-active{
+  .mes-current-type-btn-enter-active, .mes-current-type-btn-leave-active {
     transition: all .3s;
   }
-  .mes-current-type-btn-enter-to, .mes-current-type-btn-leave{
+  .mes-current-type-btn-enter-to, .mes-current-type-btn-leave {
     opacity: 1;
     width: 12px;
   }
   .app-message-content {
     flex: 1;
     background-color: #fff;
-    overflow: auto;
+    overflow: hidden;
+  }
+  .message-list-content, .message-view-content {
+    width: 100%;
+    height: 100%;
+  }
+  .view-message-enter, .view-message-leave-to {
+    opacity: 0;
+  }
+  .view-message-enter-active, .view-message-leave-active {
+    transition: all .5s;
+  }
+  .view-message-enter-to, .view-message-leave {
+    opacity: 1;
+  }
+  .back-message-list-enter, .back-message-list-leave-to{
+    opacity: 0;
+  }
+  .back-message-list-enter-active, .back-message-list-leave-active{
+    transition: all .5s;
+  }
+  .back-message-list-enter-to, .back-message-list-leave{
+    opacity: 1;
+  }
+  .message-view-content-top-bar {
+    width: 100%;
+    height: 40px;
+    background-color: #fff;
+    border-bottom: 1px solid #dedede;
+    position: relative;
+  }
+  .mes-back-btn-con {
+    position: absolute;
+    width: 70px;
+    height: 30px;
+    left: 0;
+    top: 5px;
+  }
+  .mes-title {
+    position: absolute;
+    top: 0;
+    right: 70px;
+    bottom: 0;
+    left: 70px;
+    line-height: 40px;
+    padding: 0 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+  .mes-time-con {
+    width: 100%;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #b7b7b5;
+  }
+  .message-content {
+    padding: 10px 20px;
   }
 </style>
 <script>
@@ -149,7 +222,7 @@
         mes: {
           title: '',
           time: '',
-          content: ''
+          desc: ''
         },
         mesTitleColumns: [
           {
@@ -164,7 +237,8 @@
                     this.showMesTitleList = false
                     this.mes.title = params.row.title
                     this.mes.time = this.formatDate(params.row.sendTime)
-                    // this.getContent(params.index)
+                    this.mes.desc = params.row.desc
+                    this.readMessage(params.row.uuid)
                   }
                 }
               }, params.row.title)
@@ -245,6 +319,15 @@
         this.messageType[this.currentMessageType].count = messageList.data.count || 0
         console.log(messageList)
       },
+      async readMessage (uuid) {
+        let data = await this.$store.dispatch(types.READ_MESSAGE, {
+          token: this.loginInfo.token,
+          phonenum: this.loginInfo.phonenum,
+          readTime: +new Date(),
+          uuid: uuid
+        })
+        console.log(data)
+      },
       formatDate (time) {
         let date = new Date()
         date.setTime(time)
@@ -255,6 +338,9 @@
         let minute = date.getMinutes()
         let second = date.getSeconds()
         return year + '/' + month + '/' + day + '  ' + hour + ':' + minute + ':' + second
+      },
+      backMesTitleList () {
+        this.showMesTitleList = true
       }
     }
   }
