@@ -54,6 +54,6 @@ export const mutations = {
     }
   },
   [types.SET_SOCKET] (state, data) {
-    state.socket = data.socket
+    state.socket.client = data.socket
   }
 }

@@ -117,8 +117,8 @@
                   // 登录成功
                   if (res.data.status === 1) {
                     that.$Message.success('登录成功!')
-                    that.$router.replace('/')
                     utils.storage.setItem(that.$store.state.localStorageKeys.userInfo, res.data)
+                    that.$router.replace('/')
                   } else {
                     utils.storage.removeItem(that.$store.state.localStorageKeys.userInfo)
                     that.$Notice.error({

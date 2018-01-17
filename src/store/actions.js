@@ -454,7 +454,7 @@ export const actions = {
     Object.assign(_data.message, {
       sendTime: (+new Date())
     })
-    state.socket.emit('enkel-message', _data)
+    state.socket.client.emit('enkel-message', _data)
   },
   async [types.QUERY_MESSAGE] ({commit, state}, data) {
     return new Promise((resolve, reject) => {
