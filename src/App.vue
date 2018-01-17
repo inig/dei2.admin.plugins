@@ -13,7 +13,8 @@
     data () {
       return {
         eventHub: this.$store.state.eventHub,
-        events: this.$store.state.events
+        events: this.$store.state.events,
+        socket: this.$store.state.socket
       }
     },
     computed: {
@@ -23,8 +24,8 @@
     },
     created () {
       this.$nextTick(() => {
-        const socket = io('http://127.0.0.1:3010', {
-          path: '/sk',
+        const socket = io(`${this.socket.server}:${this.socket.port}`, {
+          path: this.socket.path,
           query: {
             token: this.loginInfo.token,
             username: this.loginInfo.username,
