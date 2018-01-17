@@ -3,9 +3,9 @@
     <div class="app-message-wrap">
       <div class="app-message-mainlist">
         <div class="app-message-tab" v-for="(tab, index) in tabList" :key="index">
-          <Button @click="setCurrentMesType(tab.type)" size="large" long type="text">
+          <Button @click="getMesByType(tab.type)" size="large" long type="text">
             <transition name="mes-current-type-btn">
-              <Icon v-show="currentMessageType === tab.type" type="checkmark"></Icon>
+              <Icon v-show="currentMesType === tab.type" type="checkmark"></Icon>
             </transition>
             <span class="mes-type-btn-text">{{tab.text}}</span>
             <Badge class="message-count-badge-outer" class-name="message-count-badge" :count="messageType[tab.type].count"></Badge>
@@ -15,7 +15,21 @@
       <div class="app-message-content">
         <transition name="view-message">
           <div v-if="showMesTitleList" class="message-list-content">
-            <Table ref="messageList" :columns="mesTitleColumns" :data="currentMesList" :no-data-text="messageType[currentMessageType].nodataText"></Table>
+            <Table ref="messageList" :columns="mesTitleColumns" :data="messageType[currentMesType].mesData" :no-data-text="messageType[currentMesType].nodataText"></Table>
+            <div class="message-pages-container">
+              <Page
+                size="small"
+                :current="messageType[currentMesType].pageIndex"
+                :total="messageType[currentMesType].count"
+                :page-size="messageType[currentMesType].pageSize"
+                :page-size-opts="pageSizeOpts"
+                show-elevator
+                show-sizer
+                @on-change="changePage"
+                @on-page-size-change="changePageSize"
+                >
+              </Page>
+            </div>
           </div>
         </transition>
         <transition name="back-message-list">
@@ -84,6 +98,13 @@
   .message-list-content, .message-view-content {
     width: 100%;
     height: 100%;
+  }
+  .message-pages-container {
+    width: 100%;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .view-message-enter, .view-message-leave-to {
     opacity: 0;
@@ -198,7 +219,7 @@
             text: '回收站'
           }
         ],
-        messageType: {
+        /* messageType: {
           unread: {
             status: 1,
             nodataText: '暂无未读消息',
@@ -214,21 +235,40 @@
             nodataText: '回收站无消息',
             count: 0
           }
-        },
-        currentMessageType: 'unread',
+        }, */
+        currentMesType: 'unread',
         currentMessageCount: 0,
         currentMesList: [],
-        unread: {
-          pageIndex: 1,
-          pageSize: 2,
-          mesData: []
+        messageType: {
+          unread: {
+            clickFlag: false,
+            count: 0,
+            pageIndex: 1,
+            pageSize: 1,
+            mesData: [],
+            status: 1,
+            nodataText: '暂无未读消息'
+          },
+          hasread: {
+            clickFlag: false,
+            count: 0,
+            pageIndex: 1,
+            pageSize: 1,
+            mesData: [],
+            status: 2,
+            nodataText: '暂无已读消息'
+          },
+          recyclebin: {
+            clickFlag: false,
+            count: 0,
+            pageIndex: 1,
+            pageSize: 1,
+            mesData: [],
+            status: 0,
+            nodataText: '回收站无消息'
+          }
         },
-        unreadMesList: [],
-        hasreadMesList: [],
-        recyclebinList: [],
-        unreadCount: 0,
-        hasreadCount: 0,
-        recyclebinCount: 0,
+        pageSizeOpts: [1, 2, 3, 4],
         showMesTitleList: true,
         mes: {
           title: '',
@@ -286,11 +326,11 @@
             align: 'center',
             width: 100,
             render: (h, params) => {
-              if (this.currentMessageType === 'unread') {
+              if (this.currentMesType === 'unread') {
                 return h('div', [
                   markAsreadBtn(h, params)
                 ])
-              } else if (this.currentMessageType === 'hasread') {
+              } else if (this.currentMesType === 'hasread') {
                 return h('div', [
                   deleteMesBtn(h, params)
                 ])
@@ -306,7 +346,7 @@
     },
     created () {
       this.$nextTick(() => {
-        this.setCurrentMesType()
+        this.getMesByType(this.currentMesType)
       })
     },
     computed: {
@@ -315,21 +355,38 @@
       }
     },
     methods: {
-      async setCurrentMesType (type) {
-        if (this.currentMessageType === type) {
-          return false
-        }
-        this.currentMessageType = type || 'unread'
+      async getMesByPage (type) {
         let messageList = await this.$store.dispatch(types.QUERY_MESSAGE, {
           token: this.loginInfo.token,
           phonenum: this.loginInfo.phonenum,
           toPhonenum: this.loginInfo.phonenum,
-          status: this.messageType[this.currentMessageType].status
+          pageIndex: this.messageType[type].pageIndex,
+          pageSize: this.messageType[type].pageSize,
+          status: this.messageType[type].status
         })
-        this.currentMesList = messageList.data.list || []
-        // this.unreadMesList =
-        this.messageType[this.currentMessageType].count = messageList.data.count || 0
-        console.log(messageList)
+        return messageList
+      },
+      async getMesByType (type) {
+        this.currentMesType = type
+        if (!this.messageType[type].clickFlag) {
+          this.messageType[type].clickFlag = true
+          let messageList = await this.getMesByPage(type)
+          this.messageType[type].mesData = messageList.data.list || []
+          this.messageType[type].count = messageList.data.totalCounts || 0
+        }
+      },
+      async changePage (evt) {
+        this.messageType[this.currentMesType].pageIndex = evt
+        let messageList = await this.getMesByPage(this.currentMesType)
+        this.messageType[this.currentMesType].mesData = messageList.data.list || []
+        this.messageType[this.currentMesType].count = messageList.data.totalCounts || 0
+      },
+      async changePageSize (evt) {
+        this.messageType[this.currentMesType].pageSize = evt
+        this.messageType[this.currentMesType].pageIndex = 1
+        let messageList = await this.getMesByPage(this.currentMesType)
+        this.messageType[this.currentMesType].mesData = messageList.data.list || []
+        this.messageType[this.currentMesType].count = messageList.data.totalCounts || 0
       },
       async readMessage (uuid) {
         let data = await this.$store.dispatch(types.READ_MESSAGE, {
