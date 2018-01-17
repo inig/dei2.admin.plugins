@@ -321,6 +321,26 @@
       changeCurrentUserStatus (evt) {
         this.currentUser.status = (evt ? 1 : 0)
       },
+      getUserRoleText (role) {
+        let _roleText = ''
+        switch (String(role)) {
+          case '1':
+            _roleText = '超级管理员'
+            break
+          case '2':
+            _roleText = '管理员'
+            break
+          case '3':
+            _roleText = '开发者'
+            break
+          case '4':
+            _roleText = '普通用户'
+            break
+          default:
+            break
+        }
+        return _roleText
+      },
       async modifyUser () {
         /**
          * 修改用户的  状态 权限
@@ -335,6 +355,23 @@
         if (updateUserData.status === 200) {
           // 修改成功
           this.$Message.success('修改成功')
+          this.$store.dispatch(types.SEND_MESSAGE, {
+            from: {
+              phonenum: this.loginInfo.phonenum,
+              username: this.loginInfo.username,
+              role: this.loginInfo.role
+            },
+            to: {
+              phonenum: this.currentUser.phonenum,
+              username: this.currentUser.username,
+              role: this.currentUser.role
+            },
+            message: {
+              data: this.currentUser,
+              title: '账号权限变更',
+              value: `您的账号权限变为【${this.getUserRoleText(this.currentUser.role)}】`
+            }
+          })
           await this.getUserListByPage({
             pageIndex: this.currentPage.index,
             pageSize: this.currentPage.size

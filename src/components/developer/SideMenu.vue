@@ -108,12 +108,37 @@
     async created () {
       this.eventHub.$on(this.events.updatePluginList, await this.updatePluginList)
       await this.updatePluginList()
+      this.eventHub.$on(this.events.getNewMessage, this.getNewMessage)
 //      this.allPlugins = await this.getAllPlugins()
 //      this.$store.commit(types.SET_ALL_PLUGINS, {
 //        allPlugins: this.allPlugins
 //      })
     },
     methods: {
+      findPluginIndexByName (pluginName) {
+        let _allPlugins = JSON.parse(JSON.stringify(this.allPlugins))
+        let i = 0
+        let outIndex = -1
+        for (i; i < _allPlugins.length; i++) {
+          if (String(_allPlugins[i].name) === String(pluginName)) {
+            outIndex = i
+            i = _allPlugins.length
+          }
+        }
+        return outIndex
+      },
+      getNewMessage (args) {
+        let _newPluginInfo = JSON.parse(JSON.stringify(args.message.data))
+        let _pluginIndex = this.findPluginIndexByName(_newPluginInfo.name)
+        _newPluginInfo.children = [
+          'index.vue',
+          'package.json',
+          'README.md'
+        ]
+        if (_pluginIndex > -1) {
+          this.allPlugins.splice(_pluginIndex, 1, _newPluginInfo)
+        }
+      },
       async getAllPlugins () {
         let pluginData = await this.$store.dispatch(types.LIST_PLUGINS, {
           phonenum: this.loginInfo.phonenum,

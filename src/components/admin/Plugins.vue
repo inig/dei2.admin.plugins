@@ -394,8 +394,9 @@
               role: -1
             },
             message: {
+              data: this.currentPlugin,
               title: '插件审核结果',
-              value: `【${this.getStatusText(this.currentPlugin.status)}】\n${_remarks}`
+              value: `【${this.getStatusText(this.currentPlugin.status)}】\n${_remarks}\n${JSON.stringify(this.currentPlugin)}`
             }
           })
           await this.getPluginListByPage({
