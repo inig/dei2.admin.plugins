@@ -218,6 +218,17 @@
         currentMessageType: 'unread',
         currentMessageCount: 0,
         currentMesList: [],
+        unread: {
+          pageIndex: 1,
+          pageSize: 2,
+          mesData: []
+        },
+        unreadMesList: [],
+        hasreadMesList: [],
+        recyclebinList: [],
+        unreadCount: 0,
+        hasreadCount: 0,
+        recyclebinCount: 0,
         showMesTitleList: true,
         mes: {
           title: '',
@@ -316,6 +327,7 @@
           status: this.messageType[this.currentMessageType].status
         })
         this.currentMesList = messageList.data.list || []
+        // this.unreadMesList =
         this.messageType[this.currentMessageType].count = messageList.data.count || 0
         console.log(messageList)
       },
