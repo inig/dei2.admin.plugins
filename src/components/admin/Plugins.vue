@@ -342,6 +342,27 @@
         this.currentPluginIndex = Number(index)
         this.currentPlugin = JSON.parse(JSON.stringify(this.plugins[index]))
       },
+      getStatusText (status) {
+        let _status = Number(status)
+        let outText = ''
+        switch (_status) {
+          case 0:
+            outText = '不可用'
+            break
+          case 1:
+            outText = '审核中'
+            break
+          case 2:
+            outText = '已拒绝'
+            break
+          case 3:
+            outText = '已通过'
+            break
+          default:
+            break
+        }
+        return outText
+      },
       async modifyPlugin () {
         /**
          * 修改插件的 状态
@@ -361,6 +382,22 @@
         if (updatePluginData.status === 200) {
           // 修改成功
           this.$Message.success('修改成功')
+          this.$store.dispatch(types.SEND_MESSAGE, {
+            from: {
+              phonenum: this.loginInfo.phonenum,
+              username: this.loginInfo.username,
+              role: this.loginInfo.role
+            },
+            to: {
+              phonenum: this.currentPlugin.author,
+              username: '',
+              role: -1
+            },
+            message: {
+              title: '插件审核结果',
+              value: `【${this.getStatusText(this.currentPlugin.status)}】\n${_remarks}`
+            }
+          })
           await this.getPluginListByPage({
             pageIndex: this.currentPage.index,
             pageSize: this.currentPage.size

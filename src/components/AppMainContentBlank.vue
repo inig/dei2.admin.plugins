@@ -159,19 +159,19 @@
       },
       async sendMessage () {
         console.log('发送消息: ', this.formData)
-        let _formData = JSON.parse(JSON.stringify(this.formData))
-        _formData.token = this.loginInfo.token
-        _formData.phonenum = this.loginInfo.phonenum
-        if (_formData.from) {
-          _formData.from = JSON.stringify(_formData.from)
-        }
-        if (_formData.to) {
-          _formData.to = JSON.stringify(_formData.to)
-        }
-        if (_formData.message) {
-          _formData.message = JSON.stringify(_formData.message)
-        }
-        await this.$store.dispatch(types.SAVE_MESSAGE, _formData)
+//        let _formData = JSON.parse(JSON.stringify(this.formData))
+//        _formData.token = this.loginInfo.token
+//        _formData.phonenum = this.loginInfo.phonenum
+//        if (_formData.from) {
+//          _formData.from = JSON.stringify(_formData.from)
+//        }
+//        if (_formData.to) {
+//          _formData.to = JSON.stringify(_formData.to)
+//        }
+//        if (_formData.message) {
+//          _formData.message = JSON.stringify(_formData.message)
+//        }
+//        await this.$store.dispatch(types.SAVE_MESSAGE, _formData)
         this.$store.dispatch(types.SEND_MESSAGE, this.formData)
       },
       getNewMessage (evt) {

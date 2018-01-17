@@ -52,8 +52,8 @@ const store = new Vuex.Store({
     appName: 'ZPM_PLUGINS后台管理系统2',
     shortAppName: 'ZPM_PLUGINS',
     socket: {
-      server: 'http://wss.dei2.com',
-      // server: 'http://123.57.148.237',
+      // server: 'http://wss.dei2.com',
+      server: 'http://127.0.0.1',
       port: '3010',
       path: '/sk',
       client: {}
@@ -95,8 +95,6 @@ const store = new Vuex.Store({
       queryMessage: '/Zpm/message/list' // 查询消息列表
     },
     loginInfo: {
-      expireTime: 24 * 60 * 60 * 1000, // 登录失效时间
-      data: {}
     },
     loaders: {}, // 页面中所有loader对象
     contentRouterViewLoader: 'content-router-view-loader',
