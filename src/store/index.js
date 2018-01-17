@@ -52,7 +52,8 @@ const store = new Vuex.Store({
     appName: 'ZPM_PLUGINS后台管理系统2',
     shortAppName: 'ZPM_PLUGINS',
     socket: {
-      server: 'https://talkapi.dei2.com',
+      server: 'http://wss.dei2.com',
+      // server: 'http://123.57.148.237',
       port: '3010',
       path: '/sk',
       client: {}
