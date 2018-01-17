@@ -6,10 +6,16 @@
 </style>
 <script>
   import utils from '../utils'
+  import * as types from '../store/mutation-types'
+  const io = require('socket.io-client')
   export default {
     name: 'Home',
     data () {
-      return {}
+      return {
+        eventHub: this.$store.state.eventHub,
+        events: this.$store.state.events,
+        socket: this.$store.state.socket
+      }
     },
     computed: {
       loginInfo () {
@@ -35,6 +41,29 @@
             break
         }
         return _currentHome
+      }
+    },
+    created () {
+      this.$nextTick(() => {
+        const socket = io(`${this.socket.server}:${this.socket.port}`, {
+          path: this.socket.path,
+          query: {
+            token: this.loginInfo.token,
+            username: this.loginInfo.username,
+            phonenum: this.loginInfo.phonenum,
+            role: this.loginInfo.role
+          },
+          transports: ['websocket']
+        })
+        this.$store.commit(types.SET_SOCKET, {
+          socket: socket
+        })
+        socket.on('enkel-message', this.handlerMessage)
+      })
+    },
+    methods: {
+      handlerMessage (evt) {
+        this.eventHub.$emit(this.events.getNewMessage, evt)
       }
     },
     components: {

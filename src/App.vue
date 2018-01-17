@@ -5,54 +5,16 @@
 </template>
 
 <script>
-  import * as types from './store/mutation-types'
   import utils from './utils'
-  const io = require('socket.io-client')
   export default {
     name: 'app',
     data () {
       return {
-        eventHub: this.$store.state.eventHub,
-        events: this.$store.state.events,
-        socket: this.$store.state.socket
       }
     },
     computed: {
       loginInfo () {
         return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
-      }
-    },
-    created () {
-      this.$nextTick(() => {
-        const socket = io(`${this.socket.server}:${this.socket.port}`, {
-          path: this.socket.path,
-          query: {
-            token: this.loginInfo.token,
-            username: this.loginInfo.username,
-            phonenum: this.loginInfo.phonenum,
-            role: this.loginInfo.role
-          },
-          transports: ['websocket']
-        })
-        this.$store.commit(types.SET_SOCKET, {
-          socket: socket
-        })
-//        socket.emit('enkel-message', {
-//          to: {
-//            role: 3,
-//            username: 'wq',
-//            phonenum: '18000000001'
-//          },
-//          message: {
-//            value: 'Hello ' + Math.random()
-//          }
-//        })
-        socket.on('enkel-message', this.handlerMessage)
-      })
-    },
-    methods: {
-      handlerMessage (evt) {
-        this.eventHub.$emit(this.events.getNewMessage, evt)
       }
     }
   }
