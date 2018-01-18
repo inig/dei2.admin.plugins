@@ -37,7 +37,7 @@
     }
 </style>
 <script>
-  import utils from '../../utils/index'
+  // import utils from '../../utils/index'
   export default {
     name: 'UploadFile',
     props: ['width', 'height'],
@@ -55,7 +55,7 @@
     },
     computed: {
       loginInfo () {
-        return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+        return this.$store.state.loginInfo
       },
       fileSuffix () {
         return '.' + this.currentFileName.split('.').pop()

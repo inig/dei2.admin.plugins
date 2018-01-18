@@ -52,17 +52,7 @@ router.beforeEach((to, from, next) => {
         })
       }
     } else {
-      if ((new Date()).getTime() - _localUserInfo.loginDate > _state.loginInfo.expireTime) {
-        // 登录信息已经过期，需要重新登录
-        if (_state.needlessLogin.indexOf(to.name) === -1) {
-          router.app.$Message.info('登录信息已经过期，请重新登录')
-          router.replace('/Login')
-        }
-      } else {
-        if (_state.needlessLogin.indexOf(to.name) > -1) {
-          router.replace('/')
-        }
-      }
+      _state.loginInfo = _localUserInfo
     }
     next()
   }

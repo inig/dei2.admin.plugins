@@ -47,7 +47,7 @@
   }
 </style>
 <script>
-  import utils from '../../utils'
+  // import utils from '../../utils'
   import UploadFile from './UploadFile.vue'
   import UploadPlugin from './UploadPlugin.vue'
   import Loading from '../Loading.vue'
@@ -64,7 +64,7 @@
     },
     computed: {
       loginInfo () {
-        return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+        return this.$store.state.loginInfo
       },
       allPlugins () {
         return this.$store.state.allPlugins

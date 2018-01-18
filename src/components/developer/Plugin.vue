@@ -67,7 +67,7 @@
 </style>
 <script>
   import * as types from '../../store/mutation-types'
-  import utils from '../../utils/index'
+  // import utils from '../../utils/index'
   export default {
     name: 'Plugin',
     data () {
@@ -117,7 +117,7 @@
     },
     computed: {
       loginInfo () {
-        return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+        return this.$store.state.loginInfo
       },
       allPlugins () {
         return this.$store.state.allPlugins

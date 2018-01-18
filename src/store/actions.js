@@ -449,11 +449,25 @@ export const actions = {
       })
     })
   },
-  [types.SEND_MESSAGE] ({commit, state}, data) {
+  async [types.SEND_MESSAGE] ({commit, state}, data) {
     let _data = JSON.parse(JSON.stringify(data))
     Object.assign(_data.message, {
       sendTime: (+new Date())
     })
+    let _formData = JSON.parse(JSON.stringify(_data))
+    _formData.token = state.loginInfo.token
+    _formData.phonenum = state.loginInfo.phonenum
+    if (_formData.from) {
+      _formData.from = JSON.stringify(_formData.from)
+    }
+    if (_formData.to) {
+      _formData.to = JSON.stringify(_formData.to)
+    }
+    if (_formData.message) {
+      _formData.message = JSON.stringify(_formData.message)
+    }
+    console.log('.>>>>>>发送消息：', this)
+    await this.dispatch(types.SAVE_MESSAGE, _formData)
     state.socket.client.emit('enkel-message', _data)
   },
   async [types.QUERY_MESSAGE] ({commit, state}, data) {
