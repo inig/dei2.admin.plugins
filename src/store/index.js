@@ -98,7 +98,8 @@ const store = new Vuex.Store({
       queryUsers: '/Zpm/user/queryUsers', // 查询用户列表，模糊查询。不需要管理员权限
       saveMessage: '/Zpm/message/save', // 保存消息
       readMessage: '/Zpm/message/read', // 将消息置为已读
-      queryMessage: '/Zpm/message/list' // 查询消息列表
+      queryMessage: '/Zpm/message/list', // 查询消息列表
+      countMessage: 'Zpm/message/count' // 查询消息的总条数
     },
     loginInfo: {
     },

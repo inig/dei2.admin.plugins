@@ -74,7 +74,8 @@
           keyMap: 'sublime',
           readOnly: true
         },
-        fullHeight: 0
+        fullHeight: 0,
+        requestInfo: this.$store.state.requestInfo
       }
     },
     created () {
@@ -108,9 +109,12 @@
         }, 800)
       },
       async getFileContent (args) {
-        let fileContent = await this.$store.dispatch(types.VIEW_FILE, {
-          plugin: args.plugin,
-          filename: args.filename
+        let fileContent = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.viewFile,
+          data: {
+            plugin: args.plugin,
+            filename: args.filename
+          }
         })
         return fileContent
       },

@@ -248,7 +248,8 @@
           author: '',
           name: ''
         },
-        socketEvents: this.$store.state.socketEvents
+        socketEvents: this.$store.state.socketEvents,
+        requestInfo: this.$store.state.requestInfo
       }
     },
     computed: {
@@ -303,10 +304,10 @@
         return outText
       },
       async getPluginList (args) {
-        let _userList = await this.$store.dispatch(types.LIST_ALL_PLUGINS, Object.assign({}, {
-          token: this.loginInfo.token,
-          phonenum: this.loginInfo.phonenum
-        }, args))
+        let _userList = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.listAllPlugins,
+          data: args
+        })
         this.totalCounts = _userList.data.totalCounts
         return _userList ? _userList.data.list : []
       },
@@ -373,22 +374,18 @@
           _remarks = ''
         }
         this.currentPlugin.remarks = _remarks
-        let updatePluginData = await this.$store.dispatch(types.UPDATE_PLUGIN_SETTINGS, {
-          token: this.loginInfo.token,
-          phonenum: this.loginInfo.phonenum,
-          name: this.currentPlugin.name,
-          status: Number(this.currentPlugin.status),
-          remarks: _remarks
+        let updatePluginData = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.updatePluginSettings,
+          data: {
+            name: this.currentPlugin.name,
+            status: Number(this.currentPlugin.status),
+            remarks: _remarks
+          }
         })
         if (updatePluginData.status === 200) {
           // 修改成功
           this.$Message.success('修改成功')
           this.$store.dispatch(types.SEND_MESSAGE, {
-            from: {
-              phonenum: this.loginInfo.phonenum,
-              username: this.loginInfo.username,
-              role: this.loginInfo.role
-            },
             to: {
               phonenum: this.currentPlugin.author,
               username: '',
@@ -417,10 +414,11 @@
         /**
          * 删除用户
          */
-        let deletePluginData = await this.$store.dispatch(types.DELETE_PLUGIN, {
-          token: this.loginInfo.token,
-          phonenum: this.loginInfo.phonenum,
-          name: this.plugins[this.deletePluginIndex].name
+        let deletePluginData = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.deletePlugin,
+          data: {
+            name: this.plugins[this.deletePluginIndex].name
+          }
         })
         if (deletePluginData.status === 200) {
           // 删除成功

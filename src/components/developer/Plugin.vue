@@ -80,6 +80,7 @@
         fileContent: '',
         eventHub: this.$store.state.eventHub,
         events: this.$store.state.events,
+        requestInfo: this.$store.state.requestInfo,
         enableSave: true,
         enableDownload: true,
         isMyPlugin: false,
@@ -144,9 +145,12 @@
     },
     methods: {
       async getFileContent (args) {
-        let fileContent = await this.$store.dispatch(types.VIEW_FILE, {
-          plugin: args.plugin,
-          filename: args.filename
+        let fileContent = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.viewFile,
+          data: {
+            plugin: args.plugin,
+            filename: args.filename
+          }
         })
         return fileContent
       },
@@ -231,12 +235,13 @@
       async saveFile () {
         let _newFileContent = this.editor.doc.getValue()
         try {
-          let updateFileContent = await this.$store.dispatch(types.UPDATE_PLUGIN_FILE_CONTENT, {
-            token: this.loginInfo.token,
-            phonenum: this.loginInfo.phonenum,
-            plugin: this.currentPlugin,
-            filename: this.currentFileName,
-            content: _newFileContent
+          let updateFileContent = await this.$store.dispatch(types.AJAX, {
+            url: this.requestInfo.updatePluginFileContent,
+            data: {
+              plugin: this.currentPlugin,
+              filename: this.currentFileName,
+              content: _newFileContent
+            }
           })
           if (Number(updateFileContent.status) === 200) {
             this.$Message.success(updateFileContent.message)

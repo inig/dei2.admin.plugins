@@ -93,7 +93,8 @@
         eventHub: this.$store.state.eventHub,
         events: this.$store.state.events,
         socketEvents: this.$store.state.socketEvents,
-        socket: this.$store.state.socket
+        socket: this.$store.state.socket,
+        requestInfo: this.$store.state.requestInfo
       }
     },
     computed: {
@@ -158,10 +159,11 @@
         }
       },
       async getAllPlugins () {
-        let pluginData = await this.$store.dispatch(types.LIST_PLUGINS, {
-          phonenum: this.loginInfo.phonenum,
-          token: this.loginInfo.token,
-          type: 'all'
+        let pluginData = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.listPlugins,
+          data: {
+            type: 'all'
+          }
         })
         let _otherPlugins = []
         if (Number(pluginData.status) === 200) {

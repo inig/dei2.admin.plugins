@@ -58,7 +58,8 @@
         allPlugins: [],
         contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
         eventHub: this.$store.state.eventHub,
-        events: this.$store.state.events
+        events: this.$store.state.events,
+        requestInfo: this.$store.state.requestInfo
       }
     },
     computed: {
@@ -82,10 +83,11 @@
     },
     methods: {
       async getAllPlugins () {
-        let pluginData = await this.$store.dispatch(types.LIST_PLUGINS, {
-          phonenum: this.loginInfo.phonenum,
-          token: this.loginInfo.token,
-          type: 'all'
+        let pluginData = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.listPlugins,
+          data: {
+            type: 'all'
+          }
         })
         let _otherPlugins = []
         if (Number(pluginData.status) === 200) {
