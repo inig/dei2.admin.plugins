@@ -289,7 +289,9 @@
                     this.mes.title = params.row.title
                     this.mes.time = this.formatDate(params.row.sendTime)
                     this.mes.desc = params.row.desc
-                    this.readMessage(params.row.uuid)
+                    if (this.messageType[this.currentMesType].status === 1) {
+                      this.readMessage(params.row.uuid)
+                    }
                   }
                 }
               }, params.row.title)
@@ -368,6 +370,7 @@
       },
       async getMesByType (type) {
         this.currentMesType = type
+        this.showMesTitleList = true
         if (!this.messageType[type].clickFlag) {
           this.messageType[type].clickFlag = true
           let messageList = await this.getMesByPage(type)
