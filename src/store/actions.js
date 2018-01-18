@@ -468,7 +468,7 @@ export const actions = {
     }
     console.log('.>>>>>>发送消息：', this)
     await this.dispatch(types.SAVE_MESSAGE, _formData)
-    state.socket.client.emit('enkel-message', _data)
+    state.socket.client.emit(state.socket.event, _data)
   },
   async [types.QUERY_MESSAGE] ({commit, state}, data) {
     return new Promise((resolve, reject) => {

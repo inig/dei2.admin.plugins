@@ -179,7 +179,7 @@
     },
     created () {
       this.$nextTick(() => {
-        this.socket.client.off(this.socket.event)
+//        this.socket.client.off(this.socket.event)
         this.socket.client.on(this.socket.event, this.getNewMessage)
       })
     },

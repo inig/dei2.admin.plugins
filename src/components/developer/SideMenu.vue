@@ -111,7 +111,7 @@
       this.eventHub.$on(this.events.updatePluginList, await this.updatePluginList)
       await this.updatePluginList()
       this.$nextTick(() => {
-        this.socket.client.off(this.socket.event)
+//        this.socket.client.off(this.socket.event)
         this.socket.client.on(this.socket.event, this.getNewMessage)
       })
     },
