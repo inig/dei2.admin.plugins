@@ -113,9 +113,9 @@
   .personal_center_content{
     width: 800px;
     height: 100%;
-    border: 1px solid #eee;
-    border-radius: 4px;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
+    /*border: 1px solid #eee;*/
+    /*border-radius: 4px;*/
+    /*box-shadow: 0 1px 6px rgba(0, 0, 0, .2);*/
     overflow: auto;
   }
   .personal_center_preview_content {
