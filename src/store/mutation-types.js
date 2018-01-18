@@ -99,8 +99,8 @@ export const SEND_MESSAGE = 'SEND_MESSAGE'
 // 保存消息
 export const SAVE_MESSAGE = 'SAVE_MESSAGE'
 
-// 消息置为已读
-export const READ_MESSAGE = 'READ_MESSAGE'
+// 更新消息状态
+export const UPDATE_MESSAGE = 'UPDATE_MESSAGE'
 
 // 查询用户列表，模糊查询。不需要管理员权限
 export const QUERY_USERS = 'QUERY_USERS'

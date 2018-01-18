@@ -174,7 +174,11 @@
           },
           on: {
             click: () => {
-
+              this.updateMesHandleFn({
+                type: 'hasread',
+                status: 2,
+                uuid: params.row.uuid
+              })
             }
           }
         }, '标为已读')
@@ -187,7 +191,11 @@
           },
           on: {
             click: () => {
-
+              this.updateMesHandleFn({
+                type: 'recyclebin',
+                status: 0,
+                uuid: params.row.uuid
+              })
             }
           }
         }, '删除')
@@ -199,7 +207,11 @@
           },
           on: {
             click: () => {
-
+              this.updateMesHandleFn({
+                type: 'hasread',
+                status: 2,
+                uuid: params.row.uuid
+              })
             }
           }
         }, '还原')
@@ -219,23 +231,6 @@
             text: '回收站'
           }
         ],
-        /* messageType: {
-          unread: {
-            status: 1,
-            nodataText: '暂无未读消息',
-            count: 0
-          },
-          hasread: {
-            status: 2,
-            nodataText: '暂无已读消息',
-            count: 0
-          },
-          recyclebin: {
-            status: 0,
-            nodataText: '回收站无消息',
-            count: 0
-          }
-        }, */
         currentMesType: 'unread',
         currentMessageCount: 0,
         currentMesList: [],
@@ -244,7 +239,7 @@
             clickFlag: false,
             count: 0,
             pageIndex: 1,
-            pageSize: 1,
+            pageSize: 3,
             mesData: [],
             status: 1,
             nodataText: '暂无未读消息'
@@ -253,7 +248,7 @@
             clickFlag: false,
             count: 0,
             pageIndex: 1,
-            pageSize: 1,
+            pageSize: 3,
             mesData: [],
             status: 2,
             nodataText: '暂无已读消息'
@@ -262,7 +257,7 @@
             clickFlag: false,
             count: 0,
             pageIndex: 1,
-            pageSize: 1,
+            pageSize: 3,
             mesData: [],
             status: 0,
             nodataText: '回收站无消息'
@@ -289,8 +284,13 @@
                     this.mes.title = params.row.title
                     this.mes.time = this.formatDate(params.row.sendTime)
                     this.mes.desc = params.row.desc
+                    // 类型为"未读消息"时，调用接口
                     if (this.messageType[this.currentMesType].status === 1) {
-                      this.readMessage(params.row.uuid)
+                      this.updateMesHandleFn({
+                        type: 'hasread',
+                        status: 2,
+                        uuid: params.row.uuid
+                      })
                     }
                   }
                 }
@@ -303,6 +303,17 @@
             align: 'center',
             width: 180,
             render: (h, params) => {
+              let time = ''
+              switch (this.currentMesType) {
+                case 'unread': time = params.row.sendTime
+                  break
+                case 'hasread': time = params.row.readTime
+                  break
+                case 'recyclebin': time = params.row.readTime
+                  break
+                default: time = params.row.sendTime
+                  break
+              }
               return h('span', [
                 h('Icon', {
                   props: {
@@ -318,7 +329,7 @@
                     type: 'android-time',
                     size: 12
                   }
-                }, this.formatDate(params.row.sendTime))
+                }, this.formatDate(time))
               ])
             }
           },
@@ -366,53 +377,70 @@
           pageSize: this.messageType[type].pageSize,
           status: this.messageType[type].status
         })
-        return messageList
+        this.messageType[type].mesData = messageList.data.list || []
+        this.messageType[type].count = messageList.data.totalCounts || 0
       },
       async getMesByType (type) {
         this.currentMesType = type
         this.showMesTitleList = true
-        if (!this.messageType[type].clickFlag) {
-          this.messageType[type].clickFlag = true
-          let messageList = await this.getMesByPage(type)
-          this.messageType[type].mesData = messageList.data.list || []
-          this.messageType[type].count = messageList.data.totalCounts || 0
+        if (!this.messageType[this.currentMesType].clickFlag) {
+          this.messageType[this.currentMesType].clickFlag = true
+          await this.getMesByPage(this.currentMesType)
         }
       },
       async changePage (evt) {
         this.messageType[this.currentMesType].pageIndex = evt
-        let messageList = await this.getMesByPage(this.currentMesType)
-        this.messageType[this.currentMesType].mesData = messageList.data.list || []
-        this.messageType[this.currentMesType].count = messageList.data.totalCounts || 0
+        await this.getMesByPage(this.currentMesType)
       },
       async changePageSize (evt) {
         this.messageType[this.currentMesType].pageSize = evt
         this.messageType[this.currentMesType].pageIndex = 1
-        let messageList = await this.getMesByPage(this.currentMesType)
-        this.messageType[this.currentMesType].mesData = messageList.data.list || []
-        this.messageType[this.currentMesType].count = messageList.data.totalCounts || 0
-      },
-      async readMessage (uuid) {
-        let data = await this.$store.dispatch(types.READ_MESSAGE, {
-          token: this.loginInfo.token,
-          phonenum: this.loginInfo.phonenum,
-          readTime: +new Date(),
-          uuid: uuid
-        })
-        console.log(data)
+        await this.getMesByPage(this.currentMesType)
       },
       formatDate (time) {
+        console.log(time)
         let date = new Date()
         date.setTime(time)
-        let year = date.getFullYear()
-        let month = date.getMonth() + 1
-        let day = date.getDate()
-        let hour = date.getHours()
-        let minute = date.getMinutes()
-        let second = date.getSeconds()
-        return year + '/' + month + '/' + day + '  ' + hour + ':' + minute + ':' + second
+        let _year = date.getFullYear()
+        let _month = ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1))
+        let _day = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
+        let _hour = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours())
+        let _minute = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
+        let _second = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds())
+
+        return _year + '/' + _month + '/' + _day + '  ' + _hour + ':' + _minute + ':' + _second
       },
-      backMesTitleList () {
+      async backMesTitleList () {
+        if (this.currentMesType === 'unread') {
+          await this.getMesByPage(this.currentMesType)
+        }
         this.showMesTitleList = true
+      },
+      async updateMesHandleFn (args) {
+        this.messageType[this.currentMesType].count -= 1
+        let _rmoveMes = this.messageType[this.currentMesType].mesData.splice(args.index, 1)[0]
+        let _time = +new Date()
+        if (this.messageType[args.type].clickFlag) {
+          if (!_rmoveMes.readTime) {
+            _rmoveMes.readTime = _time
+          }
+          this.messageType[args.type].count += 1
+          if (this.messageType[args.type].pageIndex === 1) {
+            this.messageType[args.type].mesData.unshift(_rmoveMes)
+            this.messageType[args.type].mesData.splice(this.messageType[args.type].pageSize)
+          }
+        }
+        let _data = {
+          token: this.loginInfo.token,
+          phonenum: this.loginInfo.phonenum,
+          status: args.status,
+          uuid: args.uuid
+        }
+        if (args.type === 'unread') {
+          _data.readTime = _time
+        }
+        await this.$store.dispatch(types.UPDATE_MESSAGE, _data)
+        await this.getMesByPage(this.currentMesType)
       }
     }
   }

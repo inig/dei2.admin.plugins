@@ -97,7 +97,7 @@ const store = new Vuex.Store({
       updateUserInfo: '/Zpm/user/updateUserInfo',
       queryUsers: '/Zpm/user/queryUsers', // 查询用户列表，模糊查询。不需要管理员权限
       saveMessage: '/Zpm/message/save', // 保存消息
-      readMessage: '/Zpm/message/read', // 将消息置为已读
+      updateMessage: '/Zpm/message/update', // 修改将消息状态 status:  0 删除, 1 未读, 2 已读
       queryMessage: '/Zpm/message/list' // 查询消息列表
     },
     loginInfo: {

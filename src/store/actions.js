@@ -428,21 +428,21 @@ export const actions = {
       })
     })
   },
-  async [types.READ_MESSAGE] ({commit, state}, data) {
+  async [types.UPDATE_MESSAGE] ({commit, state}, data) {
     return new Promise((resolve, reject) => {
       instance({
         method: 'post',
         baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.readMessage,
+        url: state.requestInfo.updateMessage,
         data: querystring.stringify(data)
-      }).then(readData => {
-        if (readData.config) {
-          delete readData.config
+      }).then(updateData => {
+        if (updateData.config) {
+          delete updateData.config
         }
-        if (readData.status === 200) {
-          resolve(readData.data)
+        if (updateData.status === 200) {
+          resolve(updateData.data)
         } else {
-          reject(readData)
+          reject(updateData)
         }
       }).catch(err => {
         reject(err)
