@@ -17,6 +17,8 @@ import './assets/css/codemirror/themes/dracula.css'
 import 'iview/dist/styles/iview.css'
 import './assets/css/animate.css/animate.min.css'
 
+// import SharedWorker from './ajax.worker'
+
 sync(store, router)
 
 Vue.config.productionTip = false
@@ -30,6 +32,20 @@ Object.keys(filters).forEach(key => {
 Vue.mixin(mixins)
 
 Vue.use(iView)
+
+// let sharedWorker = new SharedWorker()
+// store.state.ajaxSharedWorker = sharedWorker.port
+// store.state.ajaxSharedWorker.start()
+// store.state.ajaxSharedWorker.postMessage({
+//   type: 'ajax',
+//   url: 'http://127.0.0.1:3000/Zpm/user/queryUsers',
+//   token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoibHMifSwiaWF0IjoxNTE2MjQyOTMzLCJleHAiOjE1MTY4NDc3MzN9.UL6ZX6taU2_cRH7_xK4HRvhsNrD56_fbSlF4F0si9gQ',
+//   phonenum: '18000000000',
+//   queryUsername: 's'
+// })
+// store.state.ajaxSharedWorker.onmessage = function (res) {
+//   console.log('>====1111111====', res)
+// }
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()

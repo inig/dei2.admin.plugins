@@ -181,6 +181,17 @@
       this.$nextTick(() => {
 //        this.socket.client.off(this.socket.event)
         this.socket.client.on(this.socket.event, this.getNewMessage)
+
+//        this.$store.state.ajaxSharedWorker.postMessage({
+//          type: 'ajax',
+//          url: 'http://127.0.0.1:3000/Zpm/user/getUserInfo',
+//          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoibHMifSwiaWF0IjoxNTE2MjQyOTMzLCJleHAiOjE1MTY4NDc3MzN9.UL6ZX6taU2_cRH7_xK4HRvhsNrD56_fbSlF4F0si9gQ',
+//          phonenum: '18000000000',
+//          queryUsername: 's'
+//        })
+//        this.$store.state.ajaxSharedWorker.onmessage = function (res) {
+//          console.log('获取用户信息22: ', res)
+//        }
       })
     },
     methods: {
