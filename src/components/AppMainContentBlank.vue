@@ -58,11 +58,11 @@
         eventHub: this.$store.state.eventHub,
         events: this.$store.state.events,
         formData: {
-          from: {
-            username: '',
-            phonenum: '',
-            role: -1
-          },
+//          from: {
+//            username: '',
+//            phonenum: '',
+//            role: -1
+//          },
           to: {
             username: '',
             phonenum: '',
@@ -72,18 +72,19 @@
             title: '新消息',
             value: ''
           }
-        }
+        },
+        requestInfo: this.$store.state.requestInfo
       }
     },
     computed: {
       loginInfo () {
-        let _loginInfo = this.$store.state.loginInfo
-        this.formData.from = {
-          username: _loginInfo.username,
-          phonenum: _loginInfo.phonenum,
-          role: _loginInfo.role
-        }
-        return _loginInfo
+//        let _loginInfo = this.$store.state.loginInfo
+//        this.formData.from = {
+//          username: _loginInfo.username,
+//          phonenum: _loginInfo.phonenum,
+//          role: _loginInfo.role
+//        }
+        return this.$store.state.loginInfo
       },
       currentMainContent () {
         let _role = this.loginInfo.role
@@ -145,10 +146,11 @@
       async getUsers (query) {
         if (query !== '') {
           this.getUserLoading = true
-          let _queryData = await this.$store.dispatch(types.QUERY_USERS, {
-            token: this.loginInfo.token,
-            phonenum: this.loginInfo.phonenum,
-            queryUsername: query.trim()
+          let _queryData = await this.$store.dispatch(types.AJAX, {
+            url: this.requestInfo.queryUsers,
+            data: {
+              queryUsername: query.trim()
+            }
           })
           this.users = _queryData.data.list || []
           this.getUserLoading = false

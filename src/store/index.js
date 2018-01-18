@@ -52,8 +52,8 @@ const store = new Vuex.Store({
     appName: 'ZPM_PLUGINS后台管理系统2',
     shortAppName: 'ZPM_PLUGINS',
     socket: {
-      // server: 'http://wss.dei2.com',
-      server: 'http://127.0.0.1',
+      server: 'http://wss.dei2.com',
+      // server: 'http://127.0.0.1',
       port: '3010',
       path: '/sk',
       event: 'enkel-message',
@@ -75,8 +75,8 @@ const store = new Vuex.Store({
       updateAvatar: 'update-avatat' // 更新我的头像
     },
     assets: {
-      maleAvatar: 'static/images/avatar_male_1.jpg',
-      femaleAvatar: 'static/images/avatar_female_1.jpg'
+      maleAvatar: './static/images/avatar_male_1.jpg',
+      femaleAvatar: './static/images/avatar_female_1.jpg'
     },
     requestInfo: {
       // baseUrl: 'http://127.0.0.1:3000',
@@ -98,7 +98,8 @@ const store = new Vuex.Store({
       queryUsers: '/Zpm/user/queryUsers', // 查询用户列表，模糊查询。不需要管理员权限
       saveMessage: '/Zpm/message/save', // 保存消息
       updateMessage: '/Zpm/message/update', // 修改将消息状态 status:  0 删除, 1 未读, 2 已读
-      queryMessage: '/Zpm/message/list' // 查询消息列表
+      queryMessage: '/Zpm/message/list', // 查询消息列表
+      countMessage: 'Zpm/message/count' // 查询消息的总条数
     },
     loginInfo: {
     },

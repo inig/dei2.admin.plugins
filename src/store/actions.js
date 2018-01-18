@@ -94,71 +94,38 @@ export const actions = {
       error(registerData)
     }
   },
-  [types.LIST_PLUGINS] ({commit, state}, data) {
+  [types.AJAX] ({commit, state}, data) {
     return new Promise((resolve, reject) => {
+      let params = JSON.parse(JSON.stringify(data))
+      if (params.url === '') {
+        reject(new Error('url不能为空'))
+      }
+      // 自动添加token,phonenum
+      if (!params.data.token) {
+        params.data.token = state.loginInfo.token
+      }
+      if (!params.data.phonenum) {
+        params.data.phonenum = state.loginInfo.phonenum
+      }
       instance({
-        method: 'post',
-        baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.listPlugins,
-        data: querystring.stringify(data)
-      }).then((pluginsData) => {
-        if (pluginsData.config) {
-          delete pluginsData.config
+        method: params.method || 'post',
+        baseURL: params.baseUrl || state.requestInfo.baseUrl,
+        url: params.url,
+        data: querystring.stringify(params.data)
+      }).then((res) => {
+        if (res.config) {
+          delete res.config
         }
-        if (pluginsData.status === 200) {
-          resolve(pluginsData.data)
+        if (res.status === 200) {
+          resolve(res.data)
         } else {
-          reject(pluginsData)
+          reject(res)
         }
       }).catch(err => {
         reject(err)
       })
     })
   },
-  [types.VIEW_FILE] ({commit, state}, data) {
-    return new Promise((resolve, reject) => {
-      instance({
-        method: 'post',
-        // baseURL: 'https://talkapi.dei2.com',
-        baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.viewFile,
-        data: querystring.stringify(data)
-      }).then(fileContentData => {
-        if (fileContentData.config) {
-          delete fileContentData.config
-        }
-        if (fileContentData.status === 200) {
-          resolve(fileContentData.data)
-        } else {
-          reject(fileContentData)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  [types.UPDATE_PLUGIN_FILE_CONTENT] ({commit, state}, data) {
-    return new Promise((resolve, reject) => {
-      instance({
-        method: 'post',
-        baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.updatePluginFileContent,
-        data: querystring.stringify(data)
-      }).then(updateData => {
-        if (updateData.config) {
-          delete updateData.config
-        }
-        if (updateData.status === 200) {
-          resolve(updateData.data)
-        } else {
-          reject(updateData)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-
   // 获取用户信息
   async [types.GET_USER_INFO] ({commit, state}, data) {
     let callback = noop
@@ -185,25 +152,6 @@ export const actions = {
     } else {
       error(userData)
     }
-    /* return new Promise((resolve, reject) => {
-      instance({
-        method: 'post',
-        baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.getUserInfo,
-        data: querystring.stringify(data)
-      }).then(userData => {
-        if (userData.config) {
-          delete userData.config
-        }
-        if (userData.status === 200) {
-          callback(userData.data)
-        } else {
-          error(userData)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    }) */
   },
   // 更新用户信息
   async [types.UPDATE_USER_INFO] ({commit, state}, data) {
@@ -259,153 +207,6 @@ export const actions = {
       error(userData)
     }
   },
-  async [types.LIST_USERS] ({commit, state}, data) {
-    return new Promise((resolve, reject) => {
-      instance({
-        method: 'post',
-        baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.listUsers,
-        data: querystring.stringify(data)
-      }).then(listData => {
-        if (listData.config) {
-          delete listData.config
-        }
-        if (listData.status === 200) {
-          resolve(listData.data)
-        } else {
-          reject(listData)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  async [types.UPDATE_USER_SETTINGS] ({commit, state}, data) {
-    return new Promise((resolve, reject) => {
-      instance({
-        method: 'post',
-        baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.updateUserSettings,
-        data: querystring.stringify(data)
-      }).then(updateData => {
-        if (updateData.config) {
-          delete updateData.config
-        }
-        if (updateData.status === 200) {
-          resolve(updateData.data)
-        } else {
-          reject(updateData)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  async [types.DELETE_USER] ({commit, state}, data) {
-    return new Promise((resolve, reject) => {
-      instance({
-        method: 'post',
-        baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.deleteUser,
-        data: querystring.stringify(data)
-      }).then(deleteData => {
-        if (deleteData.config) {
-          delete deleteData.config
-        }
-        if (deleteData.status === 200) {
-          resolve(deleteData.data)
-        } else {
-          reject(deleteData)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  async [types.LIST_ALL_PLUGINS] ({commit, state}, data) {
-    return new Promise((resolve, reject) => {
-      instance({
-        method: 'post',
-        baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.listAllPlugins,
-        data: querystring.stringify(data)
-      }).then(listData => {
-        if (listData.config) {
-          delete listData.config
-        }
-        if (listData.status === 200) {
-          resolve(listData.data)
-        } else {
-          reject(listData)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  async [types.UPDATE_PLUGIN_SETTINGS] ({commit, state}, data) {
-    return new Promise((resolve, reject) => {
-      instance({
-        method: 'post',
-        baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.updatePluginSettings,
-        data: querystring.stringify(data)
-      }).then(updateData => {
-        if (updateData.config) {
-          delete updateData.config
-        }
-        if (updateData.status === 200) {
-          resolve(updateData.data)
-        } else {
-          reject(updateData)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  async [types.DELETE_PLUGIN] ({commit, state}, data) {
-    return new Promise((resolve, reject) => {
-      instance({
-        method: 'post',
-        baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.deletePlugin,
-        data: querystring.stringify(data)
-      }).then(deleteData => {
-        if (deleteData.config) {
-          delete deleteData.config
-        }
-        if (deleteData.status === 200) {
-          resolve(deleteData.data)
-        } else {
-          reject(deleteData)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  async [types.QUERY_USERS] ({commit, state}, data) {
-    return new Promise((resolve, reject) => {
-      instance({
-        method: 'post',
-        baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.queryUsers,
-        data: querystring.stringify(data)
-      }).then(queryData => {
-        if (queryData.config) {
-          delete queryData.config
-        }
-        if (queryData.status === 200) {
-          resolve(queryData.data)
-        } else {
-          reject(queryData)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
   async [types.SAVE_MESSAGE] ({commit, state}, data) {
     return new Promise((resolve, reject) => {
       data.uuid = utils.getUUID()
@@ -428,27 +229,6 @@ export const actions = {
       })
     })
   },
-  async [types.UPDATE_MESSAGE] ({commit, state}, data) {
-    return new Promise((resolve, reject) => {
-      instance({
-        method: 'post',
-        baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.updateMessage,
-        data: querystring.stringify(data)
-      }).then(updateData => {
-        if (updateData.config) {
-          delete updateData.config
-        }
-        if (updateData.status === 200) {
-          resolve(updateData.data)
-        } else {
-          reject(updateData)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
   async [types.SEND_MESSAGE] ({commit, state}, data) {
     let _data = JSON.parse(JSON.stringify(data))
     Object.assign(_data.message, {
@@ -459,6 +239,12 @@ export const actions = {
     _formData.phonenum = state.loginInfo.phonenum
     if (_formData.from) {
       _formData.from = JSON.stringify(_formData.from)
+    } else {
+      _formData.from = JSON.stringify({
+        phonenum: state.loginInfo.phonenum,
+        username: state.loginInfo.username,
+        role: state.loginInfo.role
+      })
     }
     if (_formData.to) {
       _formData.to = JSON.stringify(_formData.to)
@@ -466,29 +252,7 @@ export const actions = {
     if (_formData.message) {
       _formData.message = JSON.stringify(_formData.message)
     }
-    console.log('.>>>>>>发送消息：', this)
     await this.dispatch(types.SAVE_MESSAGE, _formData)
     state.socket.client.emit(state.socket.event, _data)
-  },
-  async [types.QUERY_MESSAGE] ({commit, state}, data) {
-    return new Promise((resolve, reject) => {
-      instance({
-        method: 'post',
-        baseURL: state.requestInfo.baseUrl,
-        url: state.requestInfo.queryMessage,
-        data: querystring.stringify(data)
-      }).then(saveData => {
-        if (saveData.config) {
-          delete saveData.config
-        }
-        if (saveData.status === 200) {
-          resolve(saveData.data)
-        } else {
-          reject(saveData)
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    })
   }
 }

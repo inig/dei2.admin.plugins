@@ -354,7 +354,8 @@
               }
             }
           }
-        ]
+        ],
+        requestInfo: this.$store.state.requestInfo
       }
     },
     created () {
@@ -369,13 +370,14 @@
     },
     methods: {
       async getMesByPage (type) {
-        let messageList = await this.$store.dispatch(types.QUERY_MESSAGE, {
-          token: this.loginInfo.token,
-          phonenum: this.loginInfo.phonenum,
-          toPhonenum: this.loginInfo.phonenum,
-          pageIndex: this.messageType[type].pageIndex,
-          pageSize: this.messageType[type].pageSize,
-          status: this.messageType[type].status
+        let messageList = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.queryMessage,
+          data: {
+            toPhonenum: this.loginInfo.phonenum,
+            pageIndex: this.messageType[type].pageIndex,
+            pageSize: this.messageType[type].pageSize,
+            status: this.messageType[type].status
+          }
         })
         this.messageType[type].mesData = messageList.data.list || []
         this.messageType[type].count = messageList.data.totalCounts || 0
@@ -431,15 +433,16 @@
           }
         }
         let _data = {
-          token: this.loginInfo.token,
-          phonenum: this.loginInfo.phonenum,
           status: args.status,
           uuid: args.uuid
         }
         if (args.type === 'unread') {
           _data.readTime = _time
         }
-        await this.$store.dispatch(types.UPDATE_MESSAGE, _data)
+        await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.updateMessage,
+          data: _data
+        })
         await this.getMesByPage(this.currentMesType)
       }
     }

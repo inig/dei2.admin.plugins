@@ -261,7 +261,8 @@
           targetPhonenum: '',
           username: ''
         },
-        socketEvents: this.$store.state.socketEvents
+        socketEvents: this.$store.state.socketEvents,
+        requestInfo: this.$store.state.requestInfo
       }
     },
     computed: {
@@ -276,10 +277,10 @@
     },
     methods: {
       async getUserList (args) {
-        let _userList = await this.$store.dispatch(types.LIST_USERS, Object.assign({}, {
-          token: this.loginInfo.token,
-          phonenum: this.loginInfo.phonenum
-        }, args))
+        let _userList = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.listUsers,
+          data: args
+        })
         this.totalCounts = _userList.data.totalCounts
         return _userList ? _userList.data.list : []
       },
@@ -346,22 +347,18 @@
         /**
          * 修改用户的  状态 权限
          */
-        let updateUserData = await this.$store.dispatch(types.UPDATE_USER_SETTINGS, {
-          token: this.loginInfo.token,
-          phonenum: this.loginInfo.phonenum,
-          targetPhonenum: this.currentUser.phonenum,
-          status: Number(this.currentUser.status),
-          role: Number(this.currentUser.role)
+        let updateUserData = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.updateUserSettings,
+          data: {
+            targetPhonenum: this.currentUser.phonenum,
+            status: Number(this.currentUser.status),
+            role: Number(this.currentUser.role)
+          }
         })
         if (updateUserData.status === 200) {
           // 修改成功
           this.$Message.success('修改成功')
           this.$store.dispatch(types.SEND_MESSAGE, {
-            from: {
-              phonenum: this.loginInfo.phonenum,
-              username: this.loginInfo.username,
-              role: this.loginInfo.role
-            },
             to: {
               phonenum: this.currentUser.phonenum,
               username: this.currentUser.username,
@@ -390,10 +387,11 @@
         /**
          * 删除用户
          */
-        let deleteUserData = await this.$store.dispatch(types.DELETE_USER, {
-          token: this.loginInfo.token,
-          phonenum: this.loginInfo.phonenum,
-          targetPhonenum: this.users[this.deleteUserIndex].phonenum
+        let deleteUserData = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.deleteUser,
+          data: {
+            targetPhonenum: this.users[this.deleteUserIndex].phonenum
+          }
         })
         if (deleteUserData.status === 200) {
           // 删除成功
