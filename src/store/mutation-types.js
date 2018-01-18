@@ -107,3 +107,9 @@ export const QUERY_USERS = 'QUERY_USERS'
 
 // 查询消息列表，不需要权限
 export const QUERY_MESSAGE = 'QUERY_MESSAGE'
+
+// 更新用户的登录信息
+export const UPDATE_LOGIN_INFO = 'UPDATE_LOGIN_INFO'
+
+// 断开socket.io连接
+export const DISCONNECT_SOCKETIO = 'DISCONNECT_SOCKETIO'

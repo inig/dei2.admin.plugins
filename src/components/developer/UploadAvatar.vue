@@ -70,7 +70,7 @@
   }
 </style>
 <script>
-  import utils from '../../utils/index'
+  // import utils from '../../utils/index'
   export default {
     name: 'UploadPlugin',
     props: ['width', 'height'],
@@ -88,7 +88,7 @@
     },
     computed: {
       loginInfo () {
-        return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+        return this.$store.state.loginInfo
       }
     },
     methods: {

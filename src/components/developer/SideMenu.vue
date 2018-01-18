@@ -82,7 +82,7 @@
 </style>
 <script>
   import * as types from '../../store/mutation-types'
-  import utils from '../../utils/index'
+  // import utils from '../../utils/index'
   import UploadPlugin from './UploadPlugin.vue'
   export default {
     name: 'SideMenu',
@@ -91,12 +91,14 @@
         allPlugins: [],
         contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
         eventHub: this.$store.state.eventHub,
-        events: this.$store.state.events
+        events: this.$store.state.events,
+        socketEvents: this.$store.state.socketEvents,
+        socket: this.$store.state.socket
       }
     },
     computed: {
       loginInfo () {
-        return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+        return this.$store.state.loginInfo
       },
       currentPlugin () {
         return this.$route.params.pluginName
@@ -108,12 +110,53 @@
     async created () {
       this.eventHub.$on(this.events.updatePluginList, await this.updatePluginList)
       await this.updatePluginList()
-//      this.allPlugins = await this.getAllPlugins()
-//      this.$store.commit(types.SET_ALL_PLUGINS, {
-//        allPlugins: this.allPlugins
-//      })
+      this.$nextTick(() => {
+        this.socket.client.off(this.socket.event)
+        this.socket.client.on(this.socket.event, this.getNewMessage)
+      })
     },
     methods: {
+      findPluginIndexByName (pluginName) {
+        let _allPlugins = JSON.parse(JSON.stringify(this.allPlugins))
+        let i = 0
+        let outIndex = -1
+        for (i; i < _allPlugins.length; i++) {
+          if (String(_allPlugins[i].name) === String(pluginName)) {
+            outIndex = i
+            i = _allPlugins.length
+          }
+        }
+        return outIndex
+      },
+      getNewMessage (args) {
+        if (args.message.type === this.socketEvents.reviewPlugin) {
+          let _newPluginInfo = JSON.parse(JSON.stringify(args.message.data))
+          let _pluginIndex = this.findPluginIndexByName(_newPluginInfo.name)
+          _newPluginInfo.children = [
+            'index.vue',
+            'package.json',
+            'README.md'
+          ]
+          if (_pluginIndex > -1) {
+            this.allPlugins.splice(_pluginIndex, 1, _newPluginInfo)
+          }
+          if (args.message.data.status === 0 || args.message.data.status === 2) {
+            this.$Notice.error({
+              title: `插件${args.message.data.name}审核结果`,
+              desc: `<span style="color: #ed3f14; font-weight: bolder; margin-left: -8px;">【${args.message.data.status === 0 ? '不可用' : '已拒绝'}】</span><br>${args.message.data.remarks || ''}`
+            })
+          } else if (args.message.data.status === 1) {
+            this.$Notice.warning({
+              desc: `插件${args.message.data.name}正在审核中，请耐心等待`
+            })
+          } else if (args.message.data.status === 3) {
+            this.$Notice.success({
+              title: `插件${args.message.data.name}审核结果`,
+              desc: `<span style="color: #19be6b; font-weight: bolder; margin-left: -8px;">【已通过】</span>`
+            })
+          }
+        }
+      },
       async getAllPlugins () {
         let pluginData = await this.$store.dispatch(types.LIST_PLUGINS, {
           phonenum: this.loginInfo.phonenum,

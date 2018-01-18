@@ -134,6 +134,7 @@
   }
 </style>
 <script>
+  import * as types from '../store/mutation-types'
   import utils from '../utils'
   export default {
     name: 'AppHeader',
@@ -141,14 +142,18 @@
       return {
         appName: this.$store.state.appName,
         assets: this.$store.state.assets,
+        eventHub: this.$store.state.eventHub,
+        events: this.$store.state.events,
         spanLeft: 6,
         spanRight: 18,
-        messageValue: 100
+        messageValue: 100,
+        socket: this.$store.state.socket,
+        socketEvents: this.$store.state.socketEvents
       }
     },
     computed: {
       loginInfo () {
-        return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+        return this.$store.state.loginInfo
       },
       currentRole () {
         let _role = this.loginInfo.role
@@ -172,12 +177,63 @@
         return _currentRole
       }
     },
+    created () {
+      this.$nextTick(() => {
+        this.socket.client.off(this.socket.event)
+        this.socket.client.on(this.socket.event, this.getNewMessage)
+      })
+    },
     methods: {
+      getUserRoleText (role) {
+        let _currentRole = ''
+        switch (Number(role)) {
+          case 1:
+            _currentRole = '超级管理员'
+            break
+          case 2:
+            _currentRole = '管理员'
+            break
+          case 3:
+            _currentRole = '开发者'
+            break
+          case 4:
+            _currentRole = '用户'
+            break
+          default:
+            break
+        }
+        return _currentRole
+      },
+      getNewMessage (args) {
+        if (args.message.type === this.socketEvents.changeUserRole) {
+          if (this.loginInfo.status !== args.message.data.status && args.message.data.status === 0) {
+            this.$Notice.warning({
+              title: '账号状态变更',
+              desc: '您的账号被锁定，请联系管理员后再登录'
+            })
+            utils.storage.clear()
+            this.$router.replace('/login')
+            // 断开socket.io连接
+            this.$store.commit(types.DISCONNECT_SOCKETIO)
+          } else if (this.loginInfo.role !== args.message.data.role) {
+            this.$Notice.warning({
+              title: '账号权限变更',
+              desc: `您的账号权限变更为<span style="color: #19be6b;">【${this.getUserRoleText(args.message.data.role)}】</span>，请重新登录`
+            })
+            utils.storage.clear()
+            this.$router.replace('/login')
+            // 断开socket.io连接
+            this.$store.commit(types.DISCONNECT_SOCKETIO)
+          }
+        }
+      },
       logout () {
         if (!utils.isEmptyObj(this.loginInfo)) {
           utils.storage.clear()
           this.$Message.success('您已经退出')
           this.$router.replace('/login')
+          // 断开socket.io连接
+          this.$store.commit(types.DISCONNECT_SOCKETIO)
         }
       },
       navToUserSet (e) {
