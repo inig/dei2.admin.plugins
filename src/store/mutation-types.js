@@ -113,3 +113,6 @@ export const UPDATE_LOGIN_INFO = 'UPDATE_LOGIN_INFO'
 
 // 断开socket.io连接
 export const DISCONNECT_SOCKETIO = 'DISCONNECT_SOCKETIO'
+
+// 更新用户头像
+export const UPDATE_AVATAR = 'UPDATE_AVATAR'

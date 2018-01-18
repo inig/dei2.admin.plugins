@@ -12,13 +12,13 @@
         </div>
         <Form :ref="userInfoFormRef" class="personal_center_form" :model="cacheUserInfo" label-position="left" :label-width="80">
           <FormItem label="用户名">
-            <Input v-model="cacheUserInfo.username" type="text"></Input>
+            <Input v-model="cacheUserInfo.username" type="text"/>
           </FormItem>
           <FormItem label="昵称">
-            <Input v-model="cacheUserInfo.nickname" type="text"></Input>
+            <Input v-model="cacheUserInfo.nickname" type="text"/>
           </FormItem>
           <FormItem label="邮箱">
-            <Input v-model="cacheUserInfo.email" type="email"></Input>
+            <Input v-model="cacheUserInfo.email" type="email"/>
           </FormItem>
           <FormItem label="手机">
             <p class="user_info_item">{{cacheUserInfo.phonenum}}</p>
@@ -33,7 +33,7 @@
             </RadioGroup>
           </FormItem>
           <FormItem label="个人网站">
-            <Input v-model="cacheUserInfo.website"  type="text"></Input>
+            <Input v-model="cacheUserInfo.website"  type="text"/>
           </FormItem>
           <FormItem label="密码">
             <p class="user_info_item modify_password" @click="showModifyPassword">修改密码</p>
@@ -82,13 +82,13 @@
         :mask-closable="false">
         <Form class="personal_center_form" :ref="passwordForm" :model="modifyPasswordForm" :rules="passwordValidate" label-position="right" :label-width="90">
           <FormItem label="原密码" prop="oldPass">
-            <Input v-model="modifyPasswordForm.oldPass" placeholder="请输入原密码" type="text"></Input>
+            <Input v-model="modifyPasswordForm.oldPass" placeholder="请输入原密码" type="text"/>
           </FormItem>
           <FormItem label="新密码" prop="newPass">
-            <Input v-model="modifyPasswordForm.newPass" placeholder="请输入新密码，至少6位字符" type="text"></Input>
+            <Input v-model="modifyPasswordForm.newPass" placeholder="请输入新密码，至少6位字符" type="text"/>
           </FormItem>
           <FormItem label="确认新密码" prop="rePass">
-            <Input v-model="modifyPasswordForm.rePass" placeholder="请再次输入新密码" type="text"></Input>
+            <Input v-model="modifyPasswordForm.rePass" placeholder="请再次输入新密码" type="text"/>
           </FormItem>
         </Form>
         <div slot="footer">
@@ -172,7 +172,7 @@
   }
 </style>
 <script>
-  import utils from '../../utils/index'
+//  import utils from '../../utils/index'
   import * as types from '../../store/mutation-types'
   import jwt from 'jsonwebtoken'
   import UploadAvatar from './UploadAvatar.vue'
@@ -276,7 +276,9 @@
       updateAvatar (args) {
         this.cacheUserInfo.headIcon = args.path
         this.userInfo.headIcon = args.path
-        // utils.storage.setItem(this.$store.state.localStorageKeys.userInfo, this.userInfo)
+        let _userInfo = JSON.parse(JSON.stringify(this.localUserData))
+        _userInfo.headIcon = args.path
+        this.$store.commit(types.UPDATE_LOGIN_INFO, _userInfo)
       },
       showModifyPassword () {
         this.modifyPasswordModal = true
@@ -313,7 +315,7 @@
           that.$router.replace('/login')
           return false
         }
-        await global.store.dispatch(types.GET_USER_INFO, {
+        await this.$store.dispatch(types.GET_USER_INFO, {
           token: that.localUserData.token,
           phonenum: that.localUserData.phonenum,
           callback (res) {
@@ -346,7 +348,7 @@
           that.$router.replace('/login')
           return false
         }
-        await global.store.dispatch(types.UPDATE_USER_INFO,
+        await this.$store.dispatch(types.UPDATE_USER_INFO,
           Object.assign({}, that.cacheUserInfo, {
             token: that.localUserData.token,
             phonenum: that.localUserData.phonenum,
@@ -358,7 +360,8 @@
               if (res.status === 200) {
                 let userDate = res.data
                 // 更新个人信息后存储本地
-                utils.storage.setItem(that.$store.state.localStorageKeys.userInfo, res.data)
+                that.$store.commit(types.UPDATE_LOGIN_INFO, res.data)
+//                utils.storage.setItem(that.$store.state.localStorageKeys.userInfo, res.data)
                 for (const key in that.userInfo) {
                   if (userDate.hasOwnProperty(key)) {
                     that.userInfo[key] = userDate[key]
@@ -386,7 +389,7 @@
         this.$refs[this.passwordForm].validate(async (valid) => {
           if (valid) {
             that.savePassLoading = true
-            await global.store.dispatch(types.MODIFY_PASSWORD,
+            await this.$store.dispatch(types.MODIFY_PASSWORD,
               Object.assign({}, that.modifyPasswordForm, {
                 token: that.localUserData.token,
                 phonenum: that.localUserData.phonenum,

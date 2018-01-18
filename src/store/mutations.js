@@ -62,5 +62,8 @@ export const mutations = {
   [types.DISCONNECT_SOCKETIO] (state) {
     state.socket.client.disconnect()
     state.socket.client = {}
+  },
+  [types.UPDATE_AVATAR] (state, data) {
+    state.loginInfo.headIcon = data.avatar
   }
 }

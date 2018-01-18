@@ -52,8 +52,8 @@ const store = new Vuex.Store({
     appName: 'ZPM_PLUGINS后台管理系统2',
     shortAppName: 'ZPM_PLUGINS',
     socket: {
-      // server: 'http://wss.dei2.com',
-      server: 'http://127.0.0.1',
+      server: 'http://wss.dei2.com',
+      // server: 'http://127.0.0.1',
       port: '3010',
       path: '/sk',
       event: 'enkel-message',
@@ -75,8 +75,8 @@ const store = new Vuex.Store({
       updateAvatar: 'update-avatat' // 更新我的头像
     },
     assets: {
-      maleAvatar: 'static/images/avatar_male_1.jpg',
-      femaleAvatar: 'static/images/avatar_female_1.jpg'
+      maleAvatar: './static/images/avatar_male_1.jpg',
+      femaleAvatar: './static/images/avatar_female_1.jpg'
     },
     requestInfo: {
       // baseUrl: 'http://127.0.0.1:3000',
