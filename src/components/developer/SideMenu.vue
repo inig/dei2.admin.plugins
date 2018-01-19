@@ -1,8 +1,11 @@
 <template>
   <div class="developer_side_menu_container">
+    <div class="developer_side_menu_search_container">
+      <Input class="developer_side_menu_search" placeholder="搜索插件名" v-model="searchPluginName"/>
+    </div>
     <Menu theme="dark" width="auto" class="main_menu_container" @on-select="navToPluginView" :active-name="`${currentPlugin}-${currentFileName}`">
       <MenuGroup title="我的插件">
-        <Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum == item.author">
+        <Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum == item.author && item.name.toLowerCase().indexOf(searchPluginName.toLowerCase()) > -1">
           <template slot="title">
             <Icon type="ios-paper"></Icon>
             {{item.name}}
@@ -14,7 +17,7 @@
         </Submenu>
       </MenuGroup>
       <MenuGroup title="别人家的插件" style="border-top: 1px solid rgba(30, 36, 50, 0.1);">
-        <Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum != item.author && item.status === 3">
+        <Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum != item.author && item.status === 3 && item.name.toLowerCase().indexOf(searchPluginName.toLowerCase()) > -1">
           <template slot="title">
             <Icon type="ios-paper"></Icon>
             {{item.name}}
@@ -38,8 +41,23 @@
     height: 100%;
     background-color: transparent;
   }
+  .developer_side_menu_search_container {
+    height: 48px;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .developer_side_menu_search {
+    width: 80%;
+  }
+  .developer_side_menu_search .ivu-input {
+    background-color: #363e4f;
+    color: #ffffff;
+    border: 1px solid #363e4f;
+  }
     .main_menu_container {
-      height: calc(100% - 60px);
+      height: calc(100% - 60px - 48px);
       overflow-y: auto;
     }
     .plugin_status_tag {
@@ -94,7 +112,8 @@
         events: this.$store.state.events,
         socketEvents: this.$store.state.socketEvents,
         socket: this.$store.state.socket,
-        requestInfo: this.$store.state.requestInfo
+        requestInfo: this.$store.state.requestInfo,
+        searchPluginName: ''
       }
     },
     computed: {
