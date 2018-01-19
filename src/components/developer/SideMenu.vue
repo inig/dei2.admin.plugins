@@ -141,20 +141,22 @@
           if (_pluginIndex > -1) {
             this.allPlugins.splice(_pluginIndex, 1, _newPluginInfo)
           }
-          if (args.message.data.status === 0 || args.message.data.status === 2) {
-            this.$Notice.error({
-              title: `插件${args.message.data.name}审核结果`,
-              desc: `<span style="color: #ed3f14; font-weight: bolder; margin-left: -8px;">【${args.message.data.status === 0 ? '不可用' : '已拒绝'}】</span><br>${args.message.data.remarks || ''}`
-            })
-          } else if (args.message.data.status === 1) {
-            this.$Notice.warning({
-              desc: `插件${args.message.data.name}正在审核中，请耐心等待`
-            })
-          } else if (args.message.data.status === 3) {
-            this.$Notice.success({
-              title: `插件${args.message.data.name}审核结果`,
-              desc: `<span style="color: #19be6b; font-weight: bolder; margin-left: -8px;">【已通过】</span>`
-            })
+          if (args.to.phonenum === this.loginInfo.phonenum) {
+            if (args.message.data.status === 0 || args.message.data.status === 2) {
+              this.$Notice.error({
+                title: `插件${args.message.data.name}审核结果`,
+                desc: `<span style="color: #ed3f14; font-weight: bolder; margin-left: -8px;">【${args.message.data.status === 0 ? '不可用' : '已拒绝'}】</span><br>${args.message.data.remarks || ''}`
+              })
+            } else if (args.message.data.status === 1) {
+              this.$Notice.warning({
+                desc: `插件${args.message.data.name}正在审核中，请耐心等待`
+              })
+            } else if (args.message.data.status === 3) {
+              this.$Notice.success({
+                title: `插件${args.message.data.name}审核结果`,
+                desc: `<span style="color: #19be6b; font-weight: bolder; margin-left: -8px;">【已通过】</span>`
+              })
+            }
           }
         }
       },

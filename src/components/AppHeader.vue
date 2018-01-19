@@ -189,7 +189,7 @@
     },
     methods: {
       readMessage (args) {
-        this.messageValue = ((this.messageValue - Number(args.count)) || 0)
+        this.messageValue = Math.max(this.messageValue - Number(args.count), 0)
       },
       async getMessageCount (args) {
         let messageCountsData = await this.$store.dispatch(types.AJAX, {
@@ -242,8 +242,10 @@
             this.$store.commit(types.DISCONNECT_SOCKETIO)
           }
         }
-        // 未读消息数量加1
-        this.messageValue += 1
+        if (this.loginInfo.phonenum === args.to.phonenum) {
+          // 未读消息数量加1
+          this.messageValue += 1
+        }
       },
       logout () {
         if (!utils.isEmptyObj(this.loginInfo)) {
