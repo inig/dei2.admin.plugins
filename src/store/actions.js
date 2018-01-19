@@ -238,13 +238,15 @@ export const actions = {
     _formData.token = state.loginInfo.token
     _formData.phonenum = state.loginInfo.phonenum
     if (_formData.from) {
+      _data.from = JSON.parse(JSON.stringify(_formData.from))
       _formData.from = JSON.stringify(_formData.from)
     } else {
-      _formData.from = JSON.stringify({
+      _data.from = {
         phonenum: state.loginInfo.phonenum,
         username: state.loginInfo.username,
         role: state.loginInfo.role
-      })
+      }
+      _formData.from = JSON.stringify(_data.from)
     }
     if (_formData.to) {
       _formData.to = JSON.stringify(_formData.to)
@@ -252,7 +254,10 @@ export const actions = {
     if (_formData.message) {
       _formData.message = JSON.stringify(_formData.message)
     }
-    await this.dispatch(types.SAVE_MESSAGE, _formData)
+    let savedMessageData = await this.dispatch(types.SAVE_MESSAGE, _formData)
+    if (savedMessageData.status === 200) {
+      _data.message.uuid = savedMessageData.data.uuid
+    }
     state.socket.client.emit(state.socket.event, _data)
   }
 }
