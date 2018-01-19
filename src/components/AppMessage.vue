@@ -177,6 +177,7 @@
               this.updateMesHandleFn({
                 type: 'hasread',
                 status: 2,
+                fromStatus: 1,
                 uuid: params.row.uuid
               })
             }
@@ -194,6 +195,7 @@
               this.updateMesHandleFn({
                 type: 'recyclebin',
                 status: 0,
+                fromStatus: 2,
                 uuid: params.row.uuid
               })
             }
@@ -210,6 +212,7 @@
               this.updateMesHandleFn({
                 type: 'hasread',
                 status: 2,
+                fromStatus: 0,
                 uuid: params.row.uuid
               })
             }
@@ -291,6 +294,7 @@
                       this.updateMesHandleFn({
                         type: 'hasread',
                         status: 2,
+                        fromStatus: 1,
                         uuid: params.row.uuid
                       })
                     }
@@ -445,7 +449,7 @@
           url: this.requestInfo.updateMessage,
           data: _data
         })
-        if (args.type === 'hasread') {
+        if (args.type === 'hasread' && args.fromStatus === 1) {
           this.eventHub.$emit(this.events.readMessage, {
             count: 1
           })
