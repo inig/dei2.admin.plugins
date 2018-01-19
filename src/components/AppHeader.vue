@@ -146,9 +146,10 @@
         events: this.$store.state.events,
         spanLeft: 6,
         spanRight: 18,
-        messageValue: 100,
+        messageValue: 0,
         socket: this.$store.state.socket,
-        socketEvents: this.$store.state.socketEvents
+        socketEvents: this.$store.state.socketEvents,
+        requestInfo: this.$store.state.requestInfo
       }
     },
     computed: {
@@ -178,23 +179,27 @@
       }
     },
     created () {
-      this.$nextTick(() => {
-//        this.socket.client.off(this.socket.event)
+      this.$nextTick(async () => {
         this.socket.client.on(this.socket.event, this.getNewMessage)
-
-//        this.$store.state.ajaxSharedWorker.postMessage({
-//          type: 'ajax',
-//          url: 'http://127.0.0.1:3000/Zpm/user/getUserInfo',
-//          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoibHMifSwiaWF0IjoxNTE2MjQyOTMzLCJleHAiOjE1MTY4NDc3MzN9.UL6ZX6taU2_cRH7_xK4HRvhsNrD56_fbSlF4F0si9gQ',
-//          phonenum: '18000000000',
-//          queryUsername: 's'
-//        })
-//        this.$store.state.ajaxSharedWorker.onmessage = function (res) {
-//          console.log('获取用户信息22: ', res)
-//        }
+        this.eventHub.$on(this.events.readMessage, this.readMessage)
+        await this.getMessageCount({
+          status: 1
+        })
       })
     },
     methods: {
+      readMessage (args) {
+        this.messageValue = ((this.messageValue - Number(args.count)) || 0)
+      },
+      async getMessageCount (args) {
+        let messageCountsData = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.countMessage,
+          data: args
+        })
+        if (messageCountsData.status === 200) {
+          this.messageValue = messageCountsData.data.count
+        }
+      },
       getUserRoleText (role) {
         let _currentRole = ''
         switch (Number(role)) {
@@ -237,6 +242,8 @@
             this.$store.commit(types.DISCONNECT_SOCKETIO)
           }
         }
+        // 未读消息数量加1
+        this.messageValue += 1
       },
       logout () {
         if (!utils.isEmptyObj(this.loginInfo)) {

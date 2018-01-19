@@ -232,6 +232,8 @@
           }
         ],
         currentMesType: 'unread',
+        eventHub: this.$store.state.eventHub,
+        events: this.$store.state.events,
         currentMessageCount: 0,
         currentMesList: [],
         messageType: {
@@ -443,6 +445,11 @@
           url: this.requestInfo.updateMessage,
           data: _data
         })
+        if (args.type === 'hasread') {
+          this.eventHub.$emit(this.events.readMessage, {
+            count: 1
+          })
+        }
         await this.getMesByPage(this.currentMesType)
       }
     }

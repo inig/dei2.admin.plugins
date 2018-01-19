@@ -72,7 +72,8 @@ const store = new Vuex.Store({
       getNewMessage: 'get-new-message', // 获取到新消息
       updatePluginFileContent: 'update-plugin-file-content', // 更新插件内容
       updatePluginList: 'update-plugin-list', // 更新我的插件列表
-      updateAvatar: 'update-avatat' // 更新我的头像
+      updateAvatar: 'update-avatar', // 更新我的头像
+      readMessage: 'read-message' // 消息置为已读
     },
     assets: {
       maleAvatar: './static/images/avatar_male_1.jpg',
