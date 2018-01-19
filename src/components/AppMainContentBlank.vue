@@ -1,32 +1,38 @@
 <template>
   <div class="app_main_content_blank_container">
     <div class="app_main_content_blank_wrapper">
-      <Card :span="10" class="message_card" :bordered="true">
-        <p slot="title">发消息</p>
-        <Form :label-width="80">
-          <FormItem label="发送给">
-            <Select filterable
-                    remote
-                    :remote-method="getUsers"
-                    :loading="getUserLoading"
-                    @on-change="chooseUser"
-            >
-              <Option v-for="(item, index) in users" :key="index" :value="index">{{item.username}}</Option>
-            </Select>
-          </FormItem>
-          <FormItem label="消息正文">
-            <Input v-model="formData.message.value" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="想说点什么..."/>
-          </FormItem>
-          <FormItem>
-            <Button type="primary" @click="sendMessage">发送</Button>
-            <Button type="ghost" style="margin-left: 8px;">取消</Button>
-          </FormItem>
-        </Form>
-      </Card>
+      <p class="title">
+        zpm_cli脚手架
+        <span class="a_item">
+          <a href="https://www.npmjs.com/package/zpm_cli">
+            <svg viewBox="0 0 18 7">
+              <path fill="#CB3837" d="M0,0v6h5v1h4v-1h9v-6"></path>
+              <path fill="#FFF" d="M1,1v4h2v-3h1v3h1v-4h1v5h2v-4h1v2h-1v1h2v-4h1v4h2v-3h1v3h1v-3h1v3h1v-4"></path>
+            </svg>
+          </a>
+        </span>
+        <a class="a_item" style="color: #ffffff;" href="https://github.com/lsliangshan/zpm_cli">
+          <Icon type="social-github" size="20">
+          </Icon>
+        </a>
+      </p>
+      <p class="sub_title">1. 全局安装zpm_cli</p>
+      <pre class="beauty_code"><code>
+sudo npm install zpm_cli -g
+      </code></pre>
+      <p class="sub_title">2. 创建新weex项目</p>
+      <pre class="beauty_code"><code>
+zpm init [, project_template] [, project_name] [, project_path]
+      </code></pre>
     </div>
   </div>
 </template>
 <style scoped>
+  .a_item {
+    display: inline-block;
+    width: 40px;
+    margin-left: 15px;
+  }
   .app_main_content_blank_container {
     width: 100%;
     height: 100%;
@@ -37,13 +43,29 @@
     width: 100%;
     height: 100%;
     border-radius: 5px;
-    background-color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-color: #464c5b;
+    padding: 20px;
+    color: #ffffff;
+    overflow-y: auto;
   }
-  .message_card {
-    width: 400px;
+  .beauty_code {
+    background-color: #363e4f;
+    border-radius: 5px;
+    overflow-x: auto;
+    padding: 0 15px;
+  }
+  .title {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 32px;
+    margin-bottom: 16px;
+  }
+  .sub_title {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 28px;
+    margin-bottom: 8px;
+    margin-top: 8px;
   }
 </style>
 <script>
