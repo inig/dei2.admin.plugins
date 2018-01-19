@@ -376,13 +376,17 @@
     methods: {
       getNewMessage (args) {
         if (args.to.phonenum === this.loginInfo.phonenum) {
-          let newMessage = {
-            title: args.message.title,
-            desc: args.message.value,
-            sendTime: args.message.sendTime
-          }
-          this.messageType.unread.mesData.unshift(newMessage)
           this.messageType.unread.count += 1
+          if (this.messageType.unread.pageIndex === 1) {
+            let newMessage = {
+              title: args.message.title,
+              desc: args.message.value,
+              sendTime: args.message.sendTime,
+              uuid: args.message.uuid
+            }
+            this.messageType.unread.mesData.unshift(newMessage)
+            this.messageType.unread.mesData.splice(this.messageType.unread.pageSize)
+          }
         }
       },
       async getMesByPage (type) {
@@ -416,7 +420,6 @@
         await this.getMesByPage(this.currentMesType)
       },
       formatDate (time) {
-        console.log(time)
         let date = new Date()
         date.setTime(time)
         let _year = date.getFullYear()
