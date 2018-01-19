@@ -15,8 +15,8 @@
       <div class="app-message-content">
         <transition name="view-message">
           <div v-if="showMesTitleList" class="message-list-content">
-            <Table ref="messageList" :columns="mesTitleColumns" :data="messageType[currentMesType].mesData" :no-data-text="messageType[currentMesType].nodataText"></Table>
-            <div class="message-pages-container">
+            <Table ref="messageList" :columns="mesTitleColumns" @on-row-click="previewMessage" :data="messageType[currentMesType].mesData" :no-data-text="messageType[currentMesType].nodataText" :stripe="true"></Table>
+            <div class="message-pages-container" v-if="showPage">
               <Page
                 size="small"
                 :current="messageType[currentMesType].pageIndex"
@@ -60,7 +60,8 @@
     width: 100%;
     height: 100%;
     border-radius: 5px;
-    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
   }
   .app-message-mainlist {
     width: 300px;
@@ -173,7 +174,8 @@
             size: 'small'
           },
           on: {
-            click: () => {
+            click: (evt) => {
+              evt.stopPropagation()
               this.updateMesHandleFn({
                 type: 'hasread',
                 status: 2,
@@ -191,7 +193,8 @@
             type: 'error'
           },
           on: {
-            click: () => {
+            click: (evt) => {
+              evt.stopPropagation()
               this.updateMesHandleFn({
                 type: 'recyclebin',
                 status: 0,
@@ -208,7 +211,8 @@
             size: 'small'
           },
           on: {
-            click: () => {
+            click: (evt) => {
+              evt.stopPropagation()
               this.updateMesHandleFn({
                 type: 'hasread',
                 status: 2,
@@ -283,22 +287,8 @@
             ellipsis: true,
             render: (h, params) => {
               return h('a', {
-                on: {
-                  click: () => {
-                    this.showMesTitleList = false
-                    this.mes.title = params.row.title
-                    this.mes.time = this.formatDate(params.row.sendTime)
-                    this.mes.desc = params.row.desc
-                    // 类型为"未读消息"时，调用接口
-                    if (this.messageType[this.currentMesType].status === 1) {
-                      this.updateMesHandleFn({
-                        type: 'hasread',
-                        status: 2,
-                        fromStatus: 1,
-                        uuid: params.row.uuid
-                      })
-                    }
-                  }
+                style: {
+                  cursor: 'default'
                 }
               }, params.row.title)
             }
@@ -375,9 +365,32 @@
     computed: {
       loginInfo () {
         return this.$store.state.loginInfo
+      },
+      showPage () {
+        let isShowPage = true
+        if (this.messageType[this.currentMesType].count === 0) {
+          isShowPage = false
+        }
+        return isShowPage
       }
     },
     methods: {
+      previewMessage (evt) {
+        console.log(evt)
+        this.showMesTitleList = false
+        this.mes.title = evt.title
+        this.mes.time = this.formatDate(evt.sendTime)
+        this.mes.desc = evt.desc
+        // 类型为"未读消息"时，调用接口
+        if (this.messageType[this.currentMesType].status === 1) {
+          this.updateMesHandleFn({
+            type: 'hasread',
+            status: 2,
+            fromStatus: 1,
+            uuid: evt.uuid
+          })
+        }
+      },
       getNewMessage (args) {
         if (args.to.phonenum === this.loginInfo.phonenum) {
           this.messageType.unread.count += 1

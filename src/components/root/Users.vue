@@ -66,7 +66,6 @@
   .root_users_list_container {
     width: 100%;
     height: 100%;
-    padding: 20px;
   }
   .root_user_list_wrapper {
     width: 100%;

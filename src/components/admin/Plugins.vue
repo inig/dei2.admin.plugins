@@ -61,7 +61,6 @@
   .root_plugins_list_container {
     width: 100%;
     height: 100%;
-    padding: 20px;
   }
   .root_plugin_list_wrapper {
     width: 100%;
