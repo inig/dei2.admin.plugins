@@ -357,12 +357,15 @@
             }
           }
         ],
-        requestInfo: this.$store.state.requestInfo
+        requestInfo: this.$store.state.requestInfo,
+        socket: this.$store.state.socket,
+        socketEvents: this.$store.state.socketEvents
       }
     },
     created () {
       this.$nextTick(() => {
         this.getMesByType(this.currentMesType)
+        this.socket.client.on(this.socket.event, this.getNewMessage)
       })
     },
     computed: {
@@ -371,6 +374,17 @@
       }
     },
     methods: {
+      getNewMessage (args) {
+        if (args.to.phonenum === this.loginInfo.phonenum) {
+          let newMessage = {
+            title: args.message.title,
+            desc: args.message.value,
+            sendTime: args.message.sendTime
+          }
+          this.messageType.unread.mesData.unshift(newMessage)
+          this.messageType.unread.count += 1
+        }
+      },
       async getMesByPage (type) {
         let messageList = await this.$store.dispatch(types.AJAX, {
           url: this.requestInfo.queryMessage,
