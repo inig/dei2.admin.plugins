@@ -376,7 +376,6 @@
     },
     methods: {
       previewMessage (evt) {
-        console.log(evt)
         this.showMesTitleList = false
         this.mes.title = evt.title
         this.mes.time = this.formatDate(evt.sendTime)
@@ -472,7 +471,7 @@
           status: args.status,
           uuid: args.uuid
         }
-        if (args.type === 'unread') {
+        if (this.currentMesType === 'unread') {
           _data.readTime = _time
         }
         await this.$store.dispatch(types.AJAX, {
