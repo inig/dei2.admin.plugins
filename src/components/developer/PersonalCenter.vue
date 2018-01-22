@@ -382,7 +382,7 @@
       },
       cancelModifyPass () {
         this.modifyPasswordModal = false
-        this.savePassLoading = true
+        this.savePassLoading = false
       },
       saveModifyPass () {
         const that = this
