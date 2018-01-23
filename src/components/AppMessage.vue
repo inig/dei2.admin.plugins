@@ -248,7 +248,7 @@
             clickFlag: false,
             count: 0,
             pageIndex: 1,
-            pageSize: 3,
+            pageSize: 10,
             mesData: [],
             status: 1,
             nodataText: '暂无未读消息'
@@ -257,7 +257,7 @@
             clickFlag: false,
             count: 0,
             pageIndex: 1,
-            pageSize: 3,
+            pageSize: 10,
             mesData: [],
             status: 2,
             nodataText: '暂无已读消息'
@@ -266,13 +266,13 @@
             clickFlag: false,
             count: 0,
             pageIndex: 1,
-            pageSize: 3,
+            pageSize: 10,
             mesData: [],
             status: 0,
             nodataText: '回收站无消息'
           }
         },
-        pageSizeOpts: [1, 2, 3, 4],
+        pageSizeOpts: [5, 10, 15, 20, 25, 30],
         showMesTitleList: true,
         mes: {
           title: '',

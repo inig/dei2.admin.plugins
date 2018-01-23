@@ -216,8 +216,8 @@
         totalCounts: 0,
         currentPage: {
           index: 1,
-          size: 2,
-          sizeOpts: [1, 2, 3, 4, 5, 6]
+          size: 10,
+          sizeOpts: [5, 10, 15, 20, 25, 30]
         },
         setPluginModal: false,
         currentPluginIndex: -1,

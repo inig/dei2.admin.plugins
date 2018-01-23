@@ -19,6 +19,7 @@
     "install": "^0.10.2",
     "iview": "^2.7.4",
     "jsonwebtoken": "^8.1.0",
+    "marked": "^0.3.12",
     "npm": "^5.6.0",
     "querystring": "^0.2.0",
     "socket.io": "^2.0.4",

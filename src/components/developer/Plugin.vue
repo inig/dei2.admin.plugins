@@ -1,83 +1,133 @@
 <template>
     <div class="plugin_container">
-      <div class="plugin_operation_container">
-          <a :href="'https://static.dei2.com/plugins/' + currentPlugin + '/' + currentFileName" class="operation_item">
-              <Tooltip content="下载文件" placement="bottom">
-                  <Icon type="arrow-down-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableDownload]" size="18"></Icon>
-              </Tooltip>
-          </a>
-          <div class="operation_item" @click="saveFile" v-if="isMyPlugin">
-              <Tooltip content="保存文件" placement="bottom">
-                  <Icon type="arrow-up-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableSave]" size="18"></Icon>
-              </Tooltip>
+      <split-pane :ref="splitPane" :style="{height: '100%', width: '100%'}" :min="30" :max="70" direction="horizontal" v-model="triggerOffset">
+        <div class="code_container" slot="left">
+          <div class="plugin_operation_container" :class="['plugin_operation_container_' + showMarkDown]">
+              <a :href="'https://static.dei2.com/plugins/' + currentPlugin + '/' + currentFileName" class="operation_item">
+                  <Tooltip content="下载文件" placement="bottom">
+                      <Icon type="arrow-down-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableDownload]" size="18"></Icon>
+                  </Tooltip>
+              </a>
+              <div class="operation_item" @click="saveFile" v-if="isMyPlugin">
+                  <Tooltip content="保存文件" placement="bottom">
+                      <Icon type="arrow-up-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableSave]" size="18"></Icon>
+                  </Tooltip>
+              </div>
+              <div class="operation_item" @click="previewMarkDown" v-if="showMarkDown">
+                  <Tooltip content="预览md文件" placement="bottom">
+                      <Icon type="eye" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableSave]" size="18"></Icon>
+                  </Tooltip>
+              </div>
           </div>
-      </div>
-      <pre class="code_container" :ref="codeContainerRef"></pre>
+          <pre class="code_preview" :ref="codeContainerRef"></pre>
+        </div>
+        <div
+          slot="trigger"
+          v-if="showMarkDown"
+          :style="{left: triggerOffset + '%'}"
+          @mousedown="handleMousedown"
+          class="split_pane_custom_trigger"></div>
+        <div class="markdown_preview markdown-body" slot="right" v-if="showMarkDown" v-html="markdownContent"></div>
+      </split-pane>
     </div>
 </template>
 <style>
-    .plugin_container {
-        position: relative;
-        font-size: 14px;
-        box-sizing: border-box;
-        overflow: auto;
-    }
-    .plugin_operation_container {
-        position: absolute;
-        right: 40px;
-        top: 0;
-        width: 40px;
-        height: 32px;
-        z-index: 999;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-    }
-    .operation_item {
-        width: 20px;
-        height: 32px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .operation_item_icon {
-        color: #ffffff;
-    }
-    .operation_item_icon_enable_false {
-        opacity: 0.05;
-    }
-    .operation_item_icon_enable_true {
-        opacity: 0.4;
-    }
-    .operation_item_icon_enable_true:hover {
-        opacity: 1;
-        cursor: pointer;
-    }
-    .operation_item_icon_enable_false:hover {
-        cursor: not-allowed;
-    }
-  .code_container {
-    text-shadow: none;
-      /*height: 633px;*/
-      height: 100%;
+  @import "../../assets/css/markdown.css";
+  .plugin_container {
+    position: relative;
+    font-size: 14px;
+    box-sizing: border-box;
+    overflow: auto;
   }
-    .CodeMirror {
-        height: 100%!important;
-    }
+  .plugin_operation_container {
+    position: absolute;
+    right: 40px;
+    top: 0;
+    width: 50px;
+    height: 32px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .plugin_operation_container_true {
+    width: 75px;
+    background-color: rgba(0, 0, 0, .6);
+  }
+  .plugin_operation_container_false {
+    width: 50px;
+    background-color: transparent;
+  }
+  .operation_item {
+    width: 25px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .operation_item_icon {
+    color: #ffffff;
+  }
+  .operation_item_icon_enable_false {
+    opacity: 0.05;
+  }
+  .operation_item_icon_enable_true {
+    opacity: 0.4;
+  }
+  .operation_item_icon_enable_true:hover {
+    opacity: 1;
+    cursor: pointer;
+  }
+  .operation_item_icon_enable_false:hover {
+    cursor: not-allowed;
+  }
+  .code_container {
+    /* position: relative; */
+    text-shadow: none;
+    height: 100%;
+    overflow: auto;
+  }
+  .code_preview {
+    text-shadow: none;
+    height: 100%;
+    overflow: auto;
+  }
+  .markdown_preview {
+    height: 100%;
+    padding: 10px;
+    overflow: auto;
+  }
+  .CodeMirror {
+    height: 100%!important;
+  }
+  .split_pane_custom_trigger{
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    box-sizing: border-box;
+    cursor: col-resize;
+    background-color: transparent;
+  }
 </style>
 <script>
   import * as types from '../../store/mutation-types'
+  import SplitPane from '../SplitPane.vue'
+  import marked from 'marked'
   // import utils from '../../utils/index'
   export default {
     name: 'Plugin',
     data () {
       return {
+        splitPane: 'split-pane',
+        triggerOffset: 50,
         editor: {},
         contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
         codeContainerRef: 'code-container-ref',
         currentPlugin: '',
         currentFileName: '',
         fileContent: '',
+        markdownContent: '',
+        showMarkDown: false,
         eventHub: this.$store.state.eventHub,
         events: this.$store.state.events,
         requestInfo: this.$store.state.requestInfo,
@@ -144,6 +194,12 @@
       }
     },
     methods: {
+      previewMarkDown () {
+
+      },
+      handleMousedown (e) {
+        this.$refs[this.splitPane].handleMousedown(e)
+      },
       async getFileContent (args) {
         let fileContent = await this.$store.dispatch(types.AJAX, {
           url: this.requestInfo.viewFile,
@@ -156,7 +212,7 @@
       },
       async updatePluginFileContent (args) {
         const that = this
-//        that.eventHub.$off(that.events.updatePluginFileContent)
+        // that.eventHub.$off(that.events.updatePluginFileContent)
         try {
           let _fileData = await this.getFileContent({
             plugin: args.plugin,
@@ -164,6 +220,16 @@
           })
           if (_fileData.data.plugin === args.plugin && _fileData.data.filename === args.filename) {
             this.fileContent = _fileData.data.content
+            let fileSuffix = this.currentFileName.replace(/^.+\.(.+)$/, '$1').toLowerCase()
+            if (fileSuffix === 'md') {
+              this.triggerOffset = 50
+              this.showMarkDown = true
+              this.markdownContent = marked(this.fileContent)
+            } else {
+              this.triggerOffset = 100
+              this.markdownContent = ''
+              this.showMarkDown = false
+            }
           }
         } catch (err) {
           this.fileContent = ''
@@ -230,6 +296,12 @@
           that.editor = CodeMirror(ele, Object.assign({
             value: that.fileContent
           }, configs))
+          that.editor.on('change', function (evt) {
+            let fileSuffix = that.currentFileName.replace(/^.+\.(.+)$/, '$1').toLowerCase()
+            if (fileSuffix === 'md') {
+              that.markdownContent = marked(evt.doc.getValue())
+            }
+          })
         })
       },
       async saveFile () {
@@ -256,6 +328,8 @@
         }
       }
     },
-    components: {}
+    components: {
+      SplitPane
+    }
   }
 </script>
