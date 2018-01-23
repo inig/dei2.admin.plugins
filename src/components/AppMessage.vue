@@ -27,6 +27,7 @@
                 show-sizer
                 @on-change="changePage"
                 @on-page-size-change="changePageSize"
+                placement="bottom"
                 >
               </Page>
             </div>
@@ -99,6 +100,7 @@
   .message-list-content, .message-view-content {
     width: 100%;
     height: 100%;
+    overflow: auto;
   }
   .message-pages-container {
     width: 100%;
