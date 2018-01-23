@@ -15,7 +15,7 @@
                   leave-active-class="animated fadeOut"
       >
         <keep-alive>
-          <router-view class="content_router_view" :style="{height: showFileUploader ? 'calc(100% - 100px)' : '100%'}" name="ContentRouter"/>
+          <router-view class="content_router_view" :style="{height: showFileUploader ? 'calc(100% - 110px)' : '100%'}" name="ContentRouter"/>
         </keep-alive>
       </transition>
       <loading class="layout-content-loader" :data-ref="contentRouterViewLoader"></loading>

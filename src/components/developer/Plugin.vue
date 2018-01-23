@@ -1,88 +1,112 @@
 <template>
     <div class="plugin_container">
-      <split-pane :ref="splitPane" :style="{height: '100%', width: '100%'}" :min="30" :max="70" direction="horizontal" v-model="triggerOffset">
-        <div class="code_container" slot="left">
-          <div class="plugin_operation_container" :class="['plugin_operation_container_' + showMarkDown]">
-              <a :href="'https://static.dei2.com/plugins/' + currentPlugin + '/' + currentFileName" class="operation_item">
-                  <Tooltip content="下载文件" placement="bottom">
-                      <Icon type="arrow-down-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableDownload]" size="18"></Icon>
-                  </Tooltip>
-              </a>
-              <div class="operation_item" @click="saveFile" v-if="isMyPlugin">
-                  <Tooltip content="保存文件" placement="bottom">
-                      <Icon type="arrow-up-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableSave]" size="18"></Icon>
-                  </Tooltip>
-              </div>
-              <div class="operation_item" @click="previewMarkDown" v-if="showMarkDown">
-                  <Tooltip content="预览md文件" placement="bottom">
-                      <Icon type="eye" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableSave]" size="18"></Icon>
-                  </Tooltip>
-              </div>
+      <div class="plugin_container_header">
+        <div class="plugin_operation_container">
+          <a :href="'https://static.dei2.com/plugins/' + currentPlugin + '/' + currentFileName" class="operation_item">
+              <Tooltip content="下载文件" placement="bottom" :transfer="true">
+                  <Icon type="arrow-down-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableDownload]" size="18"></Icon>
+              </Tooltip>
+          </a>
+          <div class="operation_item" @click="saveFile" v-if="isMyPlugin">
+              <Tooltip content="保存文件" placement="bottom" :transfer="true">
+                  <Icon type="arrow-up-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableSave]" size="18"></Icon>
+              </Tooltip>
           </div>
-          <pre class="code_preview" :ref="codeContainerRef"></pre>
+          <div class="operation_item" @click="previewMarkDown" v-if="showMarkDown">
+              <Tooltip :content="previewMarkDownFile ? '关闭预览' : '预览文件'" placement="bottom" :transfer="true">
+                  <Icon :type="previewMarkDownFile ? 'eye-disabled' : 'eye'" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableSave]" size="18"></Icon>
+              </Tooltip>
+          </div>
         </div>
-        <div
-          slot="trigger"
-          v-if="showMarkDown"
-          :style="{left: triggerOffset + '%'}"
-          @mousedown="handleMousedown"
-          class="split_pane_custom_trigger"></div>
-        <div class="markdown_preview markdown-body" slot="right" v-if="showMarkDown" v-html="markdownContent"></div>
-      </split-pane>
+      </div>
+      <div class="plugin_content_container" :style="{height: 'calc(100% - 44px)'}">
+        <split-pane :ref="splitPane" :style="{height: '100%', width: '100%'}" :min="30" :max="70" direction="horizontal" v-model="triggerOffset">
+          <div class="code_container" slot="left">
+            <!-- <div class="plugin_operation_container" :class="['plugin_operation_container_' + showMarkDown]">
+                <a :href="'https://static.dei2.com/plugins/' + currentPlugin + '/' + currentFileName" class="operation_item">
+                    <Tooltip content="下载文件" placement="bottom">
+                        <Icon type="arrow-down-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableDownload]" size="18"></Icon>
+                    </Tooltip>
+                </a>
+                <div class="operation_item" @click="saveFile" v-if="isMyPlugin">
+                    <Tooltip content="保存文件" placement="bottom">
+                        <Icon type="arrow-up-a" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableSave]" size="18"></Icon>
+                    </Tooltip>
+                </div>
+                <div class="operation_item" @click="previewMarkDown" v-if="showMarkDown">
+                    <Tooltip :content="previewMarkDownFile ? '关闭预览' : '预览md文件'" placement="bottom">
+                        <Icon :type="previewMarkDownFile ? 'eye-disabled' : 'eye'" class="operation_item_icon" :class="['operation_item_icon_enable_' + enableSave]" size="18"></Icon>
+                    </Tooltip>
+                </div>
+            </div> -->
+            <pre class="code_preview" :ref="codeContainerRef"></pre>
+          </div>
+          <div slot="trigger" v-if="showMarkDown" :style="{left: triggerOffset + '%'}" @mousedown="handleMousedown" class="split_pane_custom_trigger"></div>
+          <div class="markdown_preview markdown-body" slot="right" v-if="showMarkDown" v-html="markdownContent"></div>
+        </split-pane>
+        <transition
+          name="preview-transition"
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut">
+          <div class="markdown_preview_full markdown-body" v-if="previewMarkDownFile" v-html="markdownContent"></div>
+        </transition>
+      </div>
     </div>
 </template>
 <style>
   @import "../../assets/css/markdown.css";
   .plugin_container {
-    position: relative;
+    width: 100%;
     font-size: 14px;
     box-sizing: border-box;
-    overflow: auto;
+    overflow: hidden;
+  }
+  .plugin_container_header {
+    box-sizing: border-box;
+    padding: 5px 10px;
+    background-color: #fafbfc;
+    border: 1px solid #e1e4e8;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
   }
   .plugin_operation_container {
-    position: absolute;
-    right: 40px;
-    top: 0;
-    width: 50px;
+    width: 100%;
     height: 32px;
-    z-index: 999;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-  }
-  .plugin_operation_container_true {
-    width: 75px;
-    background-color: rgba(0, 0, 0, .6);
-  }
-  .plugin_operation_container_false {
-    width: 50px;
     background-color: transparent;
   }
   .operation_item {
-    width: 25px;
+    width: 27px;
     height: 32px;
+    margin-left: 5px;
+    padding-top: 8px;
     display: inline-flex;
-    align-items: center;
     justify-content: center;
   }
   .operation_item_icon {
-    color: #ffffff;
+    color: #586069;
   }
-  .operation_item_icon_enable_false {
+  .operation_item_icon:hover {
+    color: #0366d6;
+    cursor: pointer;
+  }
+  /* .operation_item_icon_enable_false {
     opacity: 0.05;
   }
   .operation_item_icon_enable_true {
     opacity: 0.4;
   }
-  .operation_item_icon_enable_true:hover {
-    opacity: 1;
-    cursor: pointer;
-  }
   .operation_item_icon_enable_false:hover {
     cursor: not-allowed;
+  } */
+  .plugin_content_container {
+    position: relative;
+    height: 100%;
+    width: 100%;
   }
   .code_container {
-    /* position: relative; */
     text-shadow: none;
     height: 100%;
     overflow: auto;
@@ -94,7 +118,7 @@
   }
   .markdown_preview {
     height: 100%;
-    padding: 10px;
+    padding: 20px;
     overflow: auto;
   }
   .CodeMirror {
@@ -107,6 +131,17 @@
     box-sizing: border-box;
     cursor: col-resize;
     background-color: transparent;
+  }
+  .markdown_preview_full {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    overflow: auto;
+    background-color: #fff;
+    z-index: 998;
   }
 </style>
 <script>
@@ -128,6 +163,7 @@
         fileContent: '',
         markdownContent: '',
         showMarkDown: false,
+        previewMarkDownFile: false,
         eventHub: this.$store.state.eventHub,
         events: this.$store.state.events,
         requestInfo: this.$store.state.requestInfo,
@@ -195,7 +231,7 @@
     },
     methods: {
       previewMarkDown () {
-
+        this.previewMarkDownFile = !this.previewMarkDownFile
       },
       handleMousedown (e) {
         this.$refs[this.splitPane].handleMousedown(e)
@@ -229,6 +265,7 @@
               this.triggerOffset = 100
               this.markdownContent = ''
               this.showMarkDown = false
+              this.previewMarkDownFile = false
             }
           }
         } catch (err) {
