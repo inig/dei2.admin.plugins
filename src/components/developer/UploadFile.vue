@@ -3,7 +3,7 @@
     <Upload
         multiple
         type="drag"
-        :action="'https://talkapi.dei2.com/Zpm/plugin/upload?p=' + currentPlugin + '&phonenum=' + loginInfo.phonenum + '&token=' + loginInfo.token + '&ms=' + formData.maxSize + '&accept=' + formData.format.join(';')"
+        :action="requestInfo.baseUrl + '/Zpm/plugin/upload?p=' + currentPlugin + '&phonenum=' + loginInfo.phonenum + '&token=' + loginInfo.token + '&ms=' + formData.maxSize + '&accept=' + formData.format.join(';')"
         :max-size="formData.maxSize"
         :format="formData.format"
         :on-exceeded-size="handleMaxSize"
@@ -50,7 +50,8 @@
         currentPlugin: '',
         currentFileName: '',
         eventHub: this.$store.state.eventHub,
-        events: this.$store.state.events
+        events: this.$store.state.events,
+        requestInfo: this.$store.state.requestInfo
       }
     },
     computed: {
