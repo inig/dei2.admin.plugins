@@ -49,8 +49,17 @@ const store = new Vuex.Store({
     username: 'ls',
     author: '智愚',
     password: '123123',
-    appName: 'ZPM_PLUGINS后台管理系统2',
-    shortAppName: 'ZPM_PLUGINS',
+    appName: 'ZPM_PLUGINS',
+    fullAppName: 'ZPM_PLUGINS后台管理系统',
+    shortAppName: 'Z',
+    spanLeft: 5,
+    spanRight: 19,
+    maxSpanLeft: 5,
+    maxSpanRight: 23,
+    minSpanLeft: 1,
+    minSpanRight: 19,
+    isFullScreen: false,
+    menuFold: false, // 左侧菜单是否折叠
     socket: {
       server: 'http://wss.dei2.com',
       // server: 'http://127.0.0.1',
@@ -76,8 +85,8 @@ const store = new Vuex.Store({
       readMessage: 'read-message' // 消息置为已读
     },
     assets: {
-      maleAvatar: './static/images/avatar_male_1.jpg',
-      femaleAvatar: './static/images/avatar_female_1.jpg'
+      maleAvatar: '/static/images/avatar_male_1.jpg',
+      femaleAvatar: '/static/images/avatar_female_1.jpg'
     },
     requestInfo: {
       // baseUrl: 'http://127.0.0.1:3000',
