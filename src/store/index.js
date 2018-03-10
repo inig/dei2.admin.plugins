@@ -86,7 +86,8 @@ const store = new Vuex.Store({
     },
     assets: {
       maleAvatar: '/static/images/avatar_male_1.jpg',
-      femaleAvatar: '/static/images/avatar_female_1.jpg'
+      femaleAvatar: '/static/images/avatar_female_1.jpg',
+      defaultActivity: '/static/images/73x130.png'
     },
     requestInfo: {
       // baseUrl: 'http://127.0.0.1:3000',
