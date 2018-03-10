@@ -49,6 +49,12 @@ export const DEL_LOADER = 'DEL_LOADER'
 // 挂载socket
 export const SET_SOCKET = 'SET_SOCKET'
 
+// 展开或收起左边菜单
+export const TOGGLE_MENU = 'TOGGLE_MENU'
+
+// 窗口全屏
+export const TOGGLE_FULL_SCREEN = 'TOGGLE_FULL_SCREEN'
+
 // >>>> actions:
 
 // 登录1

@@ -56,7 +56,8 @@
       AppMainContentBlank: () => import('./AppMainContentBlank.vue'),
       RootMainContent: () => import('./root/MainContent.vue'),
       AdminMainContent: () => import('./admin/MainContent.vue'),
-      DeveloperMainContent: () => import('./developer/MainContent.vue')
+      DeveloperMainContent: () => import('./developer/MainContent.vue'),
+      UserMainContent: () => import('./user/MainContent.vue')
     },
     watch: {
       '$route': function (value) {

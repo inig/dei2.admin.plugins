@@ -82,8 +82,8 @@ export const contentRouter = {
       }
     },
     {
-      path: '/users',
-      name: 'Users',
+      path: '/users/index',
+      name: 'UsersIndex',
       meta: {
         role: [1],
         title: '用户列表'
@@ -93,14 +93,25 @@ export const contentRouter = {
       }
     },
     {
-      path: '/plugins',
-      name: 'Plugins',
+      path: '/plugins/index',
+      name: 'PluginsIndex',
       meta: {
         role: [1, 2],
         title: '插件管理'
       },
       components: {
         ContentRouter: () => import('../components/admin/Plugins.vue')
+      }
+    },
+    {
+      path: '/activity/index',
+      name: 'ActivityIndex',
+      meta: {
+        role: [4],
+        title: '插件管理'
+      },
+      components: {
+        ContentRouter: () => import('../components/user/Activity.vue')
       }
     },
     {

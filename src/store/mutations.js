@@ -65,5 +65,13 @@ export const mutations = {
   },
   [types.UPDATE_AVATAR] (state, data) {
     state.loginInfo.headIcon = data.avatar
+  },
+  [types.TOGGLE_MENU] (state, data) {
+    state.spanLeft = (state.spanLeft === state.minSpanLeft ? state.maxSpanLeft : state.minSpanLeft)
+    state.spanRight = (state.spanRight === state.maxSpanRight ? state.minSpanRight : state.maxSpanRight)
+    state.menuFold = (state.spanLeft === state.minSpanLeft)
+  },
+  [types.TOGGLE_FULL_SCREEN] (state, data) {
+    state.isFullScreen = data.isFullScreen
   }
 }
