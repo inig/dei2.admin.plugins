@@ -27,7 +27,7 @@
                 show-sizer
                 @on-change="changePage"
                 @on-page-size-change="changePageSize"
-                placement="bottom"
+                placement="top"
                 >
               </Page>
             </div>
