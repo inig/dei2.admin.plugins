@@ -71,6 +71,11 @@ export const mutations = {
     state.spanRight = (state.spanRight === state.maxSpanRight ? state.minSpanRight : state.maxSpanRight)
     state.menuFold = (state.spanLeft === state.minSpanLeft)
   },
+  [types.FOLD_SIDE_MENU] (state, data) {
+    state.spanLeft = data.fold ? state.minSpanLeft : state.maxSpanLeft
+    state.spanRight = data.fold ? state.maxSpanRight : state.minSpanRight
+    state.menuFold = data.fold
+  },
   [types.TOGGLE_FULL_SCREEN] (state, data) {
     state.isFullScreen = data.isFullScreen
   }

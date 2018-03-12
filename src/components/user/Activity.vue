@@ -3,13 +3,10 @@
     <div class="user_activities_list_wrapper" :ref="ActivityListRef">
       <!--<Row :gutter="10">-->
         <!--<Col></Col>-->
-      <p>rows: {{rows}}</p>
-      <p>cols: {{cols}}</p>
-      <p>blankCardCount: {{blankCardCount}}</p>
       <Tabs value="all-activity">
         <TabPane label="全部活动" name="all-activity">
           <div class="activity_list_row" v-for="(r, index) in rows" :key="index" :class="['activity_list_row_last_' + (index === rows - 1)]">
-            <div class="new_card_container" v-if="index === 0">
+            <div class="new_card_container" @click="create" v-if="index === 0">
               <Icon type="plus-round" size="40"></Icon>
             </div>
             <activity-card v-for="(c, idx) in getCountByRow(index)" :key="idx"></activity-card>
@@ -26,14 +23,6 @@
           </div>
         </TabPane>
       </Tabs>
-      <!--<div class="activity_list_row" v-for="(r, index) in rows" :key="index" :class="['activity_list_row_last_' + (index === rows - 1)]">-->
-        <!--<div class="blank_card_container" v-if="index === 0">1</div>-->
-        <!--<activity-card v-for="(c, idx) in getCountByRow(index)" :key="idx"></activity-card>-->
-        <!--<div class="blank_card_container" v-for="(b, i) in blankCardCount" :key="i" v-if="(count % cols !== 0) && (index === rows - 1)"></div>-->
-      <!--</div>-->
-        <!--<Col :xs="24" :sm="8" :md="6" :lg="4">-->
-          <!---->
-        <!--</Col>-->
       <!--</Row>-->
     </div>
   </div>
@@ -118,6 +107,7 @@
   }
 </style>
 <script>
+  import * as types from '../../store/mutation-types'
   export default {
     name: 'Activity',
     data () {
@@ -126,7 +116,8 @@
         count: 10,
         containerWidth: 137,
         eventHub: this.$store.state.eventHub,
-        events: this.$store.state.events
+        events: this.$store.state.events,
+        requestInfo: this.$store.state.requestInfo
       }
     },
     computed: {
@@ -153,6 +144,33 @@
       that.eventHub.$on(that.events.mainContentSizeChange, that.setContainerWidth)
     },
     methods: {
+      async create () {
+        // 新建活动
+        let createData = await this.$store.dispatch(types.AJAX, {
+          baseUrl: this.requestInfo.baseUrl,
+          url: this.requestInfo.createActivity,
+          data: {
+            thumbnail: 'https://static.dei2.com/plugins_admin/img/127x200.png',
+            desc: '我的第一个活动'
+          }
+        })
+        if (createData.status === 200) {
+          this.$router.push({
+            path: 'edit',
+            query: {
+              q: createData.data.uuid
+            }
+          })
+        } else {
+          this.$Message.error({
+            content: createData.message || '新建活动失败，请重试',
+            duration: 3
+          })
+        }
+      },
+      navToPage (evt) {
+        this.$router.push(evt)
+      },
       setContainerWidth (e) {
         this.$refs[this.ActivityListRef] && (this.containerWidth = this.$refs[this.ActivityListRef].getBoundingClientRect().width)
       },

@@ -108,10 +108,21 @@ export const contentRouter = {
       name: 'ActivityIndex',
       meta: {
         role: [4],
-        title: '插件管理'
+        title: '活动管理'
       },
       components: {
         ContentRouter: () => import('../components/user/Activity.vue')
+      }
+    },
+    {
+      path: '/activity/edit',
+      name: 'ActivityEdit',
+      meta: {
+        role: [4],
+        title: '活动编辑'
+      },
+      components: {
+        ContentRouter: () => import('../components/user/components/ActivityEdit.vue')
       }
     },
     {
