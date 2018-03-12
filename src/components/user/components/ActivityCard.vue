@@ -2,9 +2,9 @@
   <div class="activity_card_container">
     <div class="activity_card_inner">
       <div class="activity_preview_image_container">
-        <img class="activity_preview_image" :src="assets.defaultActivity127x200">
+        <img class="activity_preview_image" :src="dataValue.thumbnail || assets.defaultActivity127x200">
         <div class="activity_description">
-          <span>活动1</span>
+          <span v-text="dataValue.desc"></span>
         </div>
         <div class="activity_operation_container">
           <div class="activity_operations">
@@ -132,7 +132,7 @@
     bottom: 0;
     width: 127px;
     max-height: 60px;
-    font-size: 12px;
+    font-size: 10px;
     padding: 3px 6px;
     text-align: justify;
     overflow: hidden;
@@ -140,11 +140,14 @@
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+    background-color: rgba(0, 0, 0, .3);
+    color: #ffffff;
   }
 </style>
 <script>
   export default {
     name: 'ActivityCard',
+    props: ['dataValue'],
     data () {
       return {
         assets: this.$store.state.assets
