@@ -228,6 +228,9 @@
     methods: {
       toggleMenu () {
         this.$store.commit(types.TOGGLE_MENU)
+        setTimeout(() => {
+          this.eventHub.$emit(this.events.mainContentSizeChange, {})
+        }, 200)
       },
       fullscreenChange () {
         this.$store.commit(types.TOGGLE_FULL_SCREEN, {

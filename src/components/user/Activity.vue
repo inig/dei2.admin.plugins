@@ -1,12 +1,40 @@
 <template>
   <div class="user_activities_list_container">
-    <div class="user_activities_list_wrapper">
-      <Row :gutter="10">
+    <div class="user_activities_list_wrapper" :ref="ActivityListRef">
+      <!--<Row :gutter="10">-->
         <!--<Col></Col>-->
-        <Col :xs="24" :sm="8" :md="6" :lg="4" v-for="(item, index) in count" :key="index">
-          <activity-card></activity-card>
-        </Col>
-      </Row>
+      <p>rows: {{rows}}</p>
+      <p>cols: {{cols}}</p>
+      <p>blankCardCount: {{blankCardCount}}</p>
+      <Tabs value="all-activity">
+        <TabPane label="全部活动" name="all-activity">
+          <div class="activity_list_row" v-for="(r, index) in rows" :key="index" :class="['activity_list_row_last_' + (index === rows - 1)]">
+            <div class="new_card_container" v-if="index === 0">
+              <Icon type="plus-round" size="40"></Icon>
+            </div>
+            <activity-card v-for="(c, idx) in getCountByRow(index)" :key="idx"></activity-card>
+            <div class="blank_card_container" v-for="(b, i) in blankCardCount" :key="i" v-if="((count + 1) % cols !== 0) && (index === rows - 1)"></div>
+          </div>
+        </TabPane>
+        <TabPane label="我的活动" name="my-activity">
+          <div class="activity_list_row" v-for="(r, index) in rows" :key="index" :class="['activity_list_row_last_' + (index === rows - 1)]">
+            <div class="new_card_container" v-if="index === 0">
+              <Icon type="plus-round" size="40"></Icon>
+            </div>
+            <activity-card v-for="(c, idx) in getCountByRow(index)" :key="idx"></activity-card>
+            <div class="blank_card_container" v-for="(b, i) in blankCardCount" :key="i" v-if="((count + 1) % cols !== 0) && (index === rows - 1)"></div>
+          </div>
+        </TabPane>
+      </Tabs>
+      <!--<div class="activity_list_row" v-for="(r, index) in rows" :key="index" :class="['activity_list_row_last_' + (index === rows - 1)]">-->
+        <!--<div class="blank_card_container" v-if="index === 0">1</div>-->
+        <!--<activity-card v-for="(c, idx) in getCountByRow(index)" :key="idx"></activity-card>-->
+        <!--<div class="blank_card_container" v-for="(b, i) in blankCardCount" :key="i" v-if="(count % cols !== 0) && (index === rows - 1)"></div>-->
+      <!--</div>-->
+        <!--<Col :xs="24" :sm="8" :md="6" :lg="4">-->
+          <!---->
+        <!--</Col>-->
+      <!--</Row>-->
     </div>
   </div>
 </template>
@@ -21,12 +49,72 @@
     height: 100%;
     border-radius: 5px;
     background-color: #ffffff;
-    /*box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.2);*/
+    overflow-x: hidden;
     overflow-y: auto;
     padding: 10px 0;
-    /*display: flex;*/
-    /*align-items: center;*/
-    /*justify-content: center;*/
+  }
+  .user_activities_list_wrapper .ivu-tabs {
+    overflow: unset;
+  }
+  .activity_list_row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+  .blank_card_container {
+    float: left;
+    width: 127px;
+    height: 200px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  .new_card_container {
+    float: left;
+    width: 127px;
+    height: 200px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    color: #888;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    -ms-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+  }
+  .new_card_container i {
+    -webkit-transform: translate(0, 0);
+    -moz-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    -o-transform: translate(0, 0);
+    transform: translate(0, 0);
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    -ms-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+  }
+  .new_card_container:hover {
+    -webkit-box-shadow: 0 0 7px 2px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 0 7px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 7px 2px rgba(0, 0, 0, 0.2);
+  }
+  .new_card_container:hover i {
+    -webkit-transform: translate(0, 1px);
+    -moz-transform: translate(0, 1px);
+    -ms-transform: translate(0, 1px);
+    -o-transform: translate(0, 1px);
+    transform: translate(0, 1px);
   }
 </style>
 <script>
@@ -34,7 +122,54 @@
     name: 'Activity',
     data () {
       return {
-        count: 10
+        ActivityListRef: 'ref-activity-list',
+        count: 10,
+        containerWidth: 137,
+        eventHub: this.$store.state.eventHub,
+        events: this.$store.state.events
+      }
+    },
+    computed: {
+      rows () {
+        return Math.ceil((this.count + 1) / Math.floor(this.containerWidth / 137))
+      },
+      cols () {
+        return Math.floor(this.containerWidth / 137)
+      },
+      blankCardCount () {
+        if ((this.count + 1) % this.cols === 0) {
+          return 0
+        } else {
+          return this.cols - this.getCountByRow(this.rows - 1)
+        }
+      }
+    },
+    mounted () {
+      const that = this
+      that.setContainerWidth()
+      window.onresize = function () {
+        that.setContainerWidth()
+      }
+      that.eventHub.$on(that.events.mainContentSizeChange, that.setContainerWidth)
+    },
+    methods: {
+      setContainerWidth (e) {
+        this.$refs[this.ActivityListRef] && (this.containerWidth = this.$refs[this.ActivityListRef].getBoundingClientRect().width)
+      },
+      getCountByRow (r) {
+        let _count = this.cols
+        if (r === 0) {
+          _count = this.cols - 1
+        } else {
+          if (Number(r) < this.rows - 1) {
+            _count = this.cols
+          } else if (Number(r) === this.rows - 1) {
+            _count = (this.count + 1 - r * this.cols)
+          } else {
+            _count = 0
+          }
+        }
+        return _count
       }
     },
     components: {

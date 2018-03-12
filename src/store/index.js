@@ -82,12 +82,13 @@ const store = new Vuex.Store({
       updatePluginFileContent: 'update-plugin-file-content', // 更新插件内容
       updatePluginList: 'update-plugin-list', // 更新我的插件列表
       updateAvatar: 'update-avatar', // 更新我的头像
-      readMessage: 'read-message' // 消息置为已读
+      readMessage: 'read-message', // 消息置为已读
+      mainContentSizeChange: 'main-content-size-change'
     },
     assets: {
       maleAvatar: '/static/images/avatar_male_1.jpg',
       femaleAvatar: '/static/images/avatar_female_1.jpg',
-      defaultActivity: '/static/images/73x130.png'
+      defaultActivity127x200: '/static/images/127x200.png'
     },
     requestInfo: {
       // baseUrl: 'http://127.0.0.1:3000',
