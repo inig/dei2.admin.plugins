@@ -7,7 +7,7 @@
     .user_main_content_container {
         width: 100%;
         height: 100%;
-        padding: 20px;
+        /*padding: 20px;*/
         background-color: transparent;
     }
 </style>

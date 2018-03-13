@@ -32,7 +32,7 @@
 
   html, body {
     height: 100%;
-    min-width: 1000px;
+    /*min-width: 1000px;*/
     /* min-height: 800px; */
   }
 

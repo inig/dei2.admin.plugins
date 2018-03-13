@@ -61,8 +61,8 @@ const store = new Vuex.Store({
     isFullScreen: false,
     menuFold: false, // 左侧菜单是否折叠
     socket: {
-      server: 'http://wss.dei2.com',
-      // server: 'http://127.0.0.1',
+      // server: 'http://wss.dei2.com',
+      server: 'http://127.0.0.1',
       port: '3010',
       path: '/sk',
       event: 'enkel-message',
@@ -82,24 +82,26 @@ const store = new Vuex.Store({
       updatePluginFileContent: 'update-plugin-file-content', // 更新插件内容
       updatePluginList: 'update-plugin-list', // 更新我的插件列表
       updateAvatar: 'update-avatar', // 更新我的头像
-      readMessage: 'read-message' // 消息置为已读
+      readMessage: 'read-message', // 消息置为已读
+      mainContentSizeChange: 'main-content-size-change'
     },
     assets: {
       maleAvatar: '/static/images/avatar_male_1.jpg',
-      femaleAvatar: '/static/images/avatar_female_1.jpg'
+      femaleAvatar: '/static/images/avatar_female_1.jpg',
+      defaultActivity127x200: '/static/images/127x200.png'
     },
     requestInfo: {
-      // baseUrl: 'http://127.0.0.1:3000',
-      baseUrl: 'https://talkapi.dei2.com',
+      baseUrl: 'http://127.0.0.1:3000',
+      // baseUrl: 'https://talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
       modifyPassword: '/Zpm/user/modifyPassword',
-      listUsers: 'Zpm/user/list',
-      listAllPlugins: 'Zpm/plugin/listAll', // 插件列表，用于root、admin插件管理
-      updateUserSettings: 'Zpm/user/updateUserSettings',
-      updatePluginSettings: 'Zpm/plugin/updatePluginSettings', // 审核插件
-      deletePlugin: 'Zpm/plugin/deletePlugin',
-      deleteUser: 'Zpm/user/deleteUser',
+      listUsers: '/Zpm/user/list',
+      listAllPlugins: '/Zpm/plugin/listAll', // 插件列表，用于root、admin插件管理
+      updateUserSettings: '/Zpm/user/updateUserSettings',
+      updatePluginSettings: '/Zpm/plugin/updatePluginSettings', // 审核插件
+      deletePlugin: '/Zpm/plugin/deletePlugin',
+      deleteUser: '/Zpm/user/deleteUser',
       listPlugins: '/Zpm/plugin/list',
       viewFile: '/Zpm/plugin/content',
       updatePluginFileContent: '/Zpm/plugin/update',
@@ -109,7 +111,10 @@ const store = new Vuex.Store({
       saveMessage: '/Zpm/message/save', // 保存消息
       updateMessage: '/Zpm/message/update', // 修改将消息状态 status:  0 删除, 1 未读, 2 已读
       queryMessage: '/Zpm/message/list', // 查询消息列表
-      countMessage: 'Zpm/message/count' // 查询消息的总条数
+      countMessage: '/Zpm/message/count', // 查询消息的总条数
+      listActivity: '/Zpm/activity/list', // 查询所有活动
+      createActivity: '/Zpm/activity/create', // 新建活动
+      editActivity: '/Zpm/activity/edit' // 编辑活动
     },
     loginInfo: {
     },
