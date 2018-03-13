@@ -1,23 +1,24 @@
 <template>
   <div class="user_container">
-    User
+    <app-header></app-header>
+    <app-content></app-content>
   </div>
 </template>
 <style>
   .user_container {
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
   }
 </style>
 <script>
   export default {
+    name: 'UserHome',
     data () {
       return {}
     },
-    components: {}
+    components: {
+      AppHeader: () => import('../AppHeader.vue'),
+      AppContent: () => import('../AppContent.vue')
+    }
   }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="app_content">
+  <div class="app_content" :class="{'window_full_screen': isFullScreen}">
     <Row type="flex" class="h100p">
       <Col :span="spanLeft">
         <app-side-menu></app-side-menu>
@@ -19,12 +19,17 @@
     top: 61px;
     left: 0;
     width: 100%;
-    height: calc(100% - 62px);
-    border-left: 1px solid #d7dde4;
+    height: calc(100% - 61px);
+    /*border-left: 1px solid #d7dde4;*/
     /*border: 1px solid #d7dde4;*/
     /*border-top: none;*/
     box-sizing: border-box;
     overflow: hidden;
+    background-color: #f5f7f9;
+  }
+  .window_full_screen {
+    top: 60px!important;
+    height: calc(100% - 60px)!important;
   }
 </style>
 <script>
@@ -33,9 +38,21 @@
     data () {
       return {
         appName: this.$store.state.appName,
-        assets: this.$store.state.assets,
-        spanLeft: 6,
-        spanRight: 18
+        assets: this.$store.state.assets
+      }
+    },
+    computed: {
+      spanLeft () {
+        return this.$store.state.spanLeft
+      },
+      spanRight () {
+        return this.$store.state.spanRight
+      },
+      menuFold () {
+        return this.$store.state.menuFold
+      },
+      isFullScreen () {
+        return this.$store.state.isFullScreen
       }
     },
     components: {

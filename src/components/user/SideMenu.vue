@@ -1,5 +1,5 @@
 <template>
-    <div class="root_side_menu_container">
+    <div class="user_side_menu_container">
         <!--<Menu theme="dark" width="auto" :active-name="activeName" @on-select="navToPage">-->
             <!--<MenuItem name="Users" v-if="!menuFold">-->
                 <!--<Icon type="ios-people"></Icon>-->
@@ -30,7 +30,7 @@
     </div>
 </template>
 <style scoped>
-    .root_side_menu_container {
+    .user_side_menu_container {
         width: 100%;
         height: 100%;
         background-color: transparent;
@@ -39,18 +39,18 @@
         height: 100%;
         overflow-y: auto;
     }
-    .root_side_menu_container .icon_only {
+    .user_side_menu_container .icon_only {
         display: inline-block;
         width: 100%;
         text-align: center;
     }
-    .root_side_menu_container .icon_only .ivu-poptip-rel {
+    .user_side_menu_container .icon_only .ivu-poptip-rel {
         width: 100%;
     }
-    .root_side_menu_container .ivu-poptip-body {
+    .user_side_menu_container .ivu-poptip-body {
         padding: 8px 0;
     }
-    .root_side_menu_container .np {
+    .user_side_menu_container .np {
         padding-left: 0!important;
         padding-right: 0!important;
     }
@@ -107,13 +107,13 @@
       return {
         menuItems: [
           {
-            name: 'users',
-            text: '用户',
+            name: 'activity',
+            text: '活动',
             icon: 'ios-people',
             children: [
               {
                 name: 'index',
-                text: '用户管理'
+                text: '活动管理'
               }
             ]
           }

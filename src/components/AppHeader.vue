@@ -1,13 +1,20 @@
 <template>
-  <div class="app_header layout">
+  <div class="app_header">
     <Row type="flex">
       <Col :span="spanLeft" class="layout-menu-left">
         <router-link :to="{path: '/'}">
-          <div class="layout-logo-left" v-text="appName"></div>
+          <!--<div class="layout-logo-left" v-text="appName"></div>-->
+          <Tooltip class="layout-logo-left" :content="fullAppName" placement="right">
+            <div v-text="menuFold ? shortAppName : appName"></div>
+          </Tooltip>
         </router-link>
       </Col>
       <Col :span="spanRight">
         <div class="layout-header">
+          <div class="menu_toggle" @click="toggleMenu">
+            <Icon type="navicon" size="26"></Icon>
+          </div>
+          <full-screen v-model="isFullScreen" @on-change="fullscreenChange" class="full_screen_icon"></full-screen>
           <div class="layout-header-icon-container">
             <div @click="navToMessage" class="message-icon">
               <Badge :count="messageValue" class-name="message-count-badge">
@@ -47,15 +54,18 @@
 </template>
 <style>
   .app_header {
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
     height: 60px;
     background-color: #ffffff;
   }
   .layout{
-    border: 1px solid #d7dde4;
+    /*border: 1px solid #d7dde4;*/
     background: #f5f7f9;
     position: relative;
-    border-radius: 4px;
+    /*border-radius: 4px;*/
     overflow: hidden;
     box-sizing: border-box;
     height: 100%;
@@ -65,12 +75,18 @@
     background: #464c5b;
   }
   .layout-header{
+    position: relative;
     height: 60px;
     background: #fff;
     box-shadow: 0 1px 1px rgba(0,0,0,.1);
     display: flex;
     align-items: center;
     justify-content: flex-end;
+  }
+  .layout-header .menu_toggle {
+    position: absolute;
+    left: 20px;
+    cursor: pointer;
   }
   .layout-header-icon-container {
     height: 100%;
@@ -126,14 +142,26 @@
     overflow: hidden;
     border-bottom: 1px solid rgba(30, 36, 50, 0.36);
   }
+  .layout-logo-left .ivu-tooltip-rel {
+    width: 100%;
+  }
   .ivu-col{
     transition: width .2s cubic-bezier(.215,.61,.355,1);
   }
   .user-badge .ivu-poptip-body {
     padding: 0!important;
   }
+  .full_screen_icon {
+    margin-right: 30px;
+    cursor: pointer;
+    /*height: 60px;*/
+    /*display: inline-flex;*/
+    /*align-items: center;*/
+    /*justify-content: center;*/
+  }
 </style>
 <script>
+  import FullScreen from './fullscreen.vue'
   import * as types from '../store/mutation-types'
   import utils from '../utils'
   export default {
@@ -141,20 +169,30 @@
     data () {
       return {
         appName: this.$store.state.appName,
+        shortAppName: this.$store.state.shortAppName,
+        fullAppName: this.$store.state.fullAppName,
         assets: this.$store.state.assets,
         eventHub: this.$store.state.eventHub,
         events: this.$store.state.events,
-        spanLeft: 6,
-        spanRight: 18,
         messageValue: 0,
         socket: this.$store.state.socket,
         socketEvents: this.$store.state.socketEvents,
-        requestInfo: this.$store.state.requestInfo
+        requestInfo: this.$store.state.requestInfo,
+        isFullScreen: this.$store.state.isFullScreen
       }
     },
     computed: {
       loginInfo () {
         return this.$store.state.loginInfo
+      },
+      spanLeft () {
+        return this.$store.state.spanLeft
+      },
+      spanRight () {
+        return this.$store.state.spanRight
+      },
+      menuFold () {
+        return this.$store.state.menuFold
       },
       currentRole () {
         let _role = this.loginInfo.role
@@ -188,6 +226,17 @@
       })
     },
     methods: {
+      toggleMenu () {
+        this.$store.commit(types.TOGGLE_MENU)
+        setTimeout(() => {
+          this.eventHub.$emit(this.events.mainContentSizeChange, {})
+        }, 200)
+      },
+      fullscreenChange () {
+        this.$store.commit(types.TOGGLE_FULL_SCREEN, {
+          isFullScreen: this.isFullScreen
+        })
+      },
       readMessage (args) {
         this.messageValue = Math.max(this.messageValue - Number(args.count), 0)
       },
@@ -263,6 +312,8 @@
         this.$router.push(`/message`)
       }
     },
-    components: {}
+    components: {
+      FullScreen
+    }
   }
 </script>
