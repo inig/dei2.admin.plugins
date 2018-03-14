@@ -280,7 +280,7 @@
         if (createData.status === 200) {
           this.$router.push({
             path: 'edit',
-            query: {
+            params: {
               q: createData.data.uuid
             }
           })

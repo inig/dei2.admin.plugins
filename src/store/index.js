@@ -114,7 +114,8 @@ const store = new Vuex.Store({
       countMessage: '/Zpm/message/count', // 查询消息的总条数
       listActivity: '/Zpm/activity/list', // 查询所有活动
       createActivity: '/Zpm/activity/create', // 新建活动
-      editActivity: '/Zpm/activity/edit' // 编辑活动
+      editActivity: '/Zpm/activity/edit', // 编辑活动
+      getActivity: '/Zpm/activity/getTemplateData' // 获取活动模板数据
     },
     loginInfo: {
     },
