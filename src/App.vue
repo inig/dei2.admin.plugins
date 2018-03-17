@@ -12,6 +12,11 @@
       return {
       }
     },
+    created () {
+      document.onclick = function () {
+        console.log('clicked')
+      }
+    },
     computed: {
       loginInfo () {
         return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)

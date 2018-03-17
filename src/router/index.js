@@ -122,7 +122,7 @@ export const contentRouter = {
         title: '活动编辑'
       },
       components: {
-        ContentRouter: () => import('../components/user/components/ActivityEdit.vue')
+        ContentRouter: () => import('../components/user/activity/ActivityEdit.vue')
       }
     },
     {

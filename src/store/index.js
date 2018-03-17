@@ -78,6 +78,7 @@ const store = new Vuex.Store({
     },
     eventHub: new Vue(),
     events: {
+      bodyClick: 'body-click',
       getNewMessage: 'get-new-message', // 获取到新消息
       updatePluginFileContent: 'update-plugin-file-content', // 更新插件内容
       updatePluginList: 'update-plugin-list', // 更新我的插件列表

@@ -369,7 +369,7 @@
       }
     },
     components: {
-      ActivityCard: () => import('./components/ActivityCard.vue')
+      ActivityCard: () => import('./activity/ActivityCard.vue')
     }
   }
 </script>

@@ -11,11 +11,22 @@
         <Select v-model="selectedSimulatorIndex" size="small" style="width: 120px">
           <Option v-for="(item, index) in simulators" :value="index" :key="item.name">{{ item.name }}</Option>
         </Select>
-        <p class="simulator_size">
+        <p class="simulator_size" tabindex="9">
           <span>{{simulators[selectedSimulatorIndex].width}}</span>x<span>{{simulators[selectedSimulatorIndex].height}}</span>
         </p>
+        <p class="simulator_size">
+          <Select v-model="simulatorScale.value" size="small" filterable style="width: 80px">
+            <Option v-for="(item, index) in simulatorScale.options" :value="index" :key="item.value">{{ item.value * 100 }}%</Option>
+          </Select>
+        </p>
       </div>
-      <div class="editor_main_simulator" :style="{width: simulators[selectedSimulatorIndex].width + 'px', height: simulators[selectedSimulatorIndex].height + 'px'}"></div>
+      <div class="editor_main_simulator" tabindex="10"
+           :style="{width: simulators[selectedSimulatorIndex].width + 'px', height: simulators[selectedSimulatorIndex].height + 'px', transform: 'scale(' + parseFloat(simulatorScale.options[simulatorScale.value].value) + ')'}">
+        <editor-simulator></editor-simulator>
+      </div>
+    </div>
+    <div class="editor_property_container">
+      <editor-property></editor-property>
     </div>
   </div>
 </template>
@@ -84,6 +95,7 @@
     position: absolute;
     left: 0;
     top: 0;
+    z-index: 7;
     width: 100%;
     height: 32px;
     display: flex;
@@ -95,9 +107,22 @@
     font-size: 14px;
   }
   .editor_main_simulator {
+    z-index: 6;
     width: 375px;
     height: 667px;
     background-color: rgba(18,231,255,0.38);
+  }
+
+  .editor_property_container {
+    position: absolute;
+    width: 300px;
+    height: 100%;
+    z-index: 9;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.1);
+    -moz-box-shadow: 0 1px 1px rgba(0,0,0,.1);
+    box-shadow: 0 1px 1px rgba(0,0,0,.1);
+    right: 0;
+    background-color: #ffffff;
   }
 </style>
 <script>
@@ -127,11 +152,41 @@
             dpr: 2
           }
         ],
+        simulatorScale: {
+          value: 2,
+          options: [
+            {
+              value: 1.5
+            },
+            {
+              value: 1.25
+            },
+            {
+              value: 1
+            },
+            {
+              value: 0.9
+            },
+            {
+              value: 0.8
+            },
+            {
+              value: 0.7
+            },
+            {
+              value: 0.6
+            },
+            {
+              value: 0.5
+            }
+          ]
+        },
         selectedSimulatorIndex: 1,
         uuid: this.$route.query.q,
         requestInfo: this.$store.state.requestInfo,
         actInfo: {},
-        editorComponentsContainerShown: true
+        editorComponentsContainerShown: true,
+        activeElement: document.activeElement
       }
     },
     async created () {
@@ -165,8 +220,15 @@
         this.editorComponentsContainerShown = !this.editorComponentsContainerShown
       }
     },
+    watch: {
+      'activeElement.className': function (val) {
+        console.log('........', val)
+      }
+    },
     components: {
-      EditorComponent: () => import('./editor/Components.vue')
+      EditorComponent: () => import('./editor/Components.vue'),
+      EditorSimulator: () => import('./editor/Simulator.vue'),
+      EditorProperty: () => import('./editor/Property.vue')
     }
   }
 </script>
