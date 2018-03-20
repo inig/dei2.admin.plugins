@@ -8,21 +8,24 @@
     </div>
     <div class="editor_main_container">
       <div class="editor_main_simulator_selector">
-        <Select v-model="selectedSimulatorIndex" size="small" style="width: 120px">
+        <Select v-model="selectedSimulatorIndex" size="small" style="width: 120px" @on-change="setSimulatorProperty">
           <Option v-for="(item, index) in simulators" :value="index" :key="item.name">{{ item.name }}</Option>
         </Select>
         <p class="simulator_size" tabindex="9">
           <span>{{simulators[selectedSimulatorIndex].width}}</span>x<span>{{simulators[selectedSimulatorIndex].height}}</span>
         </p>
         <p class="simulator_size">
-          <Select v-model="simulatorScale.value" size="small" filterable style="width: 80px">
+          <Select v-model="simulatorScale.value" size="small" filterable style="width: 80px" @on-change="setSimulatorProperty">
             <Option v-for="(item, index) in simulatorScale.options" :value="index" :key="item.value">{{ item.value * 100 }}%</Option>
           </Select>
         </p>
+        <Tooltip :content="platform === 'mac' ? '按Command+Shift+S保存活动模板' : '按Control+Shift+S保存模板'" placement="bottom-end" style="position: absolute; right: 15px;">
+          <Button type="primary" size="small" @click="saveActivity">保存模板</Button>
+        </Tooltip>
       </div>
       <div class="editor_main_simulator" tabindex="10"
-           :style="{width: simulators[selectedSimulatorIndex].width + 'px', height: simulators[selectedSimulatorIndex].height + 'px', transform: 'scale(' + parseFloat(simulatorScale.options[simulatorScale.value].value) + ')'}">
-        <editor-simulator></editor-simulator>
+           :style="{transform: 'scale(' + parseFloat(1 / simulators[selectedSimulatorIndex].dpr) + ')'}">
+        <editor-simulator :page-index="currentPageIndex"></editor-simulator>
       </div>
     </div>
     <div class="editor_property_container">
@@ -85,7 +88,7 @@
     position: absolute;
     left: 40px;
     z-index: 8;
-    width: calc(100% - 40px - 200px);
+    width: calc(100% - 40px - 300px);
     height: 100%;
     display: flex;
     align-items: center;
@@ -101,6 +104,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #f5f7f9;
   }
   .simulator_size {
     margin-left: 20px;
@@ -108,9 +112,9 @@
   }
   .editor_main_simulator {
     z-index: 6;
-    width: 375px;
-    height: 667px;
-    background-color: rgba(18,231,255,0.38);
+    /*width: 375px;*/
+    /*height: 667px;*/
+    background-color: transparent;
   }
 
   .editor_property_container {
@@ -135,20 +139,20 @@
         simulators: [
           {
             name: 'iPhone 5',
-            width: 320,
-            height: 568,
+            width: 640,
+            height: 1136,
             dpr: 2
           },
           {
             name: 'iPhone 6',
-            width: 375,
-            height: 667,
+            width: 750,
+            height: 1334,
             dpr: 2
           },
           {
             name: 'iPhone 6 Plus',
-            width: 414,
-            height: 736,
+            width: 828,
+            height: 1472,
             dpr: 2
           }
         ],
@@ -186,10 +190,21 @@
         requestInfo: this.$store.state.requestInfo,
         actInfo: {},
         editorComponentsContainerShown: true,
-        activeElement: document.activeElement
+        events: this.$store.state.events,
+        eventHub: this.$store.state.eventHub,
+        currentPageIndex: this.$store.state.currentPageIndex,
+        platform: 'windows'
+      }
+    },
+    computed: {
+      pageData () {
+        return (utils.isEmptyObj(JSON.parse(this.actInfo.data)) ? [] : JSON.parse(this.actInfo.data).pages)
       }
     },
     async created () {
+//      let isWin = (navigator.platform === 'Win32') || (navigator.platform === 'Windows')
+      let isMac = (navigator.platform === 'Mac68K') || (navigator.platform === 'MacPPC') || (navigator.platform === 'Macintosh') || (navigator.platform === 'MacIntel')
+      isMac && (this.platform = 'mac')
       let paramActivityInfo = (this.$route.params.activityInfo ? JSON.parse(JSON.stringify(this.$route.params.activityInfo)) : {})
       if (utils.isEmptyObj(paramActivityInfo)) {
         // 从接口取模板数据
@@ -197,13 +212,44 @@
       } else {
         this.actInfo = paramActivityInfo
       }
+      this.$store.commit(types.INIT_LOCAL_TEMPLATE, {
+        template: (utils.isEmptyObj(JSON.parse(this.actInfo.data)) ? [] : JSON.parse(this.actInfo.data).pages)
+      })
     },
     mounted () {
+      const that = this
       this.$store.commit(types.FOLD_SIDE_MENU, {
         fold: true
       })
+      this.setSimulatorProperty()
+      window.onkeydown = function (ev) {
+        if (that.$route.name === 'ActivityEdit') {
+          if (that.platform === 'mac') {
+            if (ev.metaKey && ev.shiftKey && ev.keyCode === 83) {
+              // mac下 command + shift + s
+              that.saveActivity()
+            }
+          } else {
+            if (ev.ctrlKey && ev.shiftKey && ev.keyCode === 83) {
+              // windows下  control + shift + s 保存
+              that.saveActivity()
+            }
+          }
+        }
+      }
     },
     methods: {
+      setSimulatorProperty () {
+        let _selectedSimulator = this.simulators[this.selectedSimulatorIndex]
+        this.$store.commit(types.SET_SIMULATOR, {
+          name: _selectedSimulator.name,
+          width: _selectedSimulator.width,
+          height: _selectedSimulator.height,
+          dpr: _selectedSimulator.dpr,
+          scale: this.simulatorScale.options[this.simulatorScale.value].value
+        })
+        this.eventHub.$emit(this.events.simulatorChanged)
+      },
       async getTemplateData () {
         let templateData = await this.$store.dispatch(types.AJAX, {
           baseUrl: this.requestInfo.baseUrl,
@@ -218,11 +264,10 @@
       },
       toggleEditorComponentsContainer () {
         this.editorComponentsContainerShown = !this.editorComponentsContainerShown
-      }
-    },
-    watch: {
-      'activeElement.className': function (val) {
-        console.log('........', val)
+      },
+      saveActivity () {
+        // 保存活动模板
+        this.$Message.success('保存成功')
       }
     },
     components: {

@@ -1,15 +1,12 @@
 <template>
   <div class="property_container">
-    属性面板
+    <component :is="activeComponent.type && activeComponent.type.replace('zpm-', 'property-')"></component>
   </div>
 </template>
 <style scoped>
   .property_container {
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 </style>
 <script>
@@ -17,8 +14,24 @@
     name: 'Property',
     data () {
       return {
+        eventHub: this.$store.state.eventHub,
+        events: this.$store.state.events,
+        activeComponent: {}
       }
     },
-    components: {}
+    created () {
+      this.$nextTick(() => {
+        this.eventHub.$on(this.events.activeComponentChanged, this.activeComponentChanged)
+      })
+    },
+    methods: {
+      activeComponentChanged (data) {
+        this.activeComponent = data
+      }
+    },
+    components: {
+      PropertyPage: () => import('../property/Page.vue'),
+      PropertyButton: () => import('../property/Button.vue')
+    }
   }
 </script>

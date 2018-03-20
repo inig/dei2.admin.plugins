@@ -36,6 +36,27 @@
 
 import * as types from './mutation-types'
 
+const findTemplateByUUID = function (uuid, arr, deep, sub) {
+  let _deep = deep // deep为1或2
+  let _sub = sub || 0
+  let outIndex = [-1, -1]
+  if (--_deep > -1) {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i].uuid === uuid) {
+        outIndex[_deep + _sub] = i
+        i = arr.length
+      } else {
+        let _tempIndex = findTemplateByUUID(uuid, arr[i].children, _deep, deep - _deep)[1]
+        if (_tempIndex > -1) {
+          outIndex[0] = i
+          outIndex[1] = _tempIndex
+        }
+      }
+    }
+  }
+  return outIndex
+}
+
 export const mutations = {
   [types.SHOW_POPUP] (state, data) {
     state.popup = Object.assign({}, state.popup, data, {
@@ -78,5 +99,50 @@ export const mutations = {
   },
   [types.TOGGLE_FULL_SCREEN] (state, data) {
     state.isFullScreen = data.isFullScreen
+  },
+  [types.SET_SIMULATOR] (state, data) {
+    Object.assign(state.simulator, data)
+  },
+  [types.ACTIVE_COMPONENT] (state, data) {
+    Object.assign(state.activeComponent, data)
+  },
+  [types.INIT_LOCAL_TEMPLATE] (state, data) {
+    state.pageData = data.template
+  },
+  [types.SAVE_LOCAL_TEMPLATE] (state, data) {
+    /**
+     * type: zpm-page
+     * uuid: xxxxxxx
+     * template: {}
+     */
+    let _pageData = state.pageData
+    let _pageIndex = -1
+    let _componentIndex = -1
+    if (data.type === state.simulatorPageType) {
+      // 是页面
+      _pageIndex = findTemplateByUUID(data.uuid, _pageData, 1)[0]
+      if (_pageIndex === -1) {
+        // 不存在，是新页面
+        _pageData.push(data.template)
+      } else {
+        // 存在，替换原有页面模板
+        _pageData.splice(_pageIndex, 1, data.template)
+      }
+    } else {
+      // 是页面中的组件
+      let _index = findTemplateByUUID(data.uuid, _pageData, 2)
+      _pageIndex = _index[0]
+      _componentIndex = _index[1]
+      if (_pageIndex !== -1) {
+        // 页面必须存在
+        if (_componentIndex === -1) {
+          // 是新组件，添加新组件
+          _pageData[_pageIndex].children.push(data.template)
+        } else {
+          // 不是新组件，替换
+          _pageData[_pageIndex].children.splice(_componentIndex, 1, data.template)
+        }
+      }
+    }
   }
 }

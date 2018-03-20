@@ -10,11 +10,14 @@
     name: 'app',
     data () {
       return {
+        events: this.$store.state.events,
+        eventHub: this.$store.state.eventHub
       }
     },
     created () {
+      const that = this
       document.onclick = function () {
-        console.log('clicked')
+        that.eventHub.$emit(that.events.bodyClick)
       }
     },
     computed: {

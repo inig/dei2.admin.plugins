@@ -58,6 +58,18 @@ export const FOLD_SIDE_MENU = 'FOLD_SIDE_MENU'
 // 窗口全屏
 export const TOGGLE_FULL_SCREEN = 'TOGGLE_FULL_SCREEN'
 
+// 设置simulator属性
+export const SET_SIMULATOR = 'SET_SIMULATOR'
+
+// 激活组件
+export const ACTIVE_COMPONENT = 'ACTIVE_COMPONENT'
+
+// 保存活动模板数据至本地store，非数据库
+export const SAVE_LOCAL_TEMPLATE = 'SAVE_LOCAL_TEMPLATE'
+
+// 初始化活动模板数据
+export const INIT_LOCAL_TEMPLATE = 'INIT_LOCAL_TEMPLATE'
+
 // >>>> actions:
 
 // 登录1

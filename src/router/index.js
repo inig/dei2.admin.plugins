@@ -39,7 +39,7 @@ export const routerRegister = {
 //   path: '/locking',
 //   name: 'locking',
 //   components: {
-//     HomeRouter: () => import('../components/lockscreen/components/locking-page.vue')
+//     HomeRouter: () => import('../components/lockscreen/components/locking-Page.vue')
 //   }
 // }
 
