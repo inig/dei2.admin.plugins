@@ -64,12 +64,6 @@
   import * as types from '../../../../store/mutation-types'
   export default {
     name: 'Simulator',
-    props: {
-      pageIndex: {
-        type: Number,
-        required: true
-      }
-    },
     data () {
       return {
         simulatorInfo: this.$store.state.simulator,
@@ -85,7 +79,7 @@
     },
     computed: {
       pData () {
-        return this.$store.state.pageData[Number(this.pageIndex)] || {}
+        return this.$store.state.pageData[Number(this.$store.state.currentPageIndex)] || {}
       }
     },
     created () {
@@ -113,6 +107,7 @@
         let activeElement = document.activeElement
         let activeComponentType = activeElement.getAttribute('com-type')
         let activeComponentUUID = activeElement.getAttribute('com-uuid')
+        // if (!activeComponentType || !activeComponentUUID) {
         if (!activeComponentType || !activeComponentUUID || (activeComponentUUID === this.$store.state.activeComponent.uuid)) {
           return
         }

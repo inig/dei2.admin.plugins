@@ -31,7 +31,8 @@
 </template>
 <style scoped>
   .RED {
-    color: #ff3300;
+    color: #ed3f14;
+    /*color: #BF0A10;*/
   }
   .activity_card_container {
     float: left;

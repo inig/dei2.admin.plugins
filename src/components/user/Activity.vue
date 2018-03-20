@@ -217,7 +217,20 @@
         containerWidth: 137,
         eventHub: this.$store.state.eventHub,
         events: this.$store.state.events,
-        requestInfo: this.$store.state.requestInfo
+        requestInfo: this.$store.state.requestInfo,
+        blankActivityTemplate: {
+          'animation': 'slideUp',
+          'pages': [
+            {
+              'type': 'zpm-page',
+              'uuid': utils.getUUID('zpm-page-'),
+              'style': {
+                'background-color': '#FFFFFF'
+              },
+              'children': []
+            }
+          ]
+        }
       }
     },
     computed: {
@@ -269,18 +282,20 @@
       },
       async create () {
         // 新建活动
+        // {"animation":"slideUp","pages":[{"type":"zpm-page","uuid":"zpm-page-6d843cbf-e285-0b0b-7b59-7d209c5b8dd8","style":{"background-color":"#FFFFFF","background-image":"url(\"https://static.dei2.com/plugins_admin/img/upload_152a2aec657ebcbffe77a8091eb5361d.jpg\")"},"children":[]},{"type":"zpm-page","uuid":"zpm-page-6d843cbf-e285-0b0b-7b59-7d20s2dkadd8","style":{"background-color":"#FF0000","children":[]}},{"type":"zpm-page","uuid":"zpm-page-6d841231-e285-0b0b-7b59-7d20s2dkadd8","style":{"background-color":"#FF0000","children":[]}},{"type":"zpm-page","uuid":"zpm-page-6d84as2df-e285-0b0b-7b59-7d20s2dkadd8","style":{"background-color":"#FF0000","children":[]}},{"type":"zpm-page","uuid":"zpm-page-6d842211-e285-0b0b-7b59-7d20s2dkadd8","style":{"background-color":"#FF0000","children":[]}},{"type":"zpm-page","uuid":"zpm-page-6d8423sa-e285-0b0b-7b59-7d20s2dkadd8","style":{"background-color":"#FF0000","children":[]}},{"type":"zpm-page","uuid":"zpm-page-6d841s3f-e285-0b0b-7b59-7d20sasdfd8","style":{"background-color":"#FF0000","children":[]}},{"type":"zpm-page","uuid":"zpm-page-6d8412dd-e285-0b0b-7b59-7d20a22fsdadd8","style":{"background-color":"#FF0000","children":[]}},{"type":"zpm-page","uuid":"zpm-page-6d8adf22dd-e285-0b0b-7b59-7d20s2dkadd8","style":{"background-color":"#FF0000","children":[]}},{"type":"zpm-page","uuid":"zpm-page-6d8412dd-e285-0b0b-7b59-7d20sasdf23fd8","style":{"background-color":"#FF0000","children":[]}},{"type":"zpm-page","uuid":"zpm-page-6d84111123-e285-0b0b-7b59-7d20s2dkadd8","style":{"background-color":"#FF0000","children":[]}},{"type":"zpm-page","uuid":"zpm-page-6d8412dd-e285-0b0b-7b59-7d2asdf232332dd8","style":{"background-color":"#FF0000","children":[]}}]}
         let createData = await this.$store.dispatch(types.AJAX, {
           baseUrl: this.requestInfo.baseUrl,
           url: this.requestInfo.createActivity,
           data: {
             thumbnail: 'https://static.dei2.com/plugins_admin/img/127x200.png',
-            desc: '我的第一个活动'
+            desc: '我的第一个活动',
+            data: JSON.stringify(this.blankActivityTemplate)
           }
         })
         if (createData.status === 200) {
           this.$router.push({
-            path: 'edit',
-            params: {
+            name: 'ActivityEdit',
+            query: {
               q: createData.data.uuid
             }
           })

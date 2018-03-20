@@ -97,7 +97,7 @@
     },
     filters: {
       imageFilter (path) {
-        if (path === '') {
+        if (!path || path === '') {
           return ''
         }
         return path.replace(/.{5}(http.*).{2}$/, '$1')

@@ -109,6 +109,23 @@ export const mutations = {
   [types.INIT_LOCAL_TEMPLATE] (state, data) {
     state.pageData = data.template
   },
+  [types.PREV_PAGE] (state) {
+    // 上一页
+    if (state.currentPageIndex > 0) {
+      state.currentPageIndex -= 1
+    }
+  },
+  [types.NEXT_PAGE] (state) {
+    // 下一页
+    if (state.currentPageIndex < state.pageData.length - 1) {
+      state.currentPageIndex += 1
+    }
+  },
+  [types.SET_CURRENT_PAGE_INDEX] (state, data) {
+    if (Number(data.index) >= 0 && Number(data.index) <= state.pageData.length - 1) {
+      state.currentPageIndex = Number(data.index)
+    }
+  },
   [types.SAVE_LOCAL_TEMPLATE] (state, data) {
     /**
      * type: zpm-page

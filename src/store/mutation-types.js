@@ -70,6 +70,15 @@ export const SAVE_LOCAL_TEMPLATE = 'SAVE_LOCAL_TEMPLATE'
 // 初始化活动模板数据
 export const INIT_LOCAL_TEMPLATE = 'INIT_LOCAL_TEMPLATE'
 
+// 上一页
+export const PREV_PAGE = 'PREV_PAGE'
+
+// 下一页
+export const NEXT_PAGE = 'NEXT_PAGE'
+
+// 跳转到指定页
+export const SET_CURRENT_PAGE_INDEX = 'SET_CURRENT_PAGE_INDEX'
+
 // >>>> actions:
 
 // 登录1
