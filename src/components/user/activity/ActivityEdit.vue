@@ -6,7 +6,7 @@
       </div>
       <div class="editor_components_toggle" @click="toggleEditorComponentsContainer"></div>
     </div>
-    <div class="editor_main_container">
+    <div class="editor_main_container" tabindex="10" com-type="activity">
       <div class="editor_main_simulator_selector">
         <Select v-model="selectedSimulatorIndex" size="small" style="width: 120px" @on-change="setSimulatorProperty">
           <Option v-for="(item, index) in simulators" :value="index" :key="item.name">{{ item.name }}</Option>
@@ -320,6 +320,9 @@
       this.$store.commit(types.INIT_LOCAL_TEMPLATE, {
         template: ((!this.actInfo.data || utils.isEmptyObj(JSON.parse(this.actInfo.data))) ? [] : JSON.parse(this.actInfo.data).pages)
       })
+      this.$nextTick(() => {
+        this.eventHub.$on(this.events.bodyClick, this.bodyClickHandler)
+      })
     },
     mounted () {
       const that = this
@@ -375,6 +378,27 @@
       }
     },
     methods: {
+      bodyClickHandler () {
+        let activeElement = document.activeElement
+        let activeComponentType = activeElement.getAttribute('com-type')
+        if (activeComponentType === 'activity') {
+          // 设置整个活动的属性
+          let templateData = ((!this.actInfo.data || utils.isEmptyObj(JSON.parse(this.actInfo.data))) ? {} : JSON.parse(this.actInfo.data))
+          if (templateData.pages) {
+            delete templateData.pages
+          }
+          this.$store.commit(types.ACTIVE_COMPONENT, {
+            type: 'zpm-' + activeComponentType,
+            uuid: '',
+            template: templateData || {}
+          })
+          this.eventHub.$emit(this.events.activeComponentChanged, {
+            type: 'zpm-' + activeComponentType,
+            uuid: '',
+            template: templateData || {}
+          })
+        }
+      },
       changeCurrentPageIndex (e) {
         this.$store.commit(types.SET_CURRENT_PAGE_INDEX, {
           index: Number(this.$refs[this.currentPageRef].innerText) - 1

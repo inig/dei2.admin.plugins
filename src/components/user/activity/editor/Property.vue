@@ -30,6 +30,7 @@
       }
     },
     components: {
+      PropertyActivity: () => import('../property/Activity.vue'),
       PropertyPage: () => import('../property/Page.vue'),
       PropertyButton: () => import('../property/Button.vue')
     }
