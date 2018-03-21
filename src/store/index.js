@@ -60,6 +60,21 @@ const store = new Vuex.Store({
     minSpanRight: 19,
     isFullScreen: false,
     menuFold: false, // 左侧菜单是否折叠
+    simulator: {
+      name: 'iPhone 6',
+      width: 375,
+      height: 667,
+      dpr: 2,
+      scale: 1
+    },
+    activeComponent: {
+      uuid: '',
+      type: '',
+      template: {}
+    },
+    simulatorPageType: 'zpm-page',
+    pageData: [], // 活动模板数据
+    currentPageIndex: 0,
     socket: {
       // server: 'http://wss.dei2.com',
       server: 'http://127.0.0.1',
@@ -78,6 +93,9 @@ const store = new Vuex.Store({
     },
     eventHub: new Vue(),
     events: {
+      bodyClick: 'body-click',
+      simulatorChanged: 'simulator-changed', // 模拟器属性变化
+      activeComponentChanged: 'active-component-changed', // 激活状态的组件变化
       getNewMessage: 'get-new-message', // 获取到新消息
       updatePluginFileContent: 'update-plugin-file-content', // 更新插件内容
       updatePluginList: 'update-plugin-list', // 更新我的插件列表
@@ -114,7 +132,8 @@ const store = new Vuex.Store({
       countMessage: '/Zpm/message/count', // 查询消息的总条数
       listActivity: '/Zpm/activity/list', // 查询所有活动
       createActivity: '/Zpm/activity/create', // 新建活动
-      editActivity: '/Zpm/activity/edit' // 编辑活动
+      editActivity: '/Zpm/activity/edit', // 编辑活动
+      getActivity: '/Zpm/activity/getTemplateData' // 获取活动模板数据
     },
     loginInfo: {
     },

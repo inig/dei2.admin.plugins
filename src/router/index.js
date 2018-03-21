@@ -35,11 +35,22 @@ export const routerRegister = {
   }
 }
 
+export const routerActivityPreview = {
+  path: '/activity/preview',
+  name: 'ActivityPreview',
+  meta: {
+    title: '活动预览'
+  },
+  components: {
+    HomeRouter: () => import('../components/user/activity/ActivityPreview.vue')
+  }
+}
+
 // export const routerLocking = {
 //   path: '/locking',
 //   name: 'locking',
 //   components: {
-//     HomeRouter: () => import('../components/lockscreen/components/locking-page.vue')
+//     HomeRouter: () => import('../components/lockscreen/components/locking-Page.vue')
 //   }
 // }
 
@@ -122,7 +133,7 @@ export const contentRouter = {
         title: '活动编辑'
       },
       components: {
-        ContentRouter: () => import('../components/user/components/ActivityEdit.vue')
+        ContentRouter: () => import('../components/user/activity/ActivityEdit.vue')
       }
     },
     {
@@ -156,6 +167,7 @@ export default new Router({
     // routerHome,
     routerLogin,
     routerRegister,
+    routerActivityPreview,
     // routerLocking,
     contentRouter,
     page404

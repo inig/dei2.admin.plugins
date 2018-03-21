@@ -13,7 +13,7 @@
                 <Icon type="eye" size="20"></Icon>
               </Tooltip>
             </div>
-            <div class="activity_operation_item">
+            <div class="activity_operation_item" @click="edit">
               <Tooltip content="编辑" placement="right">
                 <Icon type="edit" size="20"></Icon>
               </Tooltip>
@@ -31,7 +31,8 @@
 </template>
 <style scoped>
   .RED {
-    color: #ff3300;
+    color: #ed3f14;
+    /*color: #BF0A10;*/
   }
   .activity_card_container {
     float: left;
@@ -121,6 +122,9 @@
     opacity: 1;
     cursor: pointer;
   }
+  .activity_operation_item .ivu-tooltip {
+    pointer-events: none;
+  }
   .activity_operation_item .ivu-tooltip-rel {
     display: flex;
     align-items: center;
@@ -161,6 +165,17 @@
         color && _urlArr.push('fg=' + color.substring(1))
         bgColor && _urlArr.push('bg=' + bgColor.substring(1))
         return _url + _urlArr.join('&')
+      },
+      edit () {
+        this.$router.push({
+          name: 'ActivityEdit',
+          params: {
+            activityInfo: this.dataValue
+          },
+          query: {
+            q: this.dataValue.uuid
+          }
+        })
       }
     },
     components: {}
