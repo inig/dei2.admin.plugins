@@ -39,7 +39,7 @@ export const routerRegister = {
 //   path: '/locking',
 //   name: 'locking',
 //   components: {
-//     HomeRouter: () => import('../components/lockscreen/components/locking-page.vue')
+//     HomeRouter: () => import('../components/lockscreen/components/locking-Page.vue')
 //   }
 // }
 
@@ -122,7 +122,7 @@ export const contentRouter = {
         title: '活动编辑'
       },
       components: {
-        ContentRouter: () => import('../components/user/components/ActivityEdit.vue')
+        ContentRouter: () => import('../components/user/activity/ActivityEdit.vue')
       }
     },
     {
