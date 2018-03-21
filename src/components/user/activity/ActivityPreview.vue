@@ -28,7 +28,7 @@
   }
   .activity_preview_wrapper {
     position: relative;
-    overflow: hidden;
+    /*overflow: hidden;*/
   }
   .activity_preview_page {
     position:absolute;

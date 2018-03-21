@@ -2,7 +2,7 @@
   <div class="property_activity_container">
     <Form class="property_form">
       <FormItem label="页面动画">
-        <Select v-model="activeComponent.template.animation" style="width: 200px;">
+        <Select v-model="activeComponent.template.animation" style="width: 200px;" @on-change="changeAnimation">
           <OptionGroup v-for="(item, index) in animations" :key="index" :label="item.name">
             <Option v-for="(itm, idx) in animations[index].children" :key="itm.value" :value="itm.value">{{itm.name}}</Option>
           </OptionGroup>
@@ -560,17 +560,15 @@
       }
     },
     computed: {
-      activeComponent: {
-        get () {
-          return this.$store.state.activeComponent
-        },
-        set (com) {
-          this.$store.commit(types.ACTIVE_COMPONENT, {
-            type: this.$store.state.activeComponent.type,
-            uuid: this.$store.state.activeComponent.uuid || '',
-            template: com || {}
-          })
-        }
+      activeComponent () {
+        return this.$store.state.activeComponent
+      }
+    },
+    methods: {
+      changeAnimation (e) {
+        this.$store.commit(types.UPDATE_ACTIVITY_PROPERTY, {
+          animation: e
+        })
       }
     },
     components: {}

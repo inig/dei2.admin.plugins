@@ -79,7 +79,7 @@
     },
     computed: {
       pData () {
-        return this.$store.state.pageData[Number(this.$store.state.currentPageIndex)] || {}
+        return this.$store.state.activityInfo.data.pages[Number(this.$store.state.currentPageIndex)] || {}
       }
     },
     created () {

@@ -303,7 +303,7 @@
         }
       },
       pageData () {
-        return ((!this.actInfo.data || utils.isEmptyObj(JSON.parse(this.actInfo.data))) ? [] : JSON.parse(this.actInfo.data).pages)
+        return this.$store.state.activityInfo.data ? JSON.parse(JSON.stringify(this.$store.state.activityInfo.data.pages)) : []
       }
     },
     async created () {
@@ -317,8 +317,11 @@
       } else {
         this.actInfo = paramActivityInfo
       }
+      if (this.actInfo.data) {
+        this.actInfo.data = JSON.parse(this.actInfo.data)
+      }
       this.$store.commit(types.INIT_LOCAL_TEMPLATE, {
-        template: ((!this.actInfo.data || utils.isEmptyObj(JSON.parse(this.actInfo.data))) ? [] : JSON.parse(this.actInfo.data).pages)
+        template: this.actInfo
       })
       this.$nextTick(() => {
         this.eventHub.$on(this.events.bodyClick, this.bodyClickHandler)
@@ -383,7 +386,7 @@
         let activeComponentType = activeElement.getAttribute('com-type')
         if (activeComponentType === 'activity') {
           // 设置整个活动的属性
-          let templateData = ((!this.actInfo.data || utils.isEmptyObj(JSON.parse(this.actInfo.data))) ? {} : JSON.parse(this.actInfo.data))
+          let templateData = ((!this.actInfo.data || utils.isEmptyObj(this.actInfo.data)) ? {} : JSON.parse(JSON.stringify(this.actInfo.data)))
           if (templateData.pages) {
             delete templateData.pages
           }
@@ -439,8 +442,9 @@
       async saveActivity () {
         // 保存活动模板
         this.isSaving = true
-        let _templateData = ((!this.actInfo.data || utils.isEmptyObj(JSON.parse(this.actInfo.data))) ? {} : JSON.parse(this.actInfo.data))
-        _templateData.pages = JSON.parse(JSON.stringify(this.$store.state.pageData))
+//        let _templateData = ((!this.actInfo.data || utils.isEmptyObj(this.actInfo.data)) ? {} : this.actInfo.data)
+//        _templateData.pages = JSON.parse(JSON.stringify(this.$store.state.pageData))
+        let _templateData = JSON.parse(JSON.stringify(this.$store.state.activityInfo.data))
         let editData = await this.$store.dispatch(types.AJAX, {
           baseUrl: this.requestInfo.baseUrl,
           url: this.requestInfo.editActivity,

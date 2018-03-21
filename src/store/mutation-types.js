@@ -67,6 +67,9 @@ export const ACTIVE_COMPONENT = 'ACTIVE_COMPONENT'
 // 保存活动模板数据至本地store，非数据库
 export const SAVE_LOCAL_TEMPLATE = 'SAVE_LOCAL_TEMPLATE'
 
+// 更新活动的整体属性
+export const UPDATE_ACTIVITY_PROPERTY = 'UPDATE_ACTIVITY_PROPERTY'
+
 // 初始化活动模板数据
 export const INIT_LOCAL_TEMPLATE = 'INIT_LOCAL_TEMPLATE'
 

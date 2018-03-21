@@ -107,7 +107,7 @@ export const mutations = {
     Object.assign(state.activeComponent, data)
   },
   [types.INIT_LOCAL_TEMPLATE] (state, data) {
-    state.pageData = data.template
+    state.activityInfo = data.template
   },
   [types.PREV_PAGE] (state) {
     // 上一页
@@ -126,13 +126,17 @@ export const mutations = {
       state.currentPageIndex = Number(data.index)
     }
   },
+  [types.UPDATE_ACTIVITY_PROPERTY] (state, data) {
+    Object.assign(state.activityInfo.data, data)
+  },
   [types.SAVE_LOCAL_TEMPLATE] (state, data) {
     /**
      * type: zpm-page
      * uuid: xxxxxxx
      * template: {}
      */
-    let _pageData = state.pageData
+    let _pageData = state.activityInfo.data.pages
+    // let _pageData = state.pageData
     let _pageIndex = -1
     let _componentIndex = -1
     if (data.type === state.simulatorPageType) {
