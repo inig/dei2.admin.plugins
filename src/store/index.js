@@ -60,6 +60,11 @@ const store = new Vuex.Store({
     minSpanRight: 19,
     isFullScreen: false,
     menuFold: false, // 左侧菜单是否折叠
+    fullScreenPopup: {
+      shown: false,
+      subCom: {},
+      subComStyle: {}
+    },
     simulator: {
       name: 'iPhone 6',
       width: 375,
@@ -97,6 +102,9 @@ const store = new Vuex.Store({
       bodyClick: 'body-click',
       simulatorChanged: 'simulator-changed', // 模拟器属性变化
       activeComponentChanged: 'active-component-changed', // 激活状态的组件变化
+      saveActivity: 'save-activity', // 保存活动
+      saveActivityBefore: 'save-activity-before', // 开始保存活动
+      saveActivityCallback: 'save-activity-callback', // 保存活动回调
       getNewMessage: 'get-new-message', // 获取到新消息
       updatePluginFileContent: 'update-plugin-file-content', // 更新插件内容
       updatePluginList: 'update-plugin-list', // 更新我的插件列表

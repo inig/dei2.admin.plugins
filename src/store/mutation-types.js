@@ -82,6 +82,12 @@ export const NEXT_PAGE = 'NEXT_PAGE'
 // 跳转到指定页
 export const SET_CURRENT_PAGE_INDEX = 'SET_CURRENT_PAGE_INDEX'
 
+// 显示全屏弹框
+export const SHOW_FULL_SCREEN_POPUP = 'SHOW_FULL_SCREEN_POPUP'
+
+// 关闭全屏弹框
+export const HIDE_FULL_SCREEN_POPUP = 'HIDE_FULL_SCREEN_POPUP'
+
 // >>>> actions:
 
 // 登录1

@@ -19,12 +19,12 @@
             <Option v-for="(item, index) in simulatorScale.options" :value="index" :key="item.value">{{ item.value * 100 }}%</Option>
           </Select>
         </p>
-        <Tooltip :content="platform === 'mac' ? '按Command+Shift+S保存活动模板' : '按Control+Shift+S保存模板'" placement="bottom-end" style="position: absolute; right: 15px;">
-          <Button type="primary" :loading="isSaving" icon="paper-airplane" size="small" @click="saveActivity">
-            <span v-if="!isSaving">保存模板</span>
-            <span v-else>保存中...</span>
-          </Button>
-        </Tooltip>
+        <!--<Tooltip :content="platform === 'mac' ? '按Command+Shift+S保存活动模板' : '按Control+Shift+S保存模板'" placement="bottom-end" style="position: absolute; right: 15px;">-->
+          <!--<Button type="primary" :loading="isSaving" icon="paper-airplane" size="small" @click="saveActivity">-->
+            <!--<span v-if="!isSaving">保存模板</span>-->
+            <!--<span v-else>保存中...</span>-->
+          <!--</Button>-->
+        <!--</Tooltip>-->
       </div>
       <div class="editor_main_simulator" tabindex="10"
            :style="{transform: 'scale(' + parseFloat(1 / simulators[selectedSimulatorIndex].dpr) + ')'}">
@@ -325,6 +325,7 @@
       })
       this.$nextTick(() => {
         this.eventHub.$on(this.events.bodyClick, this.bodyClickHandler)
+        this.eventHub.$on(this.events.saveActivity, this.saveActivity)
       })
     },
     mounted () {
@@ -442,6 +443,7 @@
       async saveActivity () {
         // 保存活动模板
         this.isSaving = true
+        this.eventHub.$emit(this.events.saveActivityBefore)
 //        let _templateData = ((!this.actInfo.data || utils.isEmptyObj(this.actInfo.data)) ? {} : this.actInfo.data)
 //        _templateData.pages = JSON.parse(JSON.stringify(this.$store.state.pageData))
         let _templateData = JSON.parse(JSON.stringify(this.$store.state.activityInfo.data))
@@ -468,6 +470,9 @@
               duration: 3
             })
           }
+          this.eventHub.$emit(this.events.saveActivityCallback, {
+            success: (editData.status === 200)
+          })
         }, 800)
       }
     },

@@ -1,12 +1,25 @@
 <template>
   <div class="property_activity_container">
-    <Form class="property_form">
+    <Form class="property_form" :label-width="60">
       <FormItem label="页面动画">
-        <Select v-model="activeComponent.template.animation" style="width: 200px;" @on-change="changeAnimation">
+        <Select v-model="activeComponent.template.animation" style="width: 210px;" @on-change="changeAnimation">
           <OptionGroup v-for="(item, index) in animations" :key="index" :label="item.name">
             <Option v-for="(itm, idx) in animations[index].children" :key="itm.value" :value="itm.value">{{itm.name}}</Option>
           </OptionGroup>
         </Select>
+      </FormItem>
+      <FormItem>
+        <Tooltip :content="platform === 'mac' ? '按Command+Shift+S保存活动' : '按Control+Shift+S保存活动'" placement="bottom-end">
+          <Button type="primary" :loading="isSaving" icon="paper-airplane" size="small" @click="saveActivity">
+            <span v-if="!isSaving">保存模板</span>
+            <span v-else>保存中...</span>
+          </Button>
+        </Tooltip>
+        <Tooltip :content="platform === 'mac' ? '按Command+Shift+P预览活动' : '按Control+Shift+P预览活动'" placement="bottom-end" style="margin-left: 8px;">
+          <Button type="ghost" icon="eye" size="small" @click="previewActivity">
+            预览
+          </Button>
+        </Tooltip>
       </FormItem>
     </Form>
   </div>
@@ -556,8 +569,21 @@
               }
             ]
           }
-        ]
+        ],
+        platform: 'windows',
+        isSaving: false,
+        eventHub: this.$store.state.eventHub,
+        events: this.$store.state.events,
+        lastEvent: ''
       }
+    },
+    created () {
+      let isMac = (navigator.platform === 'Mac68K') || (navigator.platform === 'MacPPC') || (navigator.platform === 'Macintosh') || (navigator.platform === 'MacIntel')
+      isMac && (this.platform = 'mac')
+      this.$nextTick(() => {
+        this.eventHub.$on(this.events.saveActivityCallback, this.saveActivityCallback)
+        this.eventHub.$on(this.events.saveActivityBefore, this.saveActivityBefore)
+      })
     },
     computed: {
       activeComponent () {
@@ -568,6 +594,38 @@
       changeAnimation (e) {
         this.$store.commit(types.UPDATE_ACTIVITY_PROPERTY, {
           animation: e
+        })
+      },
+      saveActivity () {
+        this.isSaving = true
+        this.eventHub.$emit(this.events.saveActivity)
+      },
+      saveActivityBefore () {
+        this.isSaving = true
+      },
+      saveActivityCallback () {
+        this.isSaving = false
+        if (this.lastEvent === 'preview') {
+          this.showPopup()
+        }
+        this.lastEvent = ''
+      },
+      previewActivity () {
+        this.lastEvent = 'preview'
+        this.saveActivity()
+      },
+      showPopup () {
+        this.$store.commit(types.SHOW_FULL_SCREEN_POPUP, {
+          subCom: {
+            Template: () => import('../ActivityPreview.vue')
+          },
+          subComType: 'preview',
+          subComStyle: {
+            width: '375px',
+            height: '667px',
+            backgroundColor: 'cyan',
+            overflow: 'hidden'
+          }
         })
       }
     },

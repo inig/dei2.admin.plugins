@@ -117,12 +117,12 @@ export const mutations = {
   },
   [types.NEXT_PAGE] (state) {
     // 下一页
-    if (state.currentPageIndex < state.pageData.length - 1) {
+    if (state.currentPageIndex < state.activityInfo.data.pages.length - 1) {
       state.currentPageIndex += 1
     }
   },
   [types.SET_CURRENT_PAGE_INDEX] (state, data) {
-    if (Number(data.index) >= 0 && Number(data.index) <= state.pageData.length - 1) {
+    if (Number(data.index) >= 0 && Number(data.index) <= state.activityInfo.data.pages.length - 1) {
       state.currentPageIndex = Number(data.index)
     }
   },
@@ -164,6 +164,17 @@ export const mutations = {
           _pageData[_pageIndex].children.splice(_componentIndex, 1, data.template)
         }
       }
+    }
+  },
+  [types.SHOW_FULL_SCREEN_POPUP] (state, data) {
+    Object.assign(state.fullScreenPopup, data, {
+      shown: true
+    })
+  },
+  [types.HIDE_FULL_SCREEN_POPUP] (state) {
+    state.fullScreenPopup = {
+      shown: false,
+      subCom: ''
     }
   }
 }

@@ -1,6 +1,10 @@
 <template>
   <div id="app">
     <router-view name="HomeRouter"/>
+
+    <keep-alive>
+      <popup></popup>
+    </keep-alive>
   </div>
 </template>
 
@@ -23,7 +27,13 @@
     computed: {
       loginInfo () {
         return utils.storage.getItem(this.$store.state.localStorageKeys.userInfo)
+      },
+      fullScreenPopup () {
+        return this.$store.state.fullScreenPopup
       }
+    },
+    components: {
+      Popup: () => import('./components/Popup.vue')
     }
   }
 </script>

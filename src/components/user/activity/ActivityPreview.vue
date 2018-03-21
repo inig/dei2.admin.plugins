@@ -25,6 +25,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #ffffff;
   }
   .activity_preview_wrapper {
     position: relative;
@@ -77,7 +78,8 @@
         uuid: this.$route.query.q,
         requestInfo: this.$store.state.requestInfo,
         pageData: {},
-        isPc: !navigator.userAgent.match(/(iphone)|(android)/i)
+        isPc: !navigator.userAgent.match(/(iphone)|(android)/i),
+        pageSwitch: null
       }
     },
     computed: {
@@ -121,7 +123,7 @@
           return
         }
         let ts = this.activityInfo.animation || 'scrollY'
-        let ps = new PageSwitch('activity_preview_pages', {
+        this.pageSwitch = new PageSwitch('activity_preview_pages', {
           duration: 1000,
           start: 0,
           direction: 1,
@@ -132,7 +134,6 @@
           mousewheel: true,
           arrowkey: true
         })
-        console.log(ps)
       }
     },
     components: {}
