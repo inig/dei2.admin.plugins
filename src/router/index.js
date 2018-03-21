@@ -35,6 +35,17 @@ export const routerRegister = {
   }
 }
 
+export const routerActivityPreview = {
+  path: '/activity/preview',
+  name: 'ActivityPreview',
+  meta: {
+    title: '活动预览'
+  },
+  components: {
+    HomeRouter: () => import('../components/user/activity/ActivityPreview.vue')
+  }
+}
+
 // export const routerLocking = {
 //   path: '/locking',
 //   name: 'locking',
@@ -156,6 +167,7 @@ export default new Router({
     // routerHome,
     routerLogin,
     routerRegister,
+    routerActivityPreview,
     // routerLocking,
     contentRouter,
     page404
