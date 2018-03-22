@@ -77,6 +77,7 @@ const store = new Vuex.Store({
       type: '',
       template: {}
     },
+    activityInfoChanged: false, // 用户是否编辑了活动内容，活动内容有变化则能保存，否则不用保存
     simulatorPageType: 'zpm-page',
     pageData: [], // 活动模板数据
     activityInfo: {}, // 活动模板数据

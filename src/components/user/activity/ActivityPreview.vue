@@ -91,10 +91,8 @@
         }
       }
     },
-    created () {
-      this.$nextTick(() => {
-        this.pageInit()
-      })
+    async mounted () {
+      await this.pageInit()
     },
     methods: {
       async initData () {
@@ -123,17 +121,21 @@
           return
         }
         let ts = this.activityInfo.animation || 'scrollY'
-        this.pageSwitch = new PageSwitch('activity_preview_pages', {
-          duration: 1000,
-          start: 0,
-          direction: 1,
-          loop: true,
-          ease: /flip(?!Paper)/.test(ts) ? 'bounce' : 'ease',
-          transition: ts,
-          mouse: true,
-          mousewheel: true,
-          arrowkey: true
-        })
+        try {
+          this.pageSwitch = new PageSwitch('activity_preview_pages', {
+            duration: 1000,
+            start: 0,
+            direction: 1,
+            loop: true,
+            ease: /flip(?!Paper)/.test(ts) ? 'bounce' : 'ease',
+            transition: ts,
+            mouse: true,
+            mousewheel: true,
+            arrowkey: true
+          })
+        } catch (err) {
+          console.log('错误：', err.message)
+        }
       }
     },
     components: {}

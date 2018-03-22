@@ -10,16 +10,14 @@
       </FormItem>
       <FormItem>
         <Tooltip :content="platform === 'mac' ? '按Command+Shift+S保存活动' : '按Control+Shift+S保存活动'" placement="bottom-end">
-          <Button type="primary" :loading="isSaving" icon="paper-airplane" size="small" @click="saveActivity">
+          <Button type="primary" :loading="isSaving" icon="paper-airplane" size="small" :disabled="!activityInfoChanged" @click="saveActivity">
             <span v-if="!isSaving">保存模板</span>
             <span v-else>保存中...</span>
           </Button>
         </Tooltip>
-        <Tooltip :content="platform === 'mac' ? '按Command+Shift+P预览活动' : '按Control+Shift+P预览活动'" placement="bottom-end" style="margin-left: 8px;">
-          <Button type="ghost" icon="eye" size="small" @click="previewActivity">
-            预览
-          </Button>
-        </Tooltip>
+        <Button type="ghost" icon="eye" size="small" @click="previewActivity" style="margin-left: 8px;">
+          预览
+        </Button>
       </FormItem>
     </Form>
   </div>
@@ -574,6 +572,7 @@
         isSaving: false,
         eventHub: this.$store.state.eventHub,
         events: this.$store.state.events,
+        uuid: this.$route.query.q,
         lastEvent: ''
       }
     },
@@ -588,6 +587,9 @@
     computed: {
       activeComponent () {
         return this.$store.state.activeComponent
+      },
+      activityInfoChanged () {
+        return this.$store.state.activityInfoChanged
       }
     },
     methods: {
@@ -612,7 +614,13 @@
       },
       previewActivity () {
         this.lastEvent = 'preview'
-        this.saveActivity()
+        if (this.activityInfoChanged) {
+          // 如果活动内容有变化，则先保存活动模板，再弹出预览框
+          this.saveActivity()
+        } else {
+          // 如果活动内容无变化，则直接弹出预览框
+          this.showPopup()
+        }
       },
       showPopup () {
         this.$store.commit(types.SHOW_FULL_SCREEN_POPUP, {
@@ -620,10 +628,12 @@
             Template: () => import('../ActivityPreview.vue')
           },
           subComType: 'preview',
+          previewQRCode: 'http//192.168.189.89:8080/activity/preview?q=' + this.uuid,
+          previewTips: '扫二维码 预览活动',
           subComStyle: {
             width: '375px',
             height: '667px',
-            backgroundColor: 'cyan',
+            backgroundColor: '#464c5b',
             overflow: 'hidden'
           }
         })

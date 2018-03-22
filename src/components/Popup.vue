@@ -1,17 +1,15 @@
 <template>
   <div class="fullscreen_popup_container" :ref="popupRef">
     <component :ref="popupInnerRef" :is="fullScreenPopup.subCom.Template" :style="[fullScreenPopup.subComStyle]"></component>
-    <div class="preview_operation_content_container" :style="[previewOperationContentBox]">
-      <div class="preview_operation_content_inner">
-        扫描二维码
-      </div>
-    </div>
     <div class="preview_operation_container" :style="[previewOperationContainerBox]" :class="{shown: (fullScreenPopup.subComType === 'preview') && showPreviewOperation}">
-      <div class="preview_operation_item qrcode">
+      <div class="preview_operation_item" @mouseenter="showContentContainer" @mouseleave="hideContentContainer">
         <img class="preview_operation_item_image" src="https://static.dei2.com/imgs/qrcode.png">
-      </div>
-      <div class="preview_operation_item">
-        <img class="preview_operation_item_image" src="https://static.dei2.com/imgs/qrcode.png">
+        <div class="preview_operation_content_container" :ref="contentRef" :style="[previewOperationContentBox]">
+          <div class="preview_operation_content_inner" :ref="contentInnerRef">
+            <div class="qrcode_container" :ref="qrcodeRef"></div>
+            <div class="preview_tips" v-text="fullScreenPopup.previewTips"></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="popup_close_container" :style="[closeContainerBox]" :class="{shown: showClose}" @click="close">
@@ -68,7 +66,7 @@
   }
   .preview_operation_container {
     position: absolute;
-    width: 40px;
+    width: 30px;
     height: 400px;
     background-color: transparent;
     z-index: 8;
@@ -87,8 +85,8 @@
     opacity: 1;
   }
   .preview_operation_item {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -103,12 +101,17 @@
     position: absolute;
     background-color: transparent;
     overflow: hidden;
+    display: none;
+  }
+  .preview_operation_content_container.shown {
+    display: block;
   }
   .preview_operation_content_inner {
     width: 100%;
     height: 100%;
-    background-color: #ffffff;
+    background-color: #464c5b;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     -webkit-transform: translate(100%, 0);
@@ -129,21 +132,39 @@
     -o-transform: translate(0%, 0);
     transform: translate(0%, 0);
   }
+  .qrcode_container {
+    border-radius: 5px;
+    background-color: #ffffff;
+    padding: 5px;
+    border: 1px solid #F5F5FD;
+  }
+  .preview_tips {
+    margin-top: 15px;
+    color: #F5F5FD;
+    font-size: 14px;
+  }
 </style>
 <script>
   import * as types from '../store/mutation-types'
+  const QRCode = require('../assets/js/qrcode')
   export default {
     name: 'Popup',
     data () {
       return {
         popupRef: 'fullscreen-popup-ref',
         popupInnerRef: 'popup-inner-ref',
+        contentRef: 'content-ref',
+        contentInnerRef: 'content-inner-ref',
+        qrcodeRef: 'qrcode-ref',
         closeContainerBox: {},
         showClose: false,
         previewOperationContainerBox: {},
         showPreviewOperation: false,
         previewOperationContentBox: {},
-        showPreviewOperationContent: false
+        showPreviewOperationContent: false,
+        showContainer: false,
+        showContentInner: false,
+        qrcode: null
       }
     },
     computed: {
@@ -163,9 +184,47 @@
         window.onresize = function () {
           that.getBox()
         }
+        let contentInner = this.$refs[this.contentInnerRef]
+        contentInner.addEventListener('transitionend', this.hideContainer, false)
+        contentInner.addEventListener('transition', this.hideContainer, false)
       })
     },
     methods: {
+      initQRCode (opts) {
+        this.qrcode = new QRCode(this.$refs[this.qrcodeRef], {
+          width: 120,
+          height: 120,
+          colorDark: '#464c5b',
+          colorLight: '#F5F5FD'
+        })
+        this.qrcode.makeCode(opts.text)
+      },
+      showContentContainer () {
+        let contentContainer = this.$refs[this.contentRef]
+        let contentInner = this.$refs[this.contentInnerRef]
+        contentInner.removeEventListener('transitionend', this.hideContainer)
+        contentInner.removeEventListener('transition', this.hideContainer)
+        if (this.fullScreenPopup.subComType === 'preview') {
+          this.$refs[this.qrcodeRef].innerHTML = ''
+          this.initQRCode({
+            text: this.fullScreenPopup.previewQRCode
+          })
+        }
+        !contentContainer.classList.contains('shown') && contentContainer.classList.add('shown')
+        setTimeout(() => {
+          !contentInner.classList.contains('shown') && contentInner.classList.add('shown')
+        }, 10)
+      },
+      hideContentContainer () {
+        let contentInner = this.$refs[this.contentInnerRef]
+        contentInner.addEventListener('transitionend', this.hideContainer, false)
+        contentInner.addEventListener('transition', this.hideContainer, false)
+        contentInner.classList.contains('shown') && contentInner.classList.remove('shown')
+      },
+      hideContainer () {
+        let contentContainer = this.$refs[this.contentRef]
+        contentContainer.classList.contains('shown') && contentContainer.classList.remove('shown')
+      },
       getBox () {
         this.getCloseContainerBox()
         if (this.fullScreenPopup.subComType === 'preview') {
@@ -211,14 +270,12 @@
       getPreviewOperationContentBox () {
         let popupInnerRef = this.$refs[this.popupInnerRef]
         if (this.showFullScreenPopup && popupInnerRef) {
-          let _left = popupInnerRef.$el.offsetLeft
-          let _top = popupInnerRef.$el.offsetTop
           let _height = popupInnerRef.$el.offsetHeight
           let _width = popupInnerRef.$el.offsetWidth
           this.previewOperationContentBox = {
             width: _width + 'px',
-            left: _left + 'px',
-            top: _top + 'px',
+            left: -_width + 'px',
+            top: '0px',
             height: _height + 'px'
           }
         }

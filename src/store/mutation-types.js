@@ -88,6 +88,12 @@ export const SHOW_FULL_SCREEN_POPUP = 'SHOW_FULL_SCREEN_POPUP'
 // 关闭全屏弹框
 export const HIDE_FULL_SCREEN_POPUP = 'HIDE_FULL_SCREEN_POPUP'
 
+// 活动数据改变了
+export const ACTIVITY_INFO_CHANGED = 'ACTIVITY_INFO_CHANGED'
+
+// 活动数据未变化
+export const ACTIVITY_INFO_UNCHANGED = 'ACTIVITY_INFO_UNCHANGED'
+
 // >>>> actions:
 
 // 登录1

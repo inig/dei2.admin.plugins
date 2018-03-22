@@ -6,7 +6,7 @@
       </div>
       <div class="editor_components_toggle" @click="toggleEditorComponentsContainer"></div>
     </div>
-    <div class="editor_main_container" tabindex="10" com-type="activity">
+    <div class="editor_main_container" :ref="editorMainContainerRef" tabindex="10" com-type="activity">
       <div class="editor_main_simulator_selector">
         <Select v-model="selectedSimulatorIndex" size="small" style="width: 120px" @on-change="setSimulatorProperty">
           <Option v-for="(item, index) in simulators" :value="index" :key="item.name">{{ item.name }}</Option>
@@ -42,7 +42,7 @@
             </Tooltip>
           </div>
           <div class="page_count">
-            <p class="page_count_current" :ref="currentPageRef" contenteditable v-text="currentPageIndex + 1" @blur="changeCurrentPageIndex"></p>
+            <p class="page_count_current" :ref="currentPageRef" v-text="currentPageIndex + 1"></p>
             <!--<input class="page_count_current" type="number" :min="1" :max="pageData.length" :number="true" :value="currentPageIndex + 1"/>-->
             <p>/</p>
             <p class="page_count_total" v-text="pageData.length"></p>
@@ -230,6 +230,7 @@
     name: 'ActivityEdit',
     data () {
       return {
+        editorMainContainerRef: 'editor-main-container-ref',
         currentPageRef: 'pageCountCurrent',
         simulators: [
           {
@@ -288,7 +289,8 @@
         events: this.$store.state.events,
         eventHub: this.$store.state.eventHub,
         platform: 'windows',
-        isSaving: false
+        isSaving: false,
+        bodyClicked: false
       }
     },
     computed: {
@@ -304,6 +306,9 @@
       },
       pageData () {
         return this.$store.state.activityInfo.data ? JSON.parse(JSON.stringify(this.$store.state.activityInfo.data.pages)) : []
+      },
+      activityInfoChanged () {
+        return this.$store.state.activityInfoChanged
       }
     },
     async created () {
@@ -326,6 +331,14 @@
       this.$nextTick(() => {
         this.eventHub.$on(this.events.bodyClick, this.bodyClickHandler)
         this.eventHub.$on(this.events.saveActivity, this.saveActivity)
+        setTimeout(() => {
+          // 页面初始化时自动点击 '.editor_main_container' 元素，默认可设置整个活动的属性
+          let editorMainContainer = this.$refs[this.editorMainContainerRef]
+          // 要先focus，再调用click()，才能使得document.activeElement返回正确的元素。
+          // 如果未focus，直接调用click()，document.activeElement会返回body
+          editorMainContainer.focus()
+          editorMainContainer.click()
+        }, 1)
       })
     },
     mounted () {
@@ -361,28 +374,12 @@
           }
         }
       }
-      this.$refs[this.currentPageRef].onkeydown = function (ev) {
-        if ((ev.which < 48 || ev.which > 57) && ev.which !== 8) {
-          return false
-        }
-        let _prevNum = Number(that.$refs[that.currentPageRef].innerText)
-        if (ev.which === 8 && _prevNum < 10) {
-          // _prevNum = 1
-          // return false
-        }
-        if (ev.which >= 48 && ev.which <= 57) {
-          if (_prevNum * 10 + (Number(ev.which) - 48) > that.pageData.length) {
-            // _prevNum = that.pageData.length - 1
-            return false
-          }
-        }
-        // that.currentPageIndex = _prevNum
-        // that.changeCurrentPageIndex()
-        // that.$refs[that.currentPageRef].innerText = String(_prevNum)
-      }
     },
     methods: {
       bodyClickHandler () {
+        if (!this.bodyClicked) {
+          this.bodyClicked = true
+        }
         let activeElement = document.activeElement
         let activeComponentType = activeElement.getAttribute('com-type')
         if (activeComponentType === 'activity') {
@@ -402,11 +399,6 @@
             template: templateData || {}
           })
         }
-      },
-      changeCurrentPageIndex (e) {
-        this.$store.commit(types.SET_CURRENT_PAGE_INDEX, {
-          index: Number(this.$refs[this.currentPageRef].innerText) - 1
-        })
       },
       nextPage () {
         this.$store.commit(types.NEXT_PAGE)
@@ -441,6 +433,9 @@
         this.editorComponentsContainerShown = !this.editorComponentsContainerShown
       },
       async saveActivity () {
+        if (!this.activityInfoChanged) {
+          return
+        }
         // 保存活动模板
         this.isSaving = true
         this.eventHub.$emit(this.events.saveActivityBefore)
@@ -470,10 +465,21 @@
               duration: 3
             })
           }
+          this.$store.commit(types.ACTIVITY_INFO_UNCHANGED)
           this.eventHub.$emit(this.events.saveActivityCallback, {
             success: (editData.status === 200)
           })
         }, 800)
+      }
+    },
+    watch: {
+      '$store.state.activityInfo.data': {
+        deep: true,
+        handler: function (value) {
+          if (this.bodyClicked) {
+            this.$store.commit(types.ACTIVITY_INFO_CHANGED)
+          }
+        }
       }
     },
     components: {

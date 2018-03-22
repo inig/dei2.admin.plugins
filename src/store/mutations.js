@@ -176,5 +176,11 @@ export const mutations = {
       shown: false,
       subCom: ''
     }
+  },
+  [types.ACTIVITY_INFO_CHANGED] (state) {
+    state.activityInfoChanged = true
+  },
+  [types.ACTIVITY_INFO_UNCHANGED] (state) {
+    state.activityInfoChanged = false
   }
 }
