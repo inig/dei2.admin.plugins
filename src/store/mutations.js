@@ -35,6 +35,7 @@
  */
 
 import * as types from './mutation-types'
+import utils from '../utils/index'
 
 const findTemplateByUUID = function (uuid, arr, deep, sub) {
   let _deep = deep // deep为1或2
@@ -164,6 +165,23 @@ export const mutations = {
           _pageData[_pageIndex].children.splice(_componentIndex, 1, data.template)
         }
       }
+    }
+  },
+  [types.ADD_LOCAL_PAGE] (state, data) {
+    let _uuid = utils.getUUID('zpm-page-')
+    state.activityInfo.data && state.activityInfo.data.pages && state.activityInfo.data.pages.splice(Number(data.index) + 1, 0, Object.assign({}, data.template, {
+      uuid: _uuid
+    }))
+    state.currentPageIndex += 1
+  },
+  [types.DEL_LOCAL_PAGE] (state, data) {
+    if (state.activityInfo.data && state.activityInfo.data.pages && state.activityInfo.data.pages.length > 1) {
+      state.activityInfo.data.pages.splice(Number(data.index), 1)
+      if (state.currentPageIndex > 0) {
+        state.currentPageIndex -= 1
+      } else if (state.currentPageIndex === 0) {
+        state.currentPageIndex = 0
+      } else {}
     }
   },
   [types.SHOW_FULL_SCREEN_POPUP] (state, data) {

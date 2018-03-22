@@ -36,9 +36,15 @@
             </Tooltip>
             <Icon type="arrow-up-a" size="24" v-else></Icon>
           </div>
-          <div class="editor_simulator_operation_item editor_simulator_operation_item_delete">
-            <Tooltip content="删除当前页" placement="right">
+          <div class="editor_simulator_operation_item editor_simulator_operation_item_delete" :class="{'disabled': pageData.length < 2}" @click="removePage">
+            <Tooltip content="删除当前页" placement="right" v-if="pageData.length > 1">
               <Icon type="trash-b" size="24"></Icon>
+            </Tooltip>
+            <Icon type="trash-b" size="24" v-else></Icon>
+          </div>
+          <div class="editor_simulator_operation_item editor_simulator_operation_item_add" @click="addPage">
+            <Tooltip content="新增一页" placement="right">
+              <Icon type="plus-round" size="24"></Icon>
             </Tooltip>
           </div>
           <div class="page_count">
@@ -180,23 +186,22 @@
   .editor_simulator_operation_item_normal {
     color: #464c5b;
   }
-  .editor_simulator_operation_item_normal:hover {
+  .editor_simulator_operation_item:hover {
     opacity: 1;
   }
-  .editor_simulator_operation_item_normal.active {
+  .editor_simulator_operation_item.active {
     opacity: 1;
   }
-  .editor_simulator_operation_item_normal.disabled {
+  .editor_simulator_operation_item.disabled {
     opacity: 0.3;
     cursor: not-allowed;
   }
 
   .editor_simulator_operation_item_delete {
     color: #ed3f14;
-    /*color: #BF0A10;*/
   }
-  .editor_simulator_operation_item_delete:hover {
-    opacity: 1;
+  .editor_simulator_operation_item_add {
+    color: #19be6b;
   }
   .editor_property_container {
     position: absolute;
@@ -301,7 +306,15 @@
         eventHub: this.$store.state.eventHub,
         platform: 'windows',
         isSaving: false,
-        bodyClicked: false
+        bodyClicked: false,
+        pageTemplate: {
+          'type': 'zpm-page',
+          'uuid': '',
+          'style': {
+            'background-color': '#FFFFFF'
+          },
+          'children': []
+        }
       }
     },
     computed: {
@@ -320,6 +333,9 @@
       },
       activityInfoChanged () {
         return this.$store.state.activityInfoChanged
+      },
+      activityInfo () {
+        return this.$store.state.activityInfo
       }
     },
     async created () {
@@ -488,12 +504,25 @@
             success: (editData.status === 200)
           })
         }, 800)
+      },
+      addPage () {
+        this.$store.commit(types.ADD_LOCAL_PAGE, {
+          index: this.currentPageIndex,
+          template: JSON.parse(JSON.stringify(this.pageTemplate))
+        })
+      },
+      removePage () {
+        if (this.activityInfo.data && this.activityInfo.data.pages && this.activityInfo.data.pages.length > 1) {
+          this.$store.commit(types.DEL_LOCAL_PAGE, {
+            index: this.currentPageIndex
+          })
+        }
       }
     },
     watch: {
       '$store.state.activityInfo.data': {
         deep: true,
-        handler: function (value) {
+        handler: function () {
           if (this.bodyClicked) {
             this.$store.commit(types.ACTIVITY_INFO_CHANGED)
           }
