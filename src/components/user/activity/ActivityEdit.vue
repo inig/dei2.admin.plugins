@@ -531,7 +531,7 @@
       }
     },
     watch: {
-      '$store.state.activityInfo.data': {
+      '$store.state.activityInfo': {
         deep: true,
         handler: function () {
           if (this.bodyClicked) {

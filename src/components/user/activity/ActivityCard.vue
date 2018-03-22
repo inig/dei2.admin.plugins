@@ -28,7 +28,7 @@
                   <span>删除确认</span>
                 </p>
                 <div style="text-align: center">
-                  <p>活动数据删除之后将无法恢复</p>
+                  <p>"<span style="color: #ed3f14; font-weight: bold;">{{dataValue.desc}}</span>"，删除之后将无法恢复</p>
                   <p>确认删除吗?</p>
                 </div>
                 <div slot="footer">

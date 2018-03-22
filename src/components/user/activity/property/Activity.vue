@@ -8,6 +8,9 @@
           </OptionGroup>
         </Select>
       </FormItem>
+      <FormItem label="活动描述">
+        <Input type="text" placeholder="请入活动描述" v-model="activityInfo.desc"/>
+      </FormItem>
       <FormItem>
         <Tooltip :content="platform === 'mac' ? '按Command+Shift+S保存活动' : '按Control+Shift+S保存活动'" placement="bottom-end">
           <Button type="primary" :loading="isSaving" icon="paper-airplane" size="small" :disabled="!activityInfoChanged" @click="saveActivity">
@@ -590,6 +593,9 @@
       },
       activityInfoChanged () {
         return this.$store.state.activityInfoChanged
+      },
+      activityInfo () {
+        return this.$store.state.activityInfo
       }
     },
     methods: {
