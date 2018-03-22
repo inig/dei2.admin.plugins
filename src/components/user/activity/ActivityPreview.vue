@@ -67,6 +67,14 @@
   import utils from '../../../utils/index'
   export default {
     name: 'ActivityPreview',
+    props: {
+      actId: {
+        type: String
+      },
+      test: {
+        type: Number
+      }
+    },
     data () {
       return {
         status: {
@@ -75,7 +83,7 @@
           FAIL: 'fail'
         },
         pageLoadStatus: '', // 页面加载状态，loading: 加载中；success：加载成功；fail：加载失败
-        uuid: this.$route.query.q,
+        uuid: this.actId || this.$route.query.q,
         requestInfo: this.$store.state.requestInfo,
         pageData: {},
         isPc: !navigator.userAgent.match(/(iphone)|(android)/i),
@@ -136,6 +144,12 @@
         } catch (err) {
           console.log('错误：', err.message)
         }
+      }
+    },
+    watch: {
+      test: function (vale) {
+        console.log('.... update component')
+        this.$forceUpdate()
       }
     },
     components: {}

@@ -16,6 +16,7 @@
   "dependencies": {
     "axios": "^0.17.1",
     "codemirror": "^5.33.0",
+    "dom-to-image": "^2.6.0",
     "install": "^0.10.2",
     "iview": "^2.7.4",
     "jsonwebtoken": "^8.1.0",

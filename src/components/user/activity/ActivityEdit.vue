@@ -59,9 +59,20 @@
     <div class="editor_property_container">
       <editor-property></editor-property>
     </div>
+    <div class="preview-iframe" id="preview-iframe-container">
+      <editor-simulator active-index="0" style="width: 375px; height: 667px;" id="preview-iframe-for-screenshot"></editor-simulator>
+    </div>
   </div>
 </template>
 <style scoped>
+  .preview-iframe {
+    position: fixed;
+    left: 0;
+    top: -10000px;
+    opacity: 0;
+    width: 375px;
+    height: 667px;
+  }
   .activity_edit_container {
     position: relative;
     width: 100%;
@@ -432,22 +443,29 @@
       toggleEditorComponentsContainer () {
         this.editorComponentsContainerShown = !this.editorComponentsContainerShown
       },
-      async saveActivity () {
+      async saveActivity (args) {
         if (!this.activityInfoChanged) {
           return
+        }
+        let screenshotIframe = document.getElementById('preview-iframe-for-screenshot')
+        let screenshot = await this.screenshot({
+          el: screenshotIframe,
+          rename: true
+        })
+        let thumbnail = ''
+        if (screenshot.status === 200 && screenshot.data && screenshot.data.data && screenshot.data.data.path) {
+          thumbnail = screenshot.data.data.path
         }
         // 保存活动模板
         this.isSaving = true
         this.eventHub.$emit(this.events.saveActivityBefore)
-//        let _templateData = ((!this.actInfo.data || utils.isEmptyObj(this.actInfo.data)) ? {} : this.actInfo.data)
-//        _templateData.pages = JSON.parse(JSON.stringify(this.$store.state.pageData))
         let _templateData = JSON.parse(JSON.stringify(this.$store.state.activityInfo.data))
         let editData = await this.$store.dispatch(types.AJAX, {
           baseUrl: this.requestInfo.baseUrl,
           url: this.requestInfo.editActivity,
           data: {
             uuid: this.uuid,
-            thumbnail: 'https://static.dei2.com/plugins_admin/img/127x200.png',
+            thumbnail: thumbnail || 'https://static.dei2.com/plugins_admin/img/127x200.png',
             desc: '我的第一个活动',
             data: JSON.stringify(_templateData)
           }
@@ -485,7 +503,8 @@
     components: {
       EditorComponent: () => import('./editor/Components.vue'),
       EditorSimulator: () => import('./editor/Simulator.vue'),
-      EditorProperty: () => import('./editor/Property.vue')
+      EditorProperty: () => import('./editor/Property.vue'),
+      ActivityPreview: () => import('./ActivityPreview.vue')
     }
   }
 </script>

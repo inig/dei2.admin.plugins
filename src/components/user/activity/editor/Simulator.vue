@@ -64,6 +64,11 @@
   import * as types from '../../../../store/mutation-types'
   export default {
     name: 'Simulator',
+    props: {
+      activeIndex: {
+        type: String
+      }
+    },
     data () {
       return {
         simulatorInfo: this.$store.state.simulator,
@@ -79,7 +84,7 @@
     },
     computed: {
       pData () {
-        return this.$store.state.activityInfo.data.pages[Number(this.$store.state.currentPageIndex)] || {}
+        return this.$store.state.activityInfo.data.pages[(this.activeIndex || Number(this.$store.state.currentPageIndex))] || {}
       }
     },
     created () {

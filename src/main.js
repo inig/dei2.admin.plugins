@@ -9,6 +9,7 @@ import * as filters from './filters'
 import mixins from './mixins'
 import iView from 'iview'
 import utils from './utils/index'
+import ZpmCapture from './assets/js/ZpmCapture'
 // import codemirror from 'codemirror/lib/codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/fold/foldgutter.css'
@@ -20,6 +21,8 @@ import './assets/css/animate.css/animate.min.css'
 // import SharedWorker from './ajax.worker'
 
 sync(store, router)
+
+Vue.use(ZpmCapture)
 
 Vue.config.productionTip = false
 
