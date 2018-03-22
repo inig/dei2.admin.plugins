@@ -355,6 +355,9 @@
       this.$store.commit(types.INIT_LOCAL_TEMPLATE, {
         template: this.actInfo
       })
+      this.$store.commit(types.SET_CURRENT_PAGE_INDEX, {
+        index: 0
+      })
       this.$nextTick(() => {
         this.eventHub.$on(this.events.bodyClick, this.bodyClickHandler)
         this.eventHub.$on(this.events.saveActivity, this.saveActivity)
@@ -463,6 +466,11 @@
         if (!this.activityInfoChanged) {
           return
         }
+        this.$Loading.start()
+        let saveLoading = this.$Message.loading({
+          content: '保存中，请稍后...',
+          duration: 0
+        })
         let screenshotIframe = document.getElementById('preview-iframe-for-screenshot')
         let screenshot = await this.screenshot({
           el: screenshotIframe,
@@ -482,22 +490,25 @@
           data: {
             uuid: this.uuid,
             thumbnail: thumbnail || 'https://static.dei2.com/plugins_admin/img/127x200.png',
-            desc: '我的第一个活动',
+            desc: this.$store.state.activityInfo.desc || '我的第一个活动',
             data: JSON.stringify(_templateData)
           }
         })
         setTimeout(() => {
           this.isSaving = false
+          setTimeout(saveLoading, 1)
           if (editData.status === 200) {
             this.$Message.success({
               content: '保存成功',
               duration: 3
             })
+            this.$Loading.finish()
           } else {
             this.$Message.error({
               content: editData.message || '保存活动失败，请重试',
               duration: 3
             })
+            this.$Loading.error()
           }
           this.$store.commit(types.ACTIVITY_INFO_UNCHANGED)
           this.eventHub.$emit(this.events.saveActivityCallback, {

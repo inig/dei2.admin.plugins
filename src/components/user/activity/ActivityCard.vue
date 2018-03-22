@@ -8,20 +8,33 @@
         </div>
         <div class="activity_operation_container">
           <div class="activity_operations">
-            <div class="activity_operation_item">
+            <div class="activity_operation_item" @click="showPopup">
               <Tooltip content="预览" placement="right">
                 <Icon type="eye" size="20"></Icon>
               </Tooltip>
             </div>
-            <div class="activity_operation_item" @click="edit">
+            <div class="activity_operation_item" @click="edit" v-if="dataValue.author === loginInfo.phonenum">
               <Tooltip content="编辑" placement="right">
                 <Icon type="edit" size="20"></Icon>
               </Tooltip>
             </div>
-            <div class="activity_operation_item RED">
+            <div class="activity_operation_item RED" @click="showRemoveActivityConfirm" v-if="dataValue.author === loginInfo.phonenum">
               <Tooltip content="删除" placement="right">
                 <Icon type="trash-a" size="22"></Icon>
               </Tooltip>
+              <Modal v-model="removeActivityConfirm" width="360">
+                <p slot="header" style="color: #f60; text-align: center">
+                  <Icon type="information-circled"></Icon>
+                  <span>删除确认</span>
+                </p>
+                <div style="text-align: center">
+                  <p>活动数据删除之后将无法恢复</p>
+                  <p>确认删除吗?</p>
+                </div>
+                <div slot="footer">
+                  <Button type="error" size="large" long :loading="removingActivity" @click="remove">删除</Button>
+                </div>
+              </Modal>
             </div>
           </div>
         </div>
@@ -149,15 +162,43 @@
   }
 </style>
 <script>
+  import * as types from '../../../store/mutation-types'
   export default {
     name: 'ActivityCard',
     props: ['dataValue'],
     data () {
       return {
-        assets: this.$store.state.assets
+        assets: this.$store.state.assets,
+        requestInfo: this.$store.state.requestInfo,
+        eventHub: this.$store.state.eventHub,
+        events: this.$store.state.events,
+        removeActivityConfirm: false, // 删除确认
+        removingActivity: false // 删除中
+      }
+    },
+    computed: {
+      loginInfo () {
+        return this.$store.state.loginInfo
       }
     },
     methods: {
+      showPopup () {
+        this.$store.commit(types.SHOW_FULL_SCREEN_POPUP, {
+          subCom: {
+            Template: () => import('./ActivityPreview.vue')
+          },
+          subComType: 'preview',
+          previewQRCode: 'http//192.168.189.89:8080/activity/preview?q=' + this.dataValue.uuid,
+          previewTips: '扫二维码 预览活动',
+          previewUUID: this.dataValue.uuid,
+          subComStyle: {
+            width: '375px',
+            height: '667px',
+            backgroundColor: '#464c5b',
+            overflow: 'hidden'
+          }
+        })
+      },
       getDefaultImage (width, height, text, color, bgColor) {
         let _url = 'http://iph.href.lu/' + width + 'x' + height + '?'
         let _urlArr = []
@@ -176,6 +217,38 @@
             q: this.dataValue.uuid
           }
         })
+      },
+      async remove () {
+        // 删除活动
+        this.removingActivity = true
+        let deleteData = await this.$store.dispatch(types.AJAX, {
+          baseUrl: this.requestInfo.baseUrl,
+          url: this.requestInfo.deleteActivity,
+          data: {
+            uuid: this.dataValue.uuid
+          }
+        })
+        setTimeout(() => {
+          this.removingActivity = false
+          this.removeActivityConfirm = false
+          if (deleteData.status === 200) {
+            this.eventHub.$emit(this.events.removeActivity, {
+              uuid: deleteData.data.uuid
+            })
+            this.$Message.success({
+              content: '删除成功',
+              duration: 3
+            })
+          } else {
+            this.$Message.error({
+              content: deleteData.message || '删除失败，请重试',
+              duration: 3
+            })
+          }
+        }, 800)
+      },
+      showRemoveActivityConfirm () {
+        this.removeActivityConfirm = true
       }
     },
     components: {}

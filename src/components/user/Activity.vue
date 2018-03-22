@@ -207,11 +207,11 @@
         activityList: [],
         myActivityList: [],
         pageIndex: 1,
-        pageSize: 2,
+        pageSize: 10,
         totalPages: 1, // 总页数
         totalCounts: 1, // 总条数
         myPageIndex: 1,
-        myPageSize: 2,
+        myPageSize: 10,
         myTotalPages: 1, // 总页数
         myTotalCounts: 1, // 总条数
         containerWidth: 137,
@@ -257,8 +257,30 @@
         that.setContainerWidth()
       }
       that.eventHub.$on(that.events.mainContentSizeChange, that.setContainerWidth)
+      that.eventHub.$on(that.events.removeActivity, that.removeActivity)
     },
     methods: {
+      findArrayByUUID (uuid, arr) {
+        let i = 0
+        let outIndex = -1
+        for (i; i < arr.length; i++) {
+          if (arr[i].uuid === uuid) {
+            outIndex = i
+            i = arr.length
+          }
+        }
+        return outIndex
+      },
+      removeActivity (opt) {
+        let allListIndex = this.findArrayByUUID(opt.uuid, this.activityList)
+        if (allListIndex > -1) {
+          this.activityList.splice(allListIndex, 1)
+        }
+        let myListIndex = this.findArrayByUUID(opt.uuid, this.myActivityList)
+        if (myListIndex > -1) {
+          this.myActivityList.splice(myListIndex, 1)
+        }
+      },
       async initActivityList () {
         this.pageIndex = 1
         let listData = await this.list()

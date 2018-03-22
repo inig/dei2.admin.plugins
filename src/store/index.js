@@ -106,6 +106,7 @@ const store = new Vuex.Store({
       saveActivity: 'save-activity', // 保存活动
       saveActivityBefore: 'save-activity-before', // 开始保存活动
       saveActivityCallback: 'save-activity-callback', // 保存活动回调
+      removeActivity: 'remove-activity', // 删除了一个活动
       getNewMessage: 'get-new-message', // 获取到新消息
       updatePluginFileContent: 'update-plugin-file-content', // 更新插件内容
       updatePluginList: 'update-plugin-list', // 更新我的插件列表
@@ -143,6 +144,7 @@ const store = new Vuex.Store({
       listActivity: '/Zpm/activity/list', // 查询所有活动
       createActivity: '/Zpm/activity/create', // 新建活动
       editActivity: '/Zpm/activity/edit', // 编辑活动
+      deleteActivity: '/Zpm/activity/delete', // 删除活动
       getActivity: '/Zpm/activity/getTemplateData', // 获取活动模板数据
       getPreviewActivity: '/Zpm/activity/getPreviewTemplateData' // 获取活动预览数据
     },

@@ -1,6 +1,6 @@
 <template>
   <div class="fullscreen_popup_container" :ref="popupRef">
-    <component :ref="popupInnerRef" :is="fullScreenPopup.subCom.Template" :style="[fullScreenPopup.subComStyle]"></component>
+    <component :ref="popupInnerRef" :is="fullScreenPopup.subCom.Template" :act-id="fullScreenPopup.previewUUID" :style="[fullScreenPopup.subComStyle]"></component>
     <div class="preview_operation_container" :style="[previewOperationContainerBox]" :class="{shown: (fullScreenPopup.subComType === 'preview') && showPreviewOperation}">
       <div class="preview_operation_item" @mouseenter="showContentContainer" @mouseleave="hideContentContainer">
         <img class="preview_operation_item_image" v-if="fullScreenPopup.subComType === 'preview'" src="https://static.dei2.com/imgs/qrcode.png">
