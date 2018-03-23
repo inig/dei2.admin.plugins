@@ -21,10 +21,12 @@
     "iview": "^2.7.4",
     "jsonwebtoken": "^8.1.0",
     "marked": "^0.3.12",
+    "node-sass": "^4.7.2",
     "npm": "^5.6.0",
     "pageswitch": "^2.3.2",
     "qrcodejs": "^1.0.0",
     "querystring": "^0.2.0",
+    "sass-loader": "^6.0.7",
     "socket.io": "^2.0.4",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"

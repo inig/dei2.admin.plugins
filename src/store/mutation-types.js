@@ -64,6 +64,9 @@ export const SET_SIMULATOR = 'SET_SIMULATOR'
 // 激活组件
 export const ACTIVE_COMPONENT = 'ACTIVE_COMPONENT'
 
+// 添加组件
+export const ADD_COMPONENT = 'ADD_COMPONENT'
+
 // 保存活动模板数据至本地store，非数据库
 export const SAVE_LOCAL_TEMPLATE = 'SAVE_LOCAL_TEMPLATE'
 
@@ -98,6 +101,9 @@ export const ACTIVITY_INFO_CHANGED = 'ACTIVITY_INFO_CHANGED'
 
 // 活动数据未变化
 export const ACTIVITY_INFO_UNCHANGED = 'ACTIVITY_INFO_UNCHANGED'
+
+// 修改app header空白区域
+export const SET_APP_HEAER = 'SET_APP_HEADER'
 
 // >>>> actions:
 

@@ -107,6 +107,10 @@ export const mutations = {
   [types.ACTIVE_COMPONENT] (state, data) {
     Object.assign(state.activeComponent, data)
   },
+  [types.ADD_COMPONENT] (state, data) {
+    let thisPage = state.activityInfo.data.pages[state.currentPageIndex].children
+    thisPage.push(data)
+  },
   [types.INIT_LOCAL_TEMPLATE] (state, data) {
     state.activityInfo = data.template
   },
@@ -200,5 +204,8 @@ export const mutations = {
   },
   [types.ACTIVITY_INFO_UNCHANGED] (state) {
     state.activityInfoChanged = false
+  },
+  [types.SET_APP_HEAER] (state, data) {
+    state.appHeaderOperationArea = data
   }
 }

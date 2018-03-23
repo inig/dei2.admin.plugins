@@ -53,6 +53,7 @@ Vue.use(iView)
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   const _state = router.app.$options.store.state
+  _state.appHeaderOperationArea = {}
   let _localUserInfo = utils.storage.getItem(_state.localStorageKeys.userInfo)
   if (to.meta && to.meta.title) {
     utils.kit.title(to.meta.title)

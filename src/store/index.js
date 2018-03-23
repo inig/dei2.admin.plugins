@@ -60,6 +60,7 @@ const store = new Vuex.Store({
     minSpanRight: 19,
     isFullScreen: false,
     menuFold: false, // 左侧菜单是否折叠
+    appHeaderOperationArea: {}, // header空白区域
     fullScreenPopup: {
       shown: false,
       subCom: {},

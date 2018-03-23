@@ -405,6 +405,9 @@
         index: 0
       })
       this.$nextTick(() => {
+        this.$store.commit(types.SET_APP_HEAER, {
+          component: () => import('./editor/Components.vue')
+        })
         this.eventHub.$on(this.events.bodyClick, this.bodyClickHandler)
         this.eventHub.$on(this.events.saveActivity, this.saveActivity)
         setTimeout(() => {

@@ -176,7 +176,8 @@
       }
     },
     components: {
-      ZpmButton: () => import('../coms/Button.vue')
+      ZpmButton: () => import('../coms/Button.vue'),
+      ZpmImage: () => import('../coms/Image.vue')
     }
   }
 </script>
