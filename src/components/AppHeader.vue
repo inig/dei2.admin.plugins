@@ -85,7 +85,7 @@
   }
   .layout-header .menu_toggle {
     position: absolute;
-    left: 20px;
+    left: 12px;
     cursor: pointer;
   }
   .layout-header-icon-container {

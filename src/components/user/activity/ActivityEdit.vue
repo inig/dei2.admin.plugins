@@ -1,10 +1,16 @@
 <template>
   <div class="activity_edit_container">
     <div class="editor_components_container" :class="{'shown': editorComponentsContainerShown}">
-      <div class="editor_components_left">
-        <editor-component></editor-component>
+      <div class="editor_components_container_header">
+        <div class="editor_components_toggle_container">
+          <div class="editor_components_toggle" @click="toggleEditorComponentsContainer">
+            <Icon type="chevron-right" size="20" style="color: #888;"></Icon>
+          </div>
+        </div>
       </div>
-      <div class="editor_components_toggle" @click="toggleEditorComponentsContainer"></div>
+      <div class="editor_components_container_body">
+        <editor-component :shown="editorComponentsContainerShown"></editor-component>
+      </div>
     </div>
     <div class="editor_main_container" :ref="editorMainContainerRef" tabindex="10" com-type="activity">
       <div class="editor_main_simulator_selector">
@@ -92,20 +98,20 @@
     top: 0;
     width: 200px;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    /*display: flex;*/
+    /*align-items: center;*/
+    /*justify-content: space-between;*/
     background-color: #ffffff;
     z-index: 9;
     /*border-right: 1px solid rgba(30, 36, 50, 0.36);*/
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.1);
     -moz-box-shadow: 0 1px 1px rgba(0,0,0,.1);
     box-shadow: 0 1px 1px rgba(0,0,0,.1);
-    -webkit-transform: translate(200px, 0);
-    -moz-transform: translate(200px, 0);
-    -ms-transform: translate(200px, 0);
-    -o-transform: translate(200px, 0);
-    transform: translate(200px, 0);
+    -webkit-transform: translate(40px, 0);
+    -moz-transform: translate(40px, 0);
+    -ms-transform: translate(40px, 0);
+    -o-transform: translate(40px, 0);
+    transform: translate(40px, 0);
     -webkit-transition: all .2s ease-in-out;
     -moz-transition: all .2s ease-in-out;
     -ms-transition: all .2s ease-in-out;
@@ -113,20 +119,60 @@
     transition: all .2s ease-in-out;
   }
   .editor_components_container.shown {
-    -webkit-transform: translate(40px, 0);
-    -moz-transform: translate(40px, 0);
-    -ms-transform: translate(40px, 0);
-    -o-transform: translate(40px, 0);
-    transform: translate(40px, 0);
+    -webkit-transform: translate(200px, 0);
+    -moz-transform: translate(200px, 0);
+    -ms-transform: translate(200px, 0);
+    -o-transform: translate(200px, 0);
+    transform: translate(200px, 0);
+  }
+  .editor_components_container_header {
+    width: 100%;
+    height: 40px;
+    background-color: #F5F5F9;
+  }
+  .editor_components_container_body {
+    width: 100%;
+    height: calc(100% - 40px);
+    background-color: #f5f5f5;
   }
   .editor_components_left {
     width: 160px;
     height: 100%;
   }
-  .editor_components_toggle {
+  .editor_components_toggle_container {
+    float: right;
     width: 40px;
     height: 100%;
     cursor: pointer;
+  }
+  .editor_components_toggle {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    -ms-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+    -webkit-transition-delay: .3s;
+    -moz-transition-delay: .3s;
+    -ms-transition-delay: .3s;
+    -o-transition-delay: .3s;
+    transition-delay: .3s;
+  }
+  .editor_components_container.shown .editor_components_toggle {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
   }
 
   .editor_main_container {
@@ -301,7 +347,7 @@
         uuid: this.$route.query.q,
         requestInfo: this.$store.state.requestInfo,
         actInfo: {},
-        editorComponentsContainerShown: true,
+        editorComponentsContainerShown: false,
         events: this.$store.state.events,
         eventHub: this.$store.state.eventHub,
         platform: 'windows',
