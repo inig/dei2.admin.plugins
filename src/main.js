@@ -24,6 +24,9 @@ sync(store, router)
 
 Vue.use(ZpmCapture)
 
+const VueTouch = require('vue-touch')
+Vue.use(VueTouch, {name: 'v-touch'})
+
 Vue.config.productionTip = false
 
 // register global utility filters.

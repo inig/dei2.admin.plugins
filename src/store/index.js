@@ -73,6 +73,15 @@ const store = new Vuex.Store({
       dpr: 2,
       scale: 1
     },
+    grid: {
+      shown: true,
+      lineWidth: 1,
+      lineColor: '#bbb',
+      lineCountX: 10,
+      lineCountY: 20,
+      alignmentLineWidth: 4, // 对齐线宽度
+      alignmentLineColor: '#9900CC' // 对齐线颜色
+    }, // 辅助网格线
     activeComponent: {
       uuid: '',
       type: '',

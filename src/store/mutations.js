@@ -207,5 +207,11 @@ export const mutations = {
   },
   [types.SET_APP_HEAER] (state, data) {
     state.appHeaderOperationArea = data
+  },
+  [types.SHOW_SIMULATOR_GRID] (state) {
+    state.grid.shown = true
+  },
+  [types.HIDE_SIMULATOR_GRID] (state) {
+    state.grid.shown = false
   }
 }

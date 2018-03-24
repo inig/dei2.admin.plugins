@@ -105,6 +105,12 @@ export const ACTIVITY_INFO_UNCHANGED = 'ACTIVITY_INFO_UNCHANGED'
 // 修改app header空白区域
 export const SET_APP_HEAER = 'SET_APP_HEADER'
 
+// 显示simulator的网格辅助线
+export const SHOW_SIMULATOR_GRID = 'SHOW_SIMULATOR_GRID'
+
+// 隐藏simulator的网格辅助线
+export const HIDE_SIMULATOR_GRID = 'HIDE_SIMULATOR_GRID'
+
 // >>>> actions:
 
 // 登录1

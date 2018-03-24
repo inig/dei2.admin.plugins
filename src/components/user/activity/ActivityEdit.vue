@@ -65,6 +65,11 @@
             </Tooltip>
             <Icon type="arrow-down-a" size="24" v-else></Icon>
           </div>
+          <div class="editor_simulator_operation_item editor_simulator_operation_item_normal" @click="toggleGrid">
+            <Tooltip :content="grid.shown ? '关闭网格' : '预览网格'" placement="right">
+              <Icon :type="grid.shown ? 'eye-disabled' : 'eye'" size="24"></Icon>
+            </Tooltip>
+          </div>
         </div>
       </div>
     </div>
@@ -72,7 +77,7 @@
       <editor-property></editor-property>
     </div>
     <div class="preview-iframe" id="preview-iframe-container">
-      <editor-simulator active-index="0" style="width: 375px; height: 667px;" id="preview-iframe-for-screenshot"></editor-simulator>
+      <editor-simulator active-index="0" :is-preview="true" style="width: 375px; height: 667px;" id="preview-iframe-for-screenshot"></editor-simulator>
     </div>
   </div>
 </template>
@@ -382,6 +387,9 @@
       },
       activityInfo () {
         return this.$store.state.activityInfo
+      },
+      grid () {
+        return this.$store.state.grid
       }
     },
     async created () {
@@ -455,6 +463,13 @@
       }
     },
     methods: {
+      toggleGrid () {
+        if (this.grid.shown) {
+          this.$store.commit(types.HIDE_SIMULATOR_GRID)
+        } else {
+          this.$store.commit(types.SHOW_SIMULATOR_GRID)
+        }
+      },
       bodyClickHandler () {
         if (!this.bodyClicked) {
           this.bodyClicked = true
