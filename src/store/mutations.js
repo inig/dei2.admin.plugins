@@ -213,5 +213,8 @@ export const mutations = {
   },
   [types.HIDE_SIMULATOR_GRID] (state) {
     state.grid.shown = false
+  },
+  [types.UPDATE_ACTIVE_POSITION] (state, data) {
+    state.activePosition = data.position
   }
 }

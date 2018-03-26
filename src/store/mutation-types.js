@@ -111,6 +111,8 @@ export const SHOW_SIMULATOR_GRID = 'SHOW_SIMULATOR_GRID'
 // 隐藏simulator的网格辅助线
 export const HIDE_SIMULATOR_GRID = 'HIDE_SIMULATOR_GRID'
 
+export const UPDATE_ACTIVE_POSITION = 'UPDATE_ACTIVE_POSITION'
+
 // >>>> actions:
 
 // 登录1

@@ -1,7 +1,7 @@
 <template>
-  <div class="simulator_container" style="border: 1px solid red;" tabindex="1000" :com-type="pData.type" :com-uuid="pData.uuid" :style="[pData.style, {width: simulatorInfo.width + 'px', height: simulatorInfo.height + 'px', transform: 'scale(' + parseFloat(simulatorInfo.scale) + ')'}]">
-    <div class="auxiliary_grid" v-if="!isPreview" style="position: absolute;" :style="{width: simulatorInfo.width * simulatorInfo.scale + grid.alignmentLineWidth * 4 + 'px', height: simulatorInfo.height * simulatorInfo.scale + grid.alignmentLineWidth * 4 + 'px', left: '-' + grid.alignmentLineWidth * 2 + 'px', top: '-' + grid.alignmentLineWidth * 2 + 'px'}">
-      <canvas class="auxiliary_grid_canvas" id="auxiliaryGridCanvas" :width="simulatorInfo.width * simulatorInfo.scale + grid.alignmentLineWidth * 4" :height="simulatorInfo.height * simulatorInfo.scale + grid.alignmentLineWidth * 4"></canvas>
+  <div class="simulator_container" tabindex="1000" :com-type="pData.type" :com-uuid="pData.uuid" :style="[pData.style, {width: simulatorInfo.width + 'px', height: simulatorInfo.height + 'px', transform: 'scale(' + parseFloat(simulatorInfo.scale) + ')'}]">
+    <div class="auxiliary_grid" v-if="!isPreview" style="position: absolute;" :style="{width: simulatorInfo.width + grid.alignmentLineWidth * 4 + 'px', height: simulatorInfo.height + grid.alignmentLineWidth * 4 + 'px', left: '-' + grid.alignmentLineWidth * 2 + 'px', top: '-' + grid.alignmentLineWidth * 2 + 'px'}">
+      <canvas class="auxiliary_grid_canvas" id="auxiliaryGridCanvas" :width="simulatorInfo.width + grid.alignmentLineWidth * 4" :height="simulatorInfo.height + grid.alignmentLineWidth * 4"></canvas>
     </div>
     <zpm-draggable v-for="(item, index) in pData.children" :key="item.type" :class="{active: (activeComponentType === item.type && activeComponentId === item.uuid)}" :com-style="[initStyles(item.style)[0]]" :uuid="item.uuid" v-if="!isPreview">
       <div class="component_item">
@@ -51,6 +51,7 @@
 </style>
 <script>
   import * as types from '../../../../store/mutation-types'
+  import utils from '../../../../utils'
   export default {
     name: 'Simulator',
     props: {
@@ -63,7 +64,6 @@
     },
     data () {
       return {
-        simulatorInfo: this.$store.state.simulator,
         activeComponentType: 'zpm-component', // 激活状态元素的类型，page、component
         activeComponentId: '', // 激活状态的组件uuid
         activeComponentTemplate: {}, // 激活状态组件的template
@@ -73,7 +73,8 @@
         box: {},
         styles: [],
         eventHub: this.$store.state.eventHub,
-        events: this.$store.state.events
+        events: this.$store.state.events,
+        lastSimulatorInfo: JSON.parse(JSON.stringify(this.$store.state.simulator))
       }
     },
     computed: {
@@ -82,6 +83,12 @@
       },
       grid () {
         return this.$store.state.grid
+      },
+      activePosition () {
+        return this.$store.state.activePosition
+      },
+      simulatorInfo () {
+        return JSON.parse(JSON.stringify(this.$store.state.simulator))
       }
     },
     created () {
@@ -89,15 +96,8 @@
         this.eventHub.$on(this.events.bodyClick, this.bodyClickHandler)
         if (!this.isPreview) {
           this.drawGrid()
-          let _ran = Math.floor(Math.random() * 6) + 1
-          console.log('..........', _ran)
-          this.drawLine(1)
-          this.drawLine(2)
-          this.drawLine(3)
-          this.drawLine(4)
-          this.drawLine(5)
-          this.drawLine(6)
         }
+        this.eventHub.$on(this.events.simulatorChanged, this.simulatorChanged)
       })
     },
     watch: {
@@ -109,30 +109,84 @@
             this.clearGrid()
           }
         }
+      },
+      'activePosition': {
+        deep: true,
+        handler: function (obj) {
+//          console.log('=====2====', JSON.stringify(this.simulatorInfo))
+//          console.log('...222...', JSON.stringify(this.lastSimulatorInfo))
+          if (utils.isEmptyObj(obj) && !this.grid.shown) {
+            this.clearGrid()
+            return
+          }
+          let sensitive = this.grid.alignmentLineSensitive
+          if (Math.abs(obj.left) < sensitive) {
+            this.drawLine(1)
+          } else {
+            this.clearLine(1)
+          }
+          if (Math.abs(obj.top) < sensitive) {
+            this.drawLine(2)
+          } else {
+            this.clearLine(2)
+          }
+          let auxiliaryGridCanvas = document.getElementById('auxiliaryGridCanvas')
+          let canvasBox = auxiliaryGridCanvas.getBoundingClientRect()
+          console.log('>>>>>>>>>>>>>>>>scale: ', canvasBox.width * 2 / this.simulatorInfo.scale, obj.right)
+          if (Math.abs(obj.right - canvasBox.width * 2 / this.simulatorInfo.scale) < sensitive) {
+            this.drawLine(3)
+          } else {
+            this.clearLine(3)
+          }
+          if (Math.abs(obj.bottom - canvasBox.height * 2 / this.simulatorInfo.scale) < sensitive) {
+            this.drawLine(4)
+          } else {
+            this.clearLine(4)
+          }
+          if (Math.abs(obj.middle - canvasBox.height / this.simulatorInfo.scale) < sensitive) {
+            this.drawLine(5)
+          } else {
+            this.clearLine(5)
+          }
+          if (Math.abs(obj.center - canvasBox.width / this.simulatorInfo.scale) < sensitive) {
+            this.drawLine(6)
+          } else {
+            this.clearLine(6)
+          }
+        }
       }
     },
     methods: {
+      simulatorChanged () {
+        if (!this.isPreview) {
+//          this.drawGrid(true)
+          this.lastSimulatorInfo.scale = this.simulatorInfo.scale
+        }
+      },
       clearGrid () {
         let auxiliaryGridCanvas = document.getElementById('auxiliaryGridCanvas')
         let ctx = auxiliaryGridCanvas.getContext('2d')
         let canvasBox = auxiliaryGridCanvas.getBoundingClientRect()
-        let boxWidth = canvasBox.width * 2
-        let boxHeight = canvasBox.height * 2
+        let boxWidth = canvasBox.width * 2 / this.lastSimulatorInfo.scale
+        let boxHeight = canvasBox.height * 2 / this.lastSimulatorInfo.scale
         ctx.clearRect(0, 0, boxWidth, boxHeight)
       },
-      drawGrid () {
+      drawGrid (flag) {
         let auxiliaryGridCanvas = document.getElementById('auxiliaryGridCanvas')
         let ctx = auxiliaryGridCanvas.getContext('2d')
         let canvasBox = auxiliaryGridCanvas.getBoundingClientRect()
-        let boxWidth = canvasBox.width * 2
-        let boxHeight = canvasBox.height * 2
+        let boxWidth = (canvasBox.width * 2 / this.lastSimulatorInfo.scale)
+        let boxHeight = (canvasBox.height * 2 / this.lastSimulatorInfo.scale)
+        if (flag) {
+          ctx.clearRect(0, 0, boxWidth, boxHeight)
+        }
         let countX = this.grid.lineCountX
         let countY = this.grid.lineCountY
         let eachWidth = boxWidth / countX
         let eachHeight = boxHeight / countY
         ctx.beginPath()
         ctx.strokeStyle = this.grid.lineColor
-        ctx.lineWidth = this.grid.lineWidth
+        ctx.lineWidth = this.grid.lineWidth * 2
         // 画垂直方向的线
         for (let i = 1; i < countY; i++) {
           ctx.moveTo(0, i * eachHeight)
@@ -151,10 +205,58 @@
         let auxiliaryGridCanvas = document.getElementById('auxiliaryGridCanvas')
         let ctx = auxiliaryGridCanvas.getContext('2d')
         let canvasBox = auxiliaryGridCanvas.getBoundingClientRect()
-        let boxWidth = canvasBox.width * 2
-        let boxHeight = canvasBox.height * 2
+        let boxWidth = canvasBox.width * 2 / this.simulatorInfo.scale
+        let boxHeight = canvasBox.height * 2 / this.simulatorInfo.scale
+//        console.log('>>2>>>', canvasBox.width * 2, this.simulatorInfo.scale, boxWidth)
         ctx.strokeStyle = this.grid.alignmentLineColor
         let _w = this.grid.alignmentLineWidth
+        ctx.lineWidth = _w * 2
+//        ctx.moveTo(canvasBox.width * 2 / this.simulatorInfo.scale, 0)
+//        ctx.lineTo(canvasBox.width * 2 / this.simulatorInfo.scale, canvasBox.height * 2 / this.simulatorInfo.scale)
+//        ctx.stroke()
+        ctx.beginPath()
+        switch (Number(index)) {
+          case 1:
+            ctx.moveTo(_w, _w)
+            ctx.lineTo(_w, boxHeight - _w)
+            break
+          case 2:
+            ctx.moveTo(_w, _w)
+            ctx.lineTo(boxWidth - _w, _w)
+            break
+          case 3:
+            ctx.moveTo(boxWidth - _w, _w)
+            ctx.lineTo(boxWidth - _w, boxHeight - _w)
+            break
+          case 4:
+            ctx.moveTo(boxWidth - _w, boxHeight - _w)
+            ctx.lineTo(_w, boxHeight - _w)
+            break
+          case 5:
+            ctx.moveTo(0, boxHeight / 2)
+            ctx.lineTo(boxWidth, boxHeight / 2)
+            break
+          case 6:
+            ctx.moveTo(boxWidth / 2, 0)
+            ctx.lineTo(boxWidth / 2, boxHeight)
+            break
+          default:
+            break
+        }
+        ctx.stroke()
+        ctx.closePath()
+      },
+      clearLine (index) {
+        let auxiliaryGridCanvas = document.getElementById('auxiliaryGridCanvas')
+        let ctx = auxiliaryGridCanvas.getContext('2d')
+        let canvasBox = auxiliaryGridCanvas.getBoundingClientRect()
+//        let boxWidth = canvasBox.width * 2 / this.lastSimulatorInfo.scale
+//        let boxHeight = canvasBox.height * 2 / this.lastSimulatorInfo.scale
+        let boxWidth = this.simulatorInfo.width + this.grid.lineWidth * 8
+        let boxHeight = this.simulatorInfo.height + this.grid.lineWidth * 8
+        ctx.strokeStyle = this.grid.alignmentLineColor
+        let _w = this.grid.alignmentLineWidth
+        ctx.strokeStyle = this.grid.lineColor
         ctx.lineWidth = _w * 2
         ctx.beginPath()
         switch (Number(index)) {
@@ -163,55 +265,30 @@
             ctx.lineTo(_w, boxHeight - _w)
             break
           case 2:
-            ctx.strokeStyle = 'cyan'
             ctx.moveTo(_w, _w)
             ctx.lineTo(boxWidth - _w, _w)
             break
           case 3:
-            ctx.strokeStyle = 'blue'
             ctx.moveTo(boxWidth - _w, _w)
             ctx.lineTo(boxWidth - _w, boxHeight - _w)
             break
           case 4:
-            ctx.strokeStyle = 'black'
             ctx.moveTo(boxWidth - _w, boxHeight - _w)
             ctx.lineTo(_w, boxHeight - _w)
             break
           case 5:
+            ctx.strokeStyle = '#e5e5e5'
+            ctx.moveTo(0, boxHeight / 2)
+            ctx.lineTo(boxWidth, boxHeight / 2)
             break
           case 6:
+            ctx.strokeStyle = '#e5e5e5'
+            ctx.moveTo(boxWidth / 2, 0)
+            ctx.lineTo(boxWidth / 2, boxHeight)
             break
           default:
             break
         }
-//        switch (Number(index)) {
-//          case 1:
-//            ctx.moveTo(_w / 2, _w)
-//            ctx.lineTo(_w / 2, boxHeight - _w * 2)
-//            break
-//          case 2:
-//            ctx.moveTo(_w, _w / 2)
-//            ctx.lineTo(boxWidth - _w * 2, _w / 2)
-//            break
-//          case 3:
-//            ctx.moveTo(boxWidth - _w, _w)
-//            ctx.lineTo(boxWidth - _w, boxHeight - _w * 2)
-//            break
-//          case 4:
-//            ctx.moveTo(boxWidth - _w, boxHeight - _w)
-//            ctx.lineTo(_w, boxHeight - _w)
-//            break
-//          case 5:
-//            ctx.moveTo(0, boxHeight / 2)
-//            ctx.lineTo(boxWidth, boxHeight / 2)
-//            break
-//          case 6:
-//            ctx.moveTo(boxWidth / 2, 0)
-//            ctx.lineTo(boxWidth / 2, boxHeight)
-//            break
-//          default:
-//            break
-//        }
         ctx.stroke()
         ctx.closePath()
       },

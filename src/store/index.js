@@ -79,9 +79,18 @@ const store = new Vuex.Store({
       lineColor: '#bbb',
       lineCountX: 10,
       lineCountY: 20,
-      alignmentLineWidth: 4, // 对齐线宽度
-      alignmentLineColor: '#9900CC' // 对齐线颜色
+      alignmentLineWidth: 2, // 对齐线宽度
+      alignmentLineColor: '#9900CC', // 对齐线颜色
+      alignmentLineSensitive: 10 // 小于10px显示对齐线
     }, // 辅助网格线
+    activePosition: {
+      left: 1,
+      top: 1,
+      right: 1,
+      bottom: 1,
+      center: 1, // 水平方向
+      middle: 1 // 竖直方向
+    },
     activeComponent: {
       uuid: '',
       type: '',

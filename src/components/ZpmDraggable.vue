@@ -46,6 +46,7 @@
   }
 </style>
 <script>
+  import * as types from '../store/mutation-types'
   export default {
     name: 'ZpmDraggable',
     props: {
@@ -96,9 +97,34 @@
         _realStyle.left = (parseFloat(_adjustStyle.left) + evt.deltaX * this.simulator.dpr) + 'px'
         _realStyle.top = (parseFloat(_adjustStyle.top) + evt.deltaY * this.simulator.dpr) + 'px'
         this.realStyle = _realStyle
+        let activePosition = {}
+        let ele = this.$refs[this.uuid].querySelector('.component_item')
+        if (ele) {
+          let eleBox = ele.getBoundingClientRect()
+          activePosition.left = (parseFloat(_adjustStyle.left) + evt.deltaX * this.simulator.dpr)
+          activePosition.top = (parseFloat(_adjustStyle.top) + evt.deltaY * this.simulator.dpr)
+          let _left = (parseFloat(_adjustStyle.left) + evt.deltaX * this.simulator.dpr)
+          let _top = (parseFloat(_adjustStyle.top) + evt.deltaY * this.simulator.dpr)
+          let _width = (eleBox.width * this.simulator.dpr + 2 * this.defaultBorderWidth)
+          let _height = (eleBox.height * this.simulator.dpr + 2 * this.defaultBorderWidth)
+          activePosition = {
+            left: _left,
+            top: _top,
+            right: _left + _width,
+            bottom: _top + _height,
+            middle: _top + _height / 2,
+            center: _left + _width / 2
+          }
+          this.$store.commit(types.UPDATE_ACTIVE_POSITION, {
+            position: activePosition
+          })
+        }
       },
       touchEnd (evt) {
         this.adjustStyle = JSON.parse(JSON.stringify(this.realStyle))
+        this.$store.commit(types.UPDATE_ACTIVE_POSITION, {
+          position: {}
+        })
       }
     },
     components: {}
