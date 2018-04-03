@@ -139,8 +139,8 @@ const store = new Vuex.Store({
       defaultActivity127x200: '/static/images/127x200.png'
     },
     requestInfo: {
-      baseUrl: 'http://127.0.0.1:3000',
-      // baseUrl: 'https://talkapi.dei2.com',
+      // baseUrl: 'http://127.0.0.1:3000',
+      baseUrl: 'https://talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
       modifyPassword: '/Zpm/user/modifyPassword',

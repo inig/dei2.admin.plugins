@@ -69,6 +69,20 @@ export const contentRouter = {
       redirect: '/'
     },
     {
+      path: '/article',
+      redirect: '/'
+    },
+    {
+      path: '/article/index',
+      name: 'ArticleIndex',
+      meta: {
+        title: '文章管理'
+      },
+      components: {
+        ContentRouter: () => import('../components/developer/article/Index.vue')
+      }
+    },
+    {
       path: '/plugin/:pluginName',
       redirect: '/'
     },

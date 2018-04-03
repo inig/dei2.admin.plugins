@@ -254,18 +254,23 @@
             plugin: args.plugin,
             filename: args.filename
           })
-          if (_fileData.data.plugin === args.plugin && _fileData.data.filename === args.filename) {
-            this.fileContent = _fileData.data.content
-            let fileSuffix = this.currentFileName.replace(/^.+\.(.+)$/, '$1').toLowerCase()
-            if (fileSuffix === 'md') {
-              this.triggerOffset = 50
-              this.showMarkDown = true
-              this.markdownContent = marked(this.fileContent)
-            } else {
-              this.triggerOffset = 100
-              this.markdownContent = ''
-              this.showMarkDown = false
-              this.previewMarkDownFile = false
+          if (_fileData.status !== 200) {
+            this.$Message.error(_fileData.message)
+            this.fileContent = ''
+          } else {
+            if (_fileData.data.plugin === args.plugin && _fileData.data.filename === args.filename) {
+              this.fileContent = _fileData.data.content
+              let fileSuffix = this.currentFileName.replace(/^.+\.(.+)$/, '$1').toLowerCase()
+              if (fileSuffix === 'md') {
+                this.triggerOffset = 50
+                this.showMarkDown = true
+                this.markdownContent = marked(this.fileContent)
+              } else {
+                this.triggerOffset = 100
+                this.markdownContent = ''
+                this.showMarkDown = false
+                this.previewMarkDownFile = false
+              }
             }
           }
         } catch (err) {

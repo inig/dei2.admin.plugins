@@ -18,7 +18,7 @@
     "codemirror": "^5.33.0",
     "dom-to-image": "^2.6.0",
     "install": "^0.10.2",
-    "iview": "^2.7.4",
+    "iview": "^2.11.0",
     "jsonwebtoken": "^8.1.0",
     "marked": "^0.3.12",
     "node-sass": "^4.7.2",

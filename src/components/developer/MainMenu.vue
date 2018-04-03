@@ -1,29 +1,78 @@
 <template>
-    <Menu theme="dark" width="auto" class="main_menu_container" @on-select="navToPluginView" :active-name="`${currentPlugin}-${currentFileName}`">
-      <MenuGroup title="我的插件">
-        <Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum == item.author">
+    <!--<Menu theme="dark" width="auto" class="main_menu_container" @on-select="navToPluginView" :active-name="`${currentPlugin}-${currentFileName}`">-->
+      <!--<MenuGroup title="我的插件">-->
+        <!--<Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum == item.author">-->
+          <!--<template slot="title">-->
+            <!--<Icon type="ios-paper"></Icon>-->
+            <!--{{item.name}}-->
+            <!--<span class="plugin_status_tag" :class="{'reject': (item.status === 0 || item.status === 2), 'inreview': (item.status === 1), 'passed': (item.status === 3)}">{{item.status | formatStatus}}</span>-->
+          <!--</template>-->
+          <!--<MenuItem v-for="(itm, idx) in item.children" :key="idx" :name="item.name + '-' + itm">-->
+            <!--{{itm}}-->
+          <!--</MenuItem>-->
+        <!--</Submenu>-->
+      <!--</MenuGroup>-->
+      <!--<MenuGroup title="别人家的插件" style="border-top: 1px solid rgba(30, 36, 50, 0.1);">-->
+        <!--<Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum != item.author && item.status === 3">-->
+          <!--<template slot="title">-->
+            <!--<Icon type="ios-paper"></Icon>-->
+            <!--{{item.name}}-->
+          <!--</template>-->
+          <!--<MenuItem v-for="(itm, idx) in item.children" :key="idx" :name="item.name + '-' + itm">-->
+            <!--{{itm}}-->
+          <!--</MenuItem>-->
+        <!--</Submenu>-->
+      <!--</MenuGroup>-->
+    <!--</Menu>-->
+
+  <Menu theme="dark" width="auto" class="main_menu_container" @on-select="navToPluginView" :active-name="`${currentMenu}-${currentPlugin}-${currentFileName}`">
+    <Submenu v-for="(menuItem, menuIndex) in menuItems" :key="menuIndex" :name="menuItem.name">
+      <template slot="title">
+        <Icon :type="menuItem.icon"></Icon>
+        {{menuItem.text}}
+      </template>
+      <!-- 插件目录 -->
+      <MenuGroup v-for="(group, groupIndex) in menuItem.children" :key="groupIndex" :title="group.text" v-if="menuItem.name === 'plugin'">
+        <Submenu v-for="(item, index) in allPlugins" :key="index" :name="'plugin'" :data-name="'plugin'" v-if="group.name === 'myPlugins' ? (loginInfo.phonenum == item.author && item.name.toLowerCase().indexOf(searchPluginName.toLowerCase()) > -1) : (loginInfo.phonenum != item.author && item.status === 3 && item.name.toLowerCase().indexOf(searchPluginName.toLowerCase()) > -1)">
           <template slot="title">
-            <Icon type="ios-paper"></Icon>
+            <Icon type="stats-bars"></Icon>
             {{item.name}}
             <span class="plugin_status_tag" :class="{'reject': (item.status === 0 || item.status === 2), 'inreview': (item.status === 1), 'passed': (item.status === 3)}">{{item.status | formatStatus}}</span>
           </template>
-          <MenuItem v-for="(itm, idx) in item.children" :key="idx" :name="item.name + '-' + itm">
+          <MenuItem v-for="(itm, idx) in item.children" :key="itm" :name="menuItem.name + '-' + item.name + '-' + itm" :data-name="item.name + '-' + itm">
             {{itm}}
           </MenuItem>
         </Submenu>
       </MenuGroup>
-      <MenuGroup title="别人家的插件" style="border-top: 1px solid rgba(30, 36, 50, 0.1);">
-        <Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum != item.author && item.status === 3">
-          <template slot="title">
-            <Icon type="ios-paper"></Icon>
-            {{item.name}}
-          </template>
-          <MenuItem v-for="(itm, idx) in item.children" :key="idx" :name="item.name + '-' + itm">
-            {{itm}}
-          </MenuItem>
-        </Submenu>
-      </MenuGroup>
-    </Menu>
+      <MenuItem v-for="(subItem, subIndex) in menuItem.children" :key="subIndex" v-if="menuItem.name !== 'plugin'" :name="menuItem.name + '-' + menuItem.name + '-' + subItem.name">{{subItem.text}}</MenuItem>
+    </Submenu>
+  </Menu>
+
+  <!--<Menu theme="dark" width="auto" class="main_menu_container" @on-select="navToPluginView" :active-name="`${currentPlugin}-${currentFileName}`">-->
+    <!--<MenuGroup title="我的插件">-->
+      <!--<Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum == item.author && item.name.toLowerCase().indexOf(searchPluginName.toLowerCase()) > -1">-->
+        <!--<template slot="title">-->
+          <!--<Icon type="ios-paper"></Icon>-->
+          <!--{{item.name}}-->
+          <!--<span class="plugin_status_tag" :class="{'reject': (item.status === 0 || item.status === 2), 'inreview': (item.status === 1), 'passed': (item.status === 3)}">{{item.status | formatStatus}}</span>-->
+        <!--</template>-->
+        <!--<MenuItem v-for="(itm, idx) in item.children" :key="idx" :name="item.name + '-' + itm">-->
+          <!--{{itm}}-->
+        <!--</MenuItem>-->
+      <!--</Submenu>-->
+    <!--</MenuGroup>-->
+    <!--<MenuGroup title="别人家的插件" style="border-top: 1px solid rgba(30, 36, 50, 0.1);">-->
+      <!--<Submenu v-for="(item, index) in allPlugins" :key="index" :name="item.name" v-if="loginInfo.phonenum != item.author && item.status === 3 && item.name.toLowerCase().indexOf(searchPluginName.toLowerCase()) > -1">-->
+        <!--<template slot="title">-->
+          <!--<Icon type="ios-paper"></Icon>-->
+          <!--{{item.name}}-->
+        <!--</template>-->
+        <!--<MenuItem v-for="(itm, idx) in item.children" :key="idx" :name="item.name + '-' + itm">-->
+          <!--{{itm}}-->
+        <!--</MenuItem>-->
+      <!--</Submenu>-->
+    <!--</MenuGroup>-->
+  <!--</Menu>-->
 </template>
 <style>
 .main_menu_container {
@@ -53,24 +102,61 @@
   // import utils from '../../utils/index'
   export default {
     name: 'MainMenu',
+    props: ['searchPluginName'],
     data () {
       return {
         allPlugins: [],
         contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
         eventHub: this.$store.state.eventHub,
         events: this.$store.state.events,
-        requestInfo: this.$store.state.requestInfo
+        socketEvents: this.$store.state.socketEvents,
+        socket: this.$store.state.socket,
+        requestInfo: this.$store.state.requestInfo,
+        menuItems: [
+          {
+            name: 'plugin',
+            text: '插件管理',
+            icon: 'wrench',
+            children: [
+              {
+                name: 'myPlugins',
+                text: '我的插件'
+              },
+              {
+                name: 'otherPlugins',
+                text: '别人的插件'
+              }
+            ]
+          },
+          {
+            name: 'article',
+            text: '内容管理',
+            icon: 'compose',
+            children: [
+              {
+                name: 'index',
+                text: '文章管理'
+              }
+            ]
+          }
+        ]
       }
     },
     computed: {
       loginInfo () {
         return this.$store.state.loginInfo
       },
+      currentMenu () {
+        return this.$route.fullPath.split('/')[1]
+      },
       currentPlugin () {
         return this.$route.params.pluginName
       },
       currentFileName () {
         return this.$route.params.fileName
+      },
+      menuFold () {
+        return this.$store.state.menuFold
       }
     },
     async created () {
@@ -80,8 +166,55 @@
 //      this.$store.commit(types.SET_ALL_PLUGINS, {
 //        allPlugins: this.allPlugins
 //      })
+      this.$nextTick(() => {
+//        this.socket.client.off(this.socket.event)
+        this.socket.client.on(this.socket.event, this.getNewMessage)
+      })
     },
     methods: {
+      findPluginIndexByName (pluginName) {
+        let _allPlugins = JSON.parse(JSON.stringify(this.allPlugins))
+        let i = 0
+        let outIndex = -1
+        for (i; i < _allPlugins.length; i++) {
+          if (String(_allPlugins[i].name) === String(pluginName)) {
+            outIndex = i
+            i = _allPlugins.length
+          }
+        }
+        return outIndex
+      },
+      getNewMessage (args) {
+        if (args.message.type === this.socketEvents.reviewPlugin) {
+          let _newPluginInfo = JSON.parse(JSON.stringify(args.message.data))
+          let _pluginIndex = this.findPluginIndexByName(_newPluginInfo.name)
+          _newPluginInfo.children = [
+            'index.vue',
+            'package.json',
+            'README.md'
+          ]
+          if (_pluginIndex > -1) {
+            this.allPlugins.splice(_pluginIndex, 1, _newPluginInfo)
+          }
+          if (args.to.phonenum === this.loginInfo.phonenum) {
+            if (args.message.data.status === 0 || args.message.data.status === 2) {
+              this.$Notice.error({
+                title: `插件${args.message.data.name}审核结果`,
+                desc: `<span style="color: #ed3f14; font-weight: bolder; margin-left: -8px;">【${args.message.data.status === 0 ? '不可用' : '已拒绝'}】</span><br>${args.message.data.remarks || ''}`
+              })
+            } else if (args.message.data.status === 1) {
+              this.$Notice.warning({
+                desc: `插件${args.message.data.name}正在审核中，请耐心等待`
+              })
+            } else if (args.message.data.status === 3) {
+              this.$Notice.success({
+                title: `插件${args.message.data.name}审核结果`,
+                desc: `<span style="color: #19be6b; font-weight: bolder; margin-left: -8px;">【已通过】</span>`
+              })
+            }
+          }
+        }
+      },
       async getAllPlugins () {
         let pluginData = await this.$store.dispatch(types.AJAX, {
           url: this.requestInfo.listPlugins,
@@ -104,8 +237,15 @@
         return _otherPlugins
       },
       navToPluginView (e) {
-        this.$store.state.loaders[this.contentRouterViewLoader].show()
-        this.$router.replace(`/plugin/${e.split('-')[0]}/${e.split('-')[1]}`)
+        try {
+          this.$store.state.loaders[this.contentRouterViewLoader].show()
+        } catch (err) {}
+//        this.$router.replace(`/${e.split('-')[0]}/${e.split('-')[1]}/${e.split('-')[2]}`)
+        if (e.split('-')[0] === 'plugin') {
+          this.$router.replace(`/plugin/${e.split('-')[1]}/${e.split('-')[2]}`)
+        } else {
+          this.$router.replace(`/${e.split('-')[1]}/${e.split('-')[2]}`)
+        }
       },
       async updatePluginList (args) {
         this.allPlugins = await this.getAllPlugins()

@@ -249,7 +249,7 @@
       clearLine (index) {
         let auxiliaryGridCanvas = document.getElementById('auxiliaryGridCanvas')
         let ctx = auxiliaryGridCanvas.getContext('2d')
-        let canvasBox = auxiliaryGridCanvas.getBoundingClientRect()
+//        let canvasBox = auxiliaryGridCanvas.getBoundingClientRect()
 //        let boxWidth = canvasBox.width * 2 / this.lastSimulatorInfo.scale
 //        let boxHeight = canvasBox.height * 2 / this.lastSimulatorInfo.scale
         let boxWidth = this.simulatorInfo.width + this.grid.lineWidth * 8
