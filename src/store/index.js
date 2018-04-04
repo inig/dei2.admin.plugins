@@ -139,8 +139,8 @@ const store = new Vuex.Store({
       defaultActivity127x200: '/static/images/127x200.png'
     },
     requestInfo: {
-      // baseUrl: 'http://127.0.0.1:3000',
-      baseUrl: 'https://talkapi.dei2.com',
+      baseUrl: 'http://127.0.0.1:3000',
+      // baseUrl: 'https://talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
       modifyPassword: '/Zpm/user/modifyPassword',
@@ -165,7 +165,9 @@ const store = new Vuex.Store({
       editActivity: '/Zpm/activity/edit', // 编辑活动
       deleteActivity: '/Zpm/activity/delete', // 删除活动
       getActivity: '/Zpm/activity/getTemplateData', // 获取活动模板数据
-      getPreviewActivity: '/Zpm/activity/getPreviewTemplateData' // 获取活动预览数据
+      getPreviewActivity: '/Zpm/activity/getPreviewTemplateData', // 获取活动预览数据
+      listArticle: '/Zpm/article/list', // 查询文章列表
+      viewArticle: '/Zpm/article/content' // 根据文章id查询文章内容
     },
     loginInfo: {
     },

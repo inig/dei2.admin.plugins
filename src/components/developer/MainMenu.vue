@@ -25,7 +25,7 @@
       <!--</MenuGroup>-->
     <!--</Menu>-->
 
-  <Menu theme="dark" width="auto" class="main_menu_container" @on-select="navToPluginView" :active-name="`${currentMenu}-${currentPlugin}-${currentFileName}`">
+  <Menu theme="dark" width="auto" class="main_menu_container" @on-select="navToPluginView" :active-name="`${currentMenu}-${currentPlugin}-${currentFileName}`" :data-active-name="`${currentMenu}-${currentPlugin}-${currentFileName}`">
     <Submenu v-for="(menuItem, menuIndex) in menuItems" :key="menuIndex" :name="menuItem.name">
       <template slot="title">
         <Icon :type="menuItem.icon"></Icon>
@@ -150,10 +150,28 @@
         return this.$route.fullPath.split('/')[1]
       },
       currentPlugin () {
-        return this.$route.params.pluginName
+        let _pluginName = this.$route.params.pluginName
+        if (!_pluginName) {
+          let _pathArr = this.$route.fullPath.split('/')
+          if (_pathArr.length <= 3) {
+            _pluginName = _pathArr[1]
+          } else {
+            _pluginName = _pathArr[2]
+          }
+        }
+        return _pluginName
       },
       currentFileName () {
-        return this.$route.params.fileName
+        let _fileName = this.$route.params.fileName
+        if (!_fileName) {
+          let _pathArr = this.$route.fullPath.split('/')
+          if (_pathArr.length <= 3) {
+            _fileName = _pathArr[2]
+          } else {
+            _fileName = _pathArr[3]
+          }
+        }
+        return _fileName
       },
       menuFold () {
         return this.$store.state.menuFold
@@ -237,15 +255,20 @@
         return _otherPlugins
       },
       navToPluginView (e) {
-        try {
-          this.$store.state.loaders[this.contentRouterViewLoader].show()
-        } catch (err) {}
 //        this.$router.replace(`/${e.split('-')[0]}/${e.split('-')[1]}/${e.split('-')[2]}`)
+        let _targetPath = ''
         if (e.split('-')[0] === 'plugin') {
-          this.$router.replace(`/plugin/${e.split('-')[1]}/${e.split('-')[2]}`)
+          _targetPath = `/plugin/${e.split('-')[1]}/${e.split('-')[2]}`
         } else {
-          this.$router.replace(`/${e.split('-')[1]}/${e.split('-')[2]}`)
+          _targetPath = `/${e.split('-')[1]}/${e.split('-')[2]}`
         }
+        if (this.$route.fullPath !== _targetPath) {
+          // 跳转目录 跟 当前目录不一样，则跳转
+          try {
+            this.$store.state.loaders[this.contentRouterViewLoader].show()
+          } catch (err) {}
+          this.$router.replace(_targetPath)
+        } else {}
       },
       async updatePluginList (args) {
         this.allPlugins = await this.getAllPlugins()

@@ -83,6 +83,16 @@ export const contentRouter = {
       }
     },
     {
+      path: '/article/:articleId',
+      name: 'ArticleDetail',
+      meta: {
+        title: '文章详情'
+      },
+      components: {
+        ContentRouter: () => import('../components/developer/article/Detail.vue')
+      }
+    },
+    {
       path: '/plugin/:pluginName',
       redirect: '/'
     },

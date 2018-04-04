@@ -38,3 +38,25 @@ export function unescape (text) {
 
   return res
 }
+
+export function timeFormat (text, formatStr) {
+  let date = new Date()
+  date.setTime(text)
+  let _year = date.getFullYear()
+  let _month = ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1))
+  let _day = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
+  let _hour = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours())
+  let _minute = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
+  let _second = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds())
+  return formatStr.replace('YYYY', _year)
+    .replace('MM', _month)
+    .replace('M', (date.getMonth() + 1))
+    .replace('DD', _day)
+    .replace('D', date.getDate())
+    .replace('hh', _hour)
+    .replace('h', date.getHours())
+    .replace('mm', _minute)
+    .replace('m', date.getMinutes())
+    .replace('ss', _second)
+    .replace('s', date.getSeconds())
+}
