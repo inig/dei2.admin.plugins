@@ -1,13 +1,27 @@
 <template>
   <div class="article_detail_container">
+    <div class="article_detail_header">
+      <div class="article_detail_header_back" @click="backToArticleIndex">
+        <Icon type="ios-arrow-back" size="18"></Icon>
+        <span class="article_detail_header_back_text">返回</span>
+      </div>
+      <p class="article_detail_header_title" contenteditable @input="changeArticleTitle">{{articleDetail.title}}</p>
+      <div class="article_detail_right_menu_container">
+        <div class="article_detail_right_menu_item" @click="openPreview">
+          <Tooltip content="预览" placement="bottom" class="icon_wrapper" :transfer="true">
+            <Icon type="eye" size="18"></Icon>
+          </Tooltip>
+        </div>
+      </div>
+    </div>
     <pre class="code_preview" :ref="codeContainerRef">
       {{articleDetail.content}}
     </pre>
-    <div class="article_toggle" @click="openPreview">
-      <Tooltip content="预览" placement="left" class="icon_wrapper">
-        <Icon type="eye" size="18"></Icon>
-      </Tooltip>
-    </div>
+    <!--<div class="article_toggle" @click="openPreview">-->
+      <!--<Tooltip content="预览" placement="left" class="icon_wrapper">-->
+        <!--<Icon type="eye" size="18"></Icon>-->
+      <!--</Tooltip>-->
+    <!--</div>-->
     <div class="article_viewer_container" :class="{shown: showPreview}">
       <div class="article_viewer_header">
         <div class="article_viewer_header_back" @click="closePreview">
@@ -16,13 +30,14 @@
         </div>
         <p class="article_viewer_header_title">{{articleDetail.title}}</p>
       </div>
-      <div class="article_viewer_body" v-html="markdownContent"></div>
+      <div class="article_viewer_body markdown-body" v-html="markdownContent"></div>
     </div>
   </div>
 </template>
 <style>
+  @import "../../../assets/css/markdown.css";
   .article_detail_container {
-    /*position: relative;*/
+    position: relative;
     width: 100%;
     height: 100%;
     padding: 20px;
@@ -34,16 +49,72 @@
     /*align-items: flex-start;*/
     /*justify-content: space-between;*/
   }
+  .article_detail_header {
+    position: relative;
+    /*left: 0;*/
+    /*top: 0;*/
+    width: 100%;
+    height: 31px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: hidden;
+    /*border-bottom: 1px solid rgba(0, 0, 0, 0.1);*/
+  }
+  .article_detail_header_title {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+  }
+  .article_detail_header_back {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .article_detail_header_back:active {
+    opacity: 0.7;
+  }
+  .article_detail_header_back_text {
+    margin-left: 8px;
+  }
+  .article_detail_right_menu_container {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    height: 31px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .article_detail_right_menu_item {
+    height: 31px;
+    cursor: pointer;
+    margin-left: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
   .code_preview {
     text-shadow: none;
-    height: 100%;
+    height: calc(100% - 31px);
     overflow: hidden;
     /*overflow-y: auto;*/
   }
-  .article_detail_container .CodeMirror-scroll {
-    padding-right: 40px!important;
-    /*width: calc(100% - 40px);*/
-  }
+  /*.article_detail_container .CodeMirror-scroll {*/
+    /*padding-right: 40px!important;*/
+    /*!*width: calc(100% - 40px);*!*/
+  /*}*/
   .article_toggle {
     position: absolute;
     right: 20px;
@@ -159,6 +230,7 @@
       return {
         requestInfo: this.$store.state.requestInfo,
         articleDetail: {},
+        cacheArticleDetail: {},
         codeContainerRef: 'code-container-ref',
         editor: {},
         markdownContent: '',
@@ -173,7 +245,20 @@
     async created () {
       await this.getArticleContent()
     },
+    watch: {
+      '$route': async function (val) {
+        if (this.$route.name === 'ArticleDetail') {
+          await this.getArticleContent()
+        }
+      }
+    },
     methods: {
+      changeArticleTitle (e) {
+        this.cacheArticleDetail.title = e.target.textContent
+      },
+      backToArticleIndex () {
+        this.$router.back()
+      },
       toggleShowPreview () {
         this.showPreview = !this.showPreview
       },
@@ -192,6 +277,7 @@
         })
         if (articleData.status === 200) {
           this.articleDetail = articleData.data
+          this.cacheArticleDetail = JSON.parse(JSON.stringify(articleData.data))
           this.beautifyCode()
         } else {
           this.$Message.error('文章数据获取失败，请刷新重试')
@@ -217,10 +303,10 @@
         ele.innerHTML = ''
         require([
           'codemirror/lib/codemirror',
-//          'codemirror/mode/vue/vue',
-//          'codemirror/mode/javascript/javascript',
+          'codemirror/mode/vue/vue',
+          'codemirror/mode/javascript/javascript',
           'codemirror/mode/markdown/markdown',
-//          'codemirror/addon/comment/comment',
+          'codemirror/addon/comment/comment',
           'codemirror/addon/fold/foldcode',
           'codemirror/addon/fold/foldgutter',
           'codemirror/addon/fold/markdown-fold',
