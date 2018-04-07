@@ -167,6 +167,8 @@ const store = new Vuex.Store({
       getActivity: '/Zpm/activity/getTemplateData', // 获取活动模板数据
       getPreviewActivity: '/Zpm/activity/getPreviewTemplateData', // 获取活动预览数据
       listArticle: '/Zpm/article/list', // 查询文章列表
+      saveArticle: '/Zpm/article/save', // 保存文章内容
+      createArticle: '/Zpm/article/create', // 新建文章
       viewArticle: '/Zpm/article/content' // 根据文章id查询文章内容
     },
     loginInfo: {

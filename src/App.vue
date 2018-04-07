@@ -39,6 +39,7 @@
 </script>
 
 <style>
+  @import "./assets/css/markdown.css";
   * {
     margin: 0;
     padding: 0;

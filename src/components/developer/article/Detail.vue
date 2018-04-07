@@ -3,10 +3,11 @@
     <div class="article_detail_header">
       <div class="article_detail_header_back" @click="backToArticleIndex">
         <Icon type="ios-arrow-back" size="18"></Icon>
-        <span class="article_detail_header_back_text">返回</span>
+        <span class="article_detail_header_back_text">返回列表</span>
       </div>
-      <p class="article_detail_header_title" contenteditable @input="changeArticleTitle">{{articleDetail.title}}</p>
-      <div class="article_detail_right_menu_container">
+      <p class="article_detail_header_title" contenteditable @input="changeArticleTitle" v-if="loginInfo.phonenum === articleDetail.author">{{articleDetail.title}}</p>
+      <p class="article_detail_header_title" v-else>{{articleDetail.title}}</p>
+      <div class="article_detail_right_menu_container" v-if="loginInfo.phonenum === articleDetail.author">
         <div class="article_detail_right_menu_item" @click="openPreview">
           <Tooltip content="预览" placement="bottom" class="icon_wrapper" :transfer="true">
             <Icon type="eye" size="18"></Icon>
@@ -14,7 +15,7 @@
         </div>
       </div>
     </div>
-    <pre class="code_preview" :ref="codeContainerRef">
+    <pre class="code_preview" :ref="codeContainerRef" v-if="loginInfo.phonenum === articleDetail.author">
       {{articleDetail.content}}
     </pre>
     <!--<div class="article_toggle" @click="openPreview">-->
@@ -22,20 +23,19 @@
         <!--<Icon type="eye" size="18"></Icon>-->
       <!--</Tooltip>-->
     <!--</div>-->
-    <div class="article_viewer_container" :class="{shown: showPreview}">
+    <div class="article_viewer_container" :class="{shown: showPreview || (loginInfo.phonenum !== articleDetail.author)}">
       <div class="article_viewer_header">
         <div class="article_viewer_header_back" @click="closePreview">
           <Icon type="ios-arrow-back" size="18"></Icon>
-          <span class="article_viewer_header_back_text">返回</span>
+          <span class="article_viewer_header_back_text">{{loginInfo.phonenum !== articleDetail.author ? '返回列表' : '返回编辑'}}</span>
         </div>
-        <p class="article_viewer_header_title">{{articleDetail.title}}</p>
+        <p class="article_viewer_header_title">{{cacheArticleDetail.title}}</p>
       </div>
       <div class="article_viewer_body markdown-body" v-html="markdownContent"></div>
     </div>
   </div>
 </template>
-<style>
-  @import "../../../assets/css/markdown.css";
+<style scoped>
   .article_detail_container {
     position: relative;
     width: 100%;
@@ -44,6 +44,7 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    overflow-x: hidden;
     overflow-y: auto;
     /*display: flex;*/
     /*align-items: flex-start;*/
@@ -234,21 +235,67 @@
         codeContainerRef: 'code-container-ref',
         editor: {},
         markdownContent: '',
-        showPreview: false
+        showPreview: false,
+        platform: 'windows'
       }
     },
     computed: {
+      loginInfo () {
+        return this.$store.state.loginInfo
+      },
       articleId () {
         return this.$route.params.articleId
       }
     },
     async created () {
+      const that = this
       await this.getArticleContent()
+      let isMac = (navigator.platform === 'Mac68K') || (navigator.platform === 'MacPPC') || (navigator.platform === 'Macintosh') || (navigator.platform === 'MacIntel')
+      isMac && (this.platform = 'mac')
+      this.$nextTick(() => {
+        window.onkeydown = function (ev) {
+          if (that.$route.name === 'ArticleDetail') {
+            if (that.platform === 'mac') {
+              if (ev.metaKey && ev.shiftKey && ev.keyCode === 83) {
+                // mac下 command + shift + s
+                that.save()
+              } else if (ev.metaKey && ev.shiftKey && ev.keyCode === 80) {
+                // 预览 command + shift + p
+                that.togglePreview()
+              } else if (ev.metaKey && ev.shiftKey && ev.keyCode === 69) {
+                // 编辑文章 command + shift + e
+                that.togglePreview()
+              }
+            } else {
+              if (ev.ctrlKey && ev.shiftKey && ev.keyCode === 83) {
+                // windows下  control + shift + s 保存
+                that.save()
+              } else if (ev.ctrlKey && ev.keyCode === 38) {
+                // 预览 command + shift + p
+                that.togglePreview()
+              } else if (ev.ctrlKey && ev.keyCode === 40) {
+                // 编辑文章 command + shift + e
+                that.togglePreview()
+              }
+            }
+          }
+        }
+      })
     },
     watch: {
       '$route': async function (val) {
         if (this.$route.name === 'ArticleDetail') {
           await this.getArticleContent()
+        }
+      },
+      'cacheArticleDetail.title': function (val) {
+        document.title = val
+      },
+      'articleDetail': function (val) {
+        if (val) {
+          setTimeout(() => {
+            this.beautifyCode()
+          }, 1)
         }
       }
     },
@@ -258,15 +305,24 @@
       },
       backToArticleIndex () {
         this.$router.back()
+        this.showPreview = false
       },
-      toggleShowPreview () {
-        this.showPreview = !this.showPreview
+      togglePreview () {
+        if (this.showPreview) {
+          this.closePreview()
+        } else {
+          this.openPreview()
+        }
       },
       openPreview () {
         this.showPreview = true
       },
       closePreview () {
-        this.showPreview = false
+        if (this.loginInfo.phonenum !== this.articleDetail.author) {
+          this.backToArticleIndex()
+        } else {
+          this.showPreview = false
+        }
       },
       async getArticleContent () {
         let articleData = await this.$store.dispatch(types.AJAX, {
@@ -278,7 +334,6 @@
         if (articleData.status === 200) {
           this.articleDetail = articleData.data
           this.cacheArticleDetail = JSON.parse(JSON.stringify(articleData.data))
-          this.beautifyCode()
         } else {
           this.$Message.error('文章数据获取失败，请刷新重试')
         }
@@ -300,7 +355,7 @@
           mode: mode
         })
         let ele = this.$refs[this.codeContainerRef]
-        ele.innerHTML = ''
+        ele && (ele.innerHTML = '')
         require([
           'codemirror/lib/codemirror',
           'codemirror/mode/vue/vue',
@@ -319,13 +374,40 @@
           'codemirror/keymap/sublime'
         ], function (CodeMirror) {
           that.editor = CodeMirror(ele, Object.assign({
-            value: that.articleDetail.content
+            value: that.articleDetail.content || ''
           }, configs))
-          that.markdownContent = marked(that.articleDetail.content)
+          that.markdownContent = marked(that.articleDetail.content || '', {
+            smartLists: true
+          })
           that.editor.on('change', function (evt) {
-            that.markdownContent = marked(evt.doc.getValue())
+            that.markdownContent = marked(evt.doc.getValue(), {
+              smartLists: true
+            })
           })
         })
+      },
+      async save () {
+        let updateKeys = {
+          uuid: this.articleId
+        }
+        if (this.cacheArticleDetail.title !== this.articleDetail.title) {
+          updateKeys.title = this.cacheArticleDetail.title
+        }
+        if (this.editor.doc.getValue() !== this.articleDetail.content) {
+          // 文章内容有变化
+          updateKeys.content = this.editor.doc.getValue()
+        }
+        if (updateKeys.hasOwnProperty('title') || updateKeys.hasOwnProperty('content')) {
+          let savedData = await this.$store.dispatch(types.AJAX, {
+            url: this.requestInfo.saveArticle,
+            data: updateKeys
+          })
+          if (savedData.status === 200) {
+            this.$Message.success('保存成功')
+          } else {
+            this.$Message.error('文章保存失败，请稍后重试')
+          }
+        }
       }
     },
     components: {}
