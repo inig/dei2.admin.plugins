@@ -46,6 +46,28 @@ export const routerActivityPreview = {
   }
 }
 
+export const routerArticleList = {
+  path: '/article/list',
+  name: 'ArticleList',
+  meta: {
+    title: '文章列表'
+  },
+  components: {
+    HomeRouter: () => import('../components/developer/article/front/List.vue')
+  }
+}
+
+export const routerArticleView = {
+  path: '/article/q/:articleId',
+  name: 'ArticleView',
+  meta: {
+    title: '文章详情'
+  },
+  components: {
+    HomeRouter: () => import('../components/developer/article/front/View.vue')
+  }
+}
+
 // export const routerLocking = {
 //   path: '/locking',
 //   name: 'locking',
@@ -192,6 +214,8 @@ export default new Router({
     routerLogin,
     routerRegister,
     routerActivityPreview,
+    routerArticleList,
+    routerArticleView,
     // routerLocking,
     contentRouter,
     page404

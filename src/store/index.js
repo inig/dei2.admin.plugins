@@ -136,7 +136,8 @@ const store = new Vuex.Store({
     assets: {
       maleAvatar: '/static/images/avatar_male_1.jpg',
       femaleAvatar: '/static/images/avatar_female_1.jpg',
-      defaultActivity127x200: '/static/images/127x200.png'
+      defaultActivity127x200: '/static/images/127x200.png',
+      inigLogo: '/static/images/inig.png'
     },
     requestInfo: {
       baseUrl: 'http://127.0.0.1:3000',
@@ -169,6 +170,7 @@ const store = new Vuex.Store({
       listArticle: '/Zpm/article/list', // 查询文章列表
       saveArticle: '/Zpm/article/save', // 保存文章内容
       createArticle: '/Zpm/article/create', // 新建文章
+      getAllArticle: '/Zpm/article/getAll', // 获取文章列表，不需要登录状态
       viewArticle: '/Zpm/article/content' // 根据文章id查询文章内容
     },
     loginInfo: {
@@ -197,7 +199,7 @@ const store = new Vuex.Store({
         name: '普通用户'
       }
     ],
-    needlessLogin: ['Login', 'Register', 'Forget', 'ActivityPreview'] // 不需要登录的页面
+    needlessLogin: ['Login', 'Register', 'Forget', 'ActivityPreview', 'ArticleList', 'ArticleView'] // 不需要登录的页面
   }
 })
 

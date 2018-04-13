@@ -126,6 +126,31 @@ export const actions = {
       })
     })
   },
+  [types.AJAX2] ({commit, state}, data) {
+    return new Promise((resolve, reject) => {
+      let params = JSON.parse(JSON.stringify(data))
+      if (params.url === '') {
+        reject(new Error('url不能为空'))
+      }
+      instance({
+        method: params.method || 'post',
+        baseURL: params.baseUrl || state.requestInfo.baseUrl,
+        url: params.url,
+        data: querystring.stringify(params.data)
+      }).then((res) => {
+        if (res.config) {
+          delete res.config
+        }
+        if (res.status === 200) {
+          resolve(res.data)
+        } else {
+          reject(res)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
   // 获取用户信息
   async [types.GET_USER_INFO] ({commit, state}, data) {
     let callback = noop
