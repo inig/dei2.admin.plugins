@@ -103,8 +103,16 @@
     async created () {
       console.log(this.$route)
       await this.getContent()
+      this.$nextTick(() => {
+        this.setTitle()
+      })
     },
     methods: {
+      setTitle () {
+        if (this.article.title) {
+          document.title = this.article.title
+        }
+      },
       async getContent () {
         let articleId = this.$route.params.articleId
         let articleData = await this.$store.dispatch(types.AJAX2, {
@@ -116,6 +124,11 @@
         if (articleData.status === 200) {
           this.article = articleData.data
         }
+      }
+    },
+    watch: {
+      '$route': function (val) {
+        this.setTitle()
       }
     },
     components: {
