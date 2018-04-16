@@ -1,7 +1,7 @@
 <template>
   <div class="article_view_container">
     <article-header></article-header>
-    <div class="article_item_body">
+    <div class="article_item_body" :ref="scrollerRef">
       <Row>
         <Col :xs="24" :sm="16" :md="16" :lg="16">
           <h3 class="article_item_title">
@@ -37,7 +37,7 @@
  .article_item_body {
    width: 100%;
    height: calc(100% - 64px - 6px);
-   overflow: auto;
+   overflow: hidden;
    margin-top: 6px;
    padding: 10px;
    -webkit-box-sizing: border-box;
@@ -86,6 +86,7 @@
  }
 </style>
 <script>
+  import IScroll from 'iscroll'
   import * as types from '../../../../store/mutation-types'
   import { LIST_RIGHT_ADS } from '../../../../ads/index'
   export default {
@@ -97,6 +98,8 @@
         },
         location: location.href,
         rightAds: LIST_RIGHT_ADS,
+        scrollerRef: 'scroller-ref',
+        scroller: null,
         requestInfo: this.$store.state.requestInfo
       }
     },
@@ -105,6 +108,10 @@
       await this.getContent()
       this.$nextTick(() => {
         this.setTitle()
+        this.scroller = new IScroll(this.$refs[this.scrollerRef], {
+          mouseWheel: true,
+          click: true
+        })
       })
     },
     methods: {
