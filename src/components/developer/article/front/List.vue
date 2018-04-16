@@ -2,7 +2,7 @@
   <div class="article_list_container">
     <article-header></article-header>
     <Row class="article_item_body" :ref="scroller.containerRef">
-      <Col :span="16" :ref="scroller.targetRef">
+      <Col :xs="24" :sm="16" :md="16" :lg="16" :ref="scroller.targetRef">
         <!--<Scroll style="height: 100%;" :on-reach-bottom="loadNextPage">-->
           <Card style="background-color: transparent" :bordered="false" dis-hover v-for="(article, index) in articles" :key="article.uuid">
             <h3 class="article_item_title">
@@ -29,7 +29,7 @@
       </div>
         <!--</Scroll>-->
       </Col>
-      <Col :span="8">
+      <Col :xs="0" :sm="8" :md="8" :lg="8">
         <div class="article_item_right_container">
           <a class="article_right_ads_item" v-for="(ra, index) in rightAds" :key="index" :href="ra.redirect" target="_blank">
             <img :src="ra.img"/>

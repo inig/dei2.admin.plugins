@@ -3,7 +3,7 @@
     <article-header></article-header>
     <div class="article_item_body">
       <Row>
-        <Col :span="16">
+        <Col :xs="24" :sm="16" :md="16" :lg="16">
           <h3 class="article_item_title">
             <span>{{article.title}}</span>
           </h3>
@@ -16,7 +16,7 @@
           </div>
           <div class="article_content_container markdown-body" v-md="article.content"></div>
         </Col>
-        <Col :span="8">
+        <Col :xs="0" :sm="8" :md="8" :lg="8">
           <div class="article_item_right_container">
             <a class="article_right_ads_item" v-for="(ra, index) in rightAds" :key="index" :href="ra.redirect" target="_blank">
               <img :src="ra.img"/>
@@ -39,7 +39,7 @@
    height: calc(100% - 64px - 6px);
    overflow: auto;
    margin-top: 6px;
-   padding-left: 10px;
+   padding: 10px;
    -webkit-box-sizing: border-box;
    -moz-box-sizing: border-box;
    box-sizing: border-box;
