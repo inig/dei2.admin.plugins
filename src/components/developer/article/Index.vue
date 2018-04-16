@@ -224,7 +224,7 @@
       },
       gotoArticleDetail (e) {
         this.$router.push({
-          path: `/article/${e.target.dataset.uuid}`
+          path: `/article/${e.target.dataset.uuid.replace(/^([a-zA-Z0-9]*).*/, '$1')}`
         })
       }
     },

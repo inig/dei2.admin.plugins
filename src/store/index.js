@@ -137,7 +137,11 @@ const store = new Vuex.Store({
       maleAvatar: '/static/images/avatar_male_1.jpg',
       femaleAvatar: '/static/images/avatar_female_1.jpg',
       defaultActivity127x200: '/static/images/127x200.png',
-      inigLogo: '/static/images/inig.png'
+      inigLogo: '/static/images/inig.png',
+      ads: {
+        inig: '/static/images/ads/logo_inig_3.jpg',
+        dei2: '/static/images/ads/logo_dei2_2.jpg'
+      }
     },
     requestInfo: {
       baseUrl: 'http://127.0.0.1:3000',

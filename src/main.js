@@ -27,6 +27,8 @@ Vue.use(ZpmCapture)
 const VueTouch = require('vue-touch')
 Vue.use(VueTouch, {name: 'v-touch'})
 
+require('./directives/index')
+
 Vue.config.productionTip = false
 
 // register global utility filters.

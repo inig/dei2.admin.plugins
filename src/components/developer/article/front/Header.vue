@@ -14,11 +14,11 @@
     width: 100%;
     height: 64px;
     background-color: #ffffff;
-    border-bottom: 1px solid #f5f5f5;
+    /*border-bottom: 1px solid #f5f5f5;*/
     box-sizing: border-box;
-    -webkit-box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 0 0 8px 1px #f5f5f5;
+    -moz-box-shadow: 0 0 8px 1px #f5f5f5;
+    box-shadow: 0 0 8px 1px #f5f5f5;
   }
   .article_header_top_logo {
     height: 56px;
