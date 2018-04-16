@@ -11,7 +11,7 @@
             {{article.updateTime | timeFormat('YYYY年MM月DD日 hh时mm分ss秒')}}，{{article['zpm_user'].nickname}}
           </small>
           <div class="copy_right_container">
-            <p>by <span v-text="article['zpm_user'].nickname"></span> from {{location}}</p>
+            <p style="word-wrap: break-word;">by <span v-text="article['zpm_user'].nickname"></span> from {{location}}</p>
             <p>本文可全文转载，但需得到原作者许可，同时保留原作者和出处。</p>
           </div>
           <div class="article_content_container markdown-body" v-md="article.content"></div>
