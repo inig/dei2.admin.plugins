@@ -8,6 +8,7 @@ import store from './store'
 import * as filters from './filters'
 import mixins from './mixins'
 import iView from 'iview'
+import jwt from 'jsonwebtoken'
 import utils from './utils/index'
 import ZpmCapture from './assets/js/ZpmCapture'
 // import codemirror from 'codemirror/lib/codemirror'
@@ -69,6 +70,17 @@ router.beforeEach((to, from, next) => {
       name: 'NotFound'
     })
   } else {
+    const secret = 'com.dei2'
+    let _status = jwt.verify(_localUserInfo.token, secret, (err, decoded) => {
+      return err || {}
+    })
+    if (_status.name === 'TokenExpiredError') {
+      _localUserInfo.token = ''
+      next({
+        replace: true,
+        name: 'Login'
+      })
+    }
     if (utils.isEmptyObj(_localUserInfo)) {
       if (_state.needlessLogin.indexOf(to.name) === -1) {
         next({

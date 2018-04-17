@@ -1,0 +1,8 @@
+@import "./theme";
+
+.markdown-body pre>code {
+  white-space: normal!important;
+}
+.markdown-body code {
+  background-color: $theme_o_2;
+}

@@ -2,7 +2,7 @@
   <div class="article_view_container">
     <article-header></article-header>
     <div class="article_item_body" :ref="scrollerRef">
-      <Row>
+      <Row style="padding-bottom: 20px;">
         <Col :xs="24" :sm="16" :md="16" :lg="16">
           <h3 class="article_item_title">
             <span>{{article.title}}</span>
@@ -27,7 +27,8 @@
     </div>
   </div>
 </template>
-<style scoped>
+<style lang="scss">
+  @import "../../../../assets/css/md-custom";
  .article_view_container {
    width: 100%;
    height: 100%;
@@ -47,6 +48,7 @@
  .article_item_title {
    font-size: 24px;
    margin-top: 10px;
+   word-wrap: break-word;
  }
  .article_item_sub_title {
    color: #777;
@@ -58,10 +60,9 @@
     background: #f5f5f5;
     background-color: rgba(0,0,0,.05);
     border-left: 5px solid #ccc;
-    font-size: 16px;
+    font-size: 14px;
     padding: 8px;
     margin: 15px 0;
-    font-family: 'Microsoft JhengHei';
   }
 
  .article_item_right_container {
@@ -86,7 +87,8 @@
  }
 </style>
 <script>
-  import IScroll from 'iscroll'
+//  import IScroll from 'iscroll'
+  import IScroll from 'iscroll/build/iscroll-probe'
   import * as types from '../../../../store/mutation-types'
   import { LIST_RIGHT_ADS } from '../../../../ads/index'
   export default {
@@ -104,17 +106,28 @@
       }
     },
     async created () {
-      console.log(this.$route)
       await this.getContent()
       this.$nextTick(() => {
-        this.setTitle()
-        this.scroller = new IScroll(this.$refs[this.scrollerRef], {
-          mouseWheel: true,
-          click: true
-        })
+        setTimeout(() => {
+          this.setTitle()
+          this.initPageScroller()
+        }, 500)
       })
     },
     methods: {
+      initPageScroller () {
+        if (!this.scroller) {
+          this.scroller = new IScroll(this.$refs[this.scrollerRef], {
+            mouseWheel: true,
+            click: true,
+            scrollbars: true,
+            fadeScrollbars: true,
+            probeType: 3
+          })
+        } else {
+          this.scroller.refresh()
+        }
+      },
       setTitle () {
         if (this.article.title) {
           document.title = this.article.title
