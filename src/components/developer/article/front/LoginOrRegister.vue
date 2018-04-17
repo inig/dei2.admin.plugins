@@ -2,7 +2,7 @@
   <div class="login_or_register_container">
     <div class="item_container login_container" v-if="actionType === types.LOGIN">
       <Card :bordered="false" dis-hover class="login_card">
-        <p slot="title" v-text="'登录' + appName"></p>
+        <p slot="title" style="color: #ffffff;" v-text="'登录' + appName"></p>
         <Form :ref="loginFormRef" :model="formItems" :rules="loginFormRules">
           <FormItem prop="user">
             <Input type="text" v-model="formItems.user" placeholder="用户名或手机号">
@@ -25,7 +25,7 @@
     </div>
     <div class="item_container register_container" v-if="actionType === types.REGISTER">
       <Card :bordered="false" dis-hover class="register_card">
-        <p slot="title" v-text="'注册' + appName"></p>
+        <p slot="title" style="color: #ffffff;" v-text="'注册' + appName"></p>
         <Form :ref="registerFormRef" :model="formItems" :rules="registerFormRules">
           <FormItem prop="user">
             <Input type="text" v-model="formItems.user" placeholder="手机号">
@@ -47,7 +47,7 @@
       </Card>
     </div>
     <div class="close_container" @click="closeContainer">
-      <Icon size="36" type="ios-close-empty"></Icon>
+      <Icon size="36" type="ios-close-empty" style="color: #ffffff;"></Icon>
     </div>
     <div class="action_change_container">
       <div class="go_register" v-if="actionType === types.LOGIN" @click="goRegister">去注册</div>
@@ -63,7 +63,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523947845331&di=15de8008e216d2506ccc30ad4c3938a2&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fitbbs%2F1412%2F03%2Fc6%2F189119_1417587593904_1024x1024.jpg");
+    background-image: url("https://static.dei2.com/plugins_admin/assets/img/login_bg.jpg");
     background-size: cover;
     background-attachment: fixed;
     background-position: 50% 50%;
@@ -80,7 +80,7 @@
 
   .login_card {
     width: 320px;
-    margin: 50px auto;
+    margin: 100px auto;
     text-align: center;
     background-color: transparent;
   }
@@ -94,7 +94,7 @@
 
   .register_card {
     width: 320px;
-    margin: 50px auto;
+    margin: 100px auto;
     text-align: center;
     background-color: transparent;
   }
