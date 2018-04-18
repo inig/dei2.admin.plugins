@@ -19,6 +19,10 @@
           </div>
           <div class="article_content_container markdown-body" v-md="article.content"></div>
           <p style="font-weight: bold;">（全文完）</p>
+
+          <div class="article_comments_container">
+            <comment v-for="(comment, index) in article['zpm_comments']" :key="comment.uuid" :comment="comment"></comment>
+          </div>
         </Col>
         <Col :xs="0" :sm="8" :md="8" :lg="8">
           <div class="article_item_right_container">
@@ -89,6 +93,10 @@
    border: 1px solid rgba(153, 0, 204, 0.2);
    /*border: 1px solid rgba(249, 100, 100, 0.3);*/
  }
+
+  .article_comments_container {
+    margin-top: 20px;
+  }
 </style>
 <script>
 //  import IScroll from 'iscroll'
@@ -165,7 +173,8 @@
       }
     },
     components: {
-      ArticleHeader: () => import('./Header.vue')
+      ArticleHeader: () => import('./Header.vue'),
+      Comment: () => import('./Comment.vue')
     }
   }
 </script>
