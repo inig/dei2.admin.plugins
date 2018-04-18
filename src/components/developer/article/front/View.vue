@@ -18,6 +18,7 @@
             <p>本文可全文转载，但需得到原作者许可，同时保留原作者和出处。</p>
           </div>
           <div class="article_content_container markdown-body" v-md="article.content"></div>
+          <p style="font-weight: bold;">（全文完）</p>
         </Col>
         <Col :xs="0" :sm="8" :md="8" :lg="8">
           <div class="article_item_right_container">
