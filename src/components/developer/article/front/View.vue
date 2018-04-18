@@ -10,6 +10,9 @@
           <small class="article_item_sub_title">
             {{article.updateTime | timeFormat('YYYY年MM月DD日 hh时mm分ss秒')}}，{{article['zpm_user'].nickname}}
           </small>
+          <small class="article_item_sub_title" style="display: block;" v-if="article.totalViews && article.totalViews > 0">
+            阅读 {{article.totalViews}} 次，今日 {{article.todayViews}} 次
+          </small>
           <div class="copy_right_container">
             <p style="word-wrap: break-word;">by <span v-text="article['zpm_user'].nickname"></span> from {{location}}</p>
             <p>本文可全文转载，但需得到原作者许可，同时保留原作者和出处。</p>
@@ -91,6 +94,14 @@
   import IScroll from 'iscroll/build/iscroll-probe'
   import * as types from '../../../../store/mutation-types'
   import { LIST_RIGHT_ADS } from '../../../../ads/index'
+  const initBD = function () {
+    var _hmt = window._hmt || []
+
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?c5c0c81d50ece8fafa68984d8d4699f7'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  }
   export default {
     name: 'ArticleView',
     data () {
@@ -106,6 +117,7 @@
       }
     },
     async created () {
+      initBD()
       await this.getContent()
       this.$nextTick(() => {
         setTimeout(() => {
