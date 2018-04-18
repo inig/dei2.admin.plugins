@@ -162,6 +162,14 @@
   import IScroll from 'iscroll/build/iscroll-probe'
   import * as types from '../../../../store/mutation-types'
   import { LIST_RIGHT_ADS } from '../../../../ads/index'
+  const initBD = function () {
+    var _hmt = window._hmt || []
+    console.log(_hmt)
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?c5c0c81d50ece8fafa68984d8d4699f7'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  }
   export default {
     name: 'ArticleList',
     data () {
@@ -190,6 +198,7 @@
       }
     },
     async created () {
+      initBD()
       await this.list({
         isInit: true
       })
