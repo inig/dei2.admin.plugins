@@ -178,7 +178,7 @@
         articles: [],
         postYears: {},
         pageIndex: 1,
-        pageSize: 4,
+        pageSize: 30,
         totalCounts: 0,
         totalPages: 1,
         rightAds: LIST_RIGHT_ADS,
