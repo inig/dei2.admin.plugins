@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "axios": "^0.17.1",
+    "better-scroll": "^1.9.1",
     "codemirror": "^5.33.0",
     "dom-to-image": "^2.6.0",
     "install": "^0.10.2",

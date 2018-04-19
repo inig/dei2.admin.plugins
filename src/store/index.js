@@ -102,8 +102,8 @@ const store = new Vuex.Store({
     activityInfo: {}, // 活动模板数据
     currentPageIndex: 0,
     socket: {
-      server: 'http://wss.dei2.com',
-      // server: 'http://127.0.0.1',
+      // server: 'http://wss.dei2.com',
+      server: 'http://192.168.189.89',
       port: '3010',
       path: '/sk',
       event: 'enkel-message',
@@ -144,8 +144,8 @@ const store = new Vuex.Store({
       }
     },
     requestInfo: {
-      // baseUrl: 'http://127.0.0.1:3000',
-      baseUrl: 'https://talkapi.dei2.com',
+      baseUrl: 'http://192.168.189.89:3000',
+      // baseUrl: 'https://talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
       modifyPassword: '/Zpm/user/modifyPassword',
