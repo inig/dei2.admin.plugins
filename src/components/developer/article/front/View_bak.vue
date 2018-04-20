@@ -5,10 +5,9 @@
                 :ref="scrollerRef"
                 :style="{height: (isPc ? 'calc(100% - 64px)' : 'calc(100% - 64px - 48px)')}"
                 :data="[article]"
-                :scrollbar="scrollbarObj"
-                :pullDownRefresh="pullDownRefreshObj"
-                :pullUpLoad="pullUpLoadObj"
-                :startY="parseInt(startY)"
+                :options="options"
+                :pullDownRefresh="true"
+                :pullUpLoad="true"
                 @pullingDown="onPullingDown"
                 @pullingUp="onPullingUp"
                 @click="clickItem"
@@ -299,40 +298,35 @@
         comment: '',
         commentRef: 'comment-ref',
         commentShown: false,
-        scrollbar: true,
-        scrollbarFade: true,
-        pullDownRefresh: true,
-        pullDownRefreshThreshold: 90,
-        pullDownRefreshStop: 40,
-        pullUpLoad: true,
-        pullUpLoadThreshold: 0,
-        pullUpLoadMoreTxt: '加载更多', // this.$i18n.t('scrollComponent.defaultLoadTxtMore'),
-        pullUpLoadNoMoreTxt: '无更多数据', // this.$i18n.t('scrollComponent.defaultLoadTxtNoMore'),
-        startY: 0,
-        scrollToX: 0,
-        scrollToY: -200,
-        scrollToTime: 700,
-        scrollToEasing: 'bounce',
-        scrollToEasingOptions: ['bounce', 'swipe', 'swipeBounce']
+        options: {
+          scrollbar: {
+            fade: true,
+            interactive: false
+          },
+          pullDownRefresh: {
+            threshold: 90,
+            stop: 40
+          },
+          pullUpLoad: {
+            threshold: 0,
+            txt: {
+              more: '加载更多',
+              noMore: '无更多数据'
+            }
+          },
+          startX: 0,
+          startY: 0,
+          scrollX: false,
+          scrollY: true,
+          click: true,
+          tap: true,
+          probeType: 1, // 非实时的触发 scroll 事件
+          mouseWheel: {
+            speed: 20,
+            invert: false
+          }
+        }
       }
-    },
-    computed: {
-      scrollbarObj () {
-        return this.scrollbar ? {fade: this.scrollbarFade} : false
-      },
-      pullDownRefreshObj: function () {
-        return this.pullDownRefresh ? {
-          threshold: parseInt(this.pullDownRefreshThreshold),
-          stop: parseInt(this.pullDownRefreshStop)
-        } : false
-      },
-      pullUpLoadObj: function () {
-        return this.pullUpLoad ? {
-          threshold: parseInt(this.pullUpLoadThreshold),
-          txt: {more: this.pullUpLoadMoreTxt, noMore: this.pullUpLoadNoMoreTxt}
-        } : false
-      }
-
     },
     async created () {
       const that = this
@@ -429,48 +423,6 @@
       clickItem () {
         this.$router.back()
       },
-      updateScrollbar (val) {
-        this.scrollbar = val
-      },
-      updateScrollbarFade (val) {
-        this.scrollbarFade = val
-      },
-      updatePullDownRefresh (val) {
-        this.pullDownRefresh = val
-      },
-      updatePullDownRefreshThreshold (val) {
-        this.pullDownRefreshThreshold = val
-      },
-      updatePullDownRefreshStop (val) {
-        this.pullDownRefreshStop = val
-      },
-      updatePullUpLoad (val) {
-        this.pullUpLoad = val
-      },
-      updatePullUpLoadThreshold (val) {
-        this.pullUpLoadThreshold = val
-      },
-      updatePullUpLoadMoreTxt (val) {
-        this.pullUpLoadMoreTxt = val
-      },
-      updatePullUpLoadNoMoreTxt (val) {
-        this.pullUpLoadNoMoreTxt = val
-      },
-      updateStartY (val) {
-        this.startY = val
-      },
-      updateScrollToX (val) {
-        this.scrollToX = val
-      },
-      updateScrollToY (val) {
-        this.scrollToY = val
-      },
-      updateScrollToTime (val) {
-        this.scrollToTime = val
-      },
-      updateScrollToEasing (val) {
-        this.scrollToEasing = val
-      },
       rebuildScroll () {
 //        Vue.nextTick(() => {
         this.$refs.scroll.destroy()
@@ -481,37 +433,6 @@
     watch: {
       '$route': function (val) {
         this.setTitle()
-      },
-      scrollbarObj: {
-        handler () {
-          this.rebuildScroll()
-        },
-        deep: true
-      },
-      pullDownRefreshObj: {
-        handler (val) {
-          const scroll = this.$refs.scroll.scroll
-          if (val) {
-            scroll.openPullDown()
-          } else {
-            scroll.closePullDown()
-          }
-        },
-        deep: true
-      },
-      pullUpLoadObj: {
-        handler (val) {
-          const scroll = this.$refs.scroll.scroll
-          if (val) {
-            scroll.openPullUp()
-          } else {
-            scroll.closePullUp()
-          }
-        },
-        deep: true
-      },
-      startY () {
-        this.rebuildScroll()
       }
     },
     components: {

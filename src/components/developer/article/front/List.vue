@@ -1,8 +1,15 @@
 <template>
   <div class="article_list_container">
     <article-header></article-header>
-    <div class="article_item_body_wrapper" :ref="scroller.containerRef2">
-      <Row class="article_item_body" :ref="scroller.containerRef">
+    <zpm-scroll class="article_item_body_wrapper" :ref="scroller.containerRef2"
+                :data="articles"
+                :options="scrollOptions"
+                :pullDownRefresh="true"
+                :pullUpLoad="true"
+                @pullingDown="onPullingDown"
+                @pullingUp="onPullingUp"
+    >
+      <Row class="article_item_body" :ref="scroller.containerRef" style="background-color: #FFF">
         <Col :xs="24" :sm="16" :md="16" :lg="16" :ref="scroller.targetRef">
         <!--<Scroll style="height: 100%;" :on-reach-bottom="loadNextPage">-->
         <Card style="background-color: transparent" :bordered="false" dis-hover v-for="(article, index) in articles" :key="article.uuid">
@@ -17,17 +24,17 @@
             <strong>阅读全文...</strong>
           </a>
         </Card>
-        <div class="bottom_loading_container">
-          <div class="loading_more_container" :class="{shown: scroller.disabled}" :style="{transform: 'scale(' + scroller.scale + ')'}">
-            <Spin>
-              <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
-              <div style="font-size: 12px;">加载中</div>
-            </Spin>
-          </div>
-          <div class="no_more_data" v-if="!scroller.disabled">
-            已经到底了
-          </div>
-        </div>
+        <!--<div class="bottom_loading_container">-->
+          <!--<div class="loading_more_container" :class="{shown: scroller.disabled}" :style="{transform: 'scale(' + scroller.scale + ')'}">-->
+            <!--<Spin>-->
+              <!--<Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>-->
+              <!--<div style="font-size: 12px;">加载中</div>-->
+            <!--</Spin>-->
+          <!--</div>-->
+          <!--<div class="no_more_data" v-if="!scroller.disabled">-->
+            <!--已经到底了-->
+          <!--</div>-->
+        <!--</div>-->
         <!--</Scroll>-->
         </Col>
         <Col :xs="0" :sm="8" :md="8" :lg="8">
@@ -38,7 +45,7 @@
         </div>
         </Col>
       </Row>
-    </div>
+    </zpm-scroll>
   </div>
 </template>
 <style scoped lang="scss">
@@ -159,7 +166,7 @@
   }
 </style>
 <script>
-  import IScroll from 'iscroll/build/iscroll-probe'
+//  import IScroll from 'iscroll/build/iscroll-probe'
   import * as types from '../../../../store/mutation-types'
   import { LIST_RIGHT_ADS } from '../../../../ads/index'
   const initBD = function () {
@@ -178,7 +185,7 @@
         articles: [],
         postYears: {},
         pageIndex: 1,
-        pageSize: 30,
+        pageSize: 1,
         totalCounts: 0,
         totalPages: 1,
         rightAds: LIST_RIGHT_ADS,
@@ -194,6 +201,15 @@
           disabled: false,
           scale: 0.1,
           target: null
+        },
+        scrollOptions: {
+          pullUpLoad: {
+            threshold: 0,
+            txt: {
+              more: '加载更多',
+              noMore: '<p>这就到底了？</p><p>文章太少，我<a href="http://192.168.189.89">去写</a>一个</p><p>asf</p><p>as0000</p>'
+            }
+          }
         }
       }
     },
@@ -204,38 +220,50 @@
       })
       this.$nextTick(() => {
         setTimeout(() => {
-          this.initPageScroller()
+//          this.initPageScroller()
         }, 500)
       })
     },
     methods: {
-      initPageScroller () {
-        const that = this
-        if (!this.scroller.target) {
-          this.scroller.target = new IScroll(this.$refs[this.scroller.containerRef2], {
-            mouseWheel: true,
-            click: true,
-            scrollbars: true,
-            fadeScrollbars: true,
-            probeType: 3
+      onPullingDown () {
+        setTimeout(async () => {
+          await this.list({
+            isInit: true
           })
-        } else {
-          this.scroller.target.refresh()
-        }
-        this.scroller.target.on('scroll', async function () {
-          that.scroller.y = Math.abs(this.y)
-          that.scroller.maxScrollY = Math.abs(this.maxScrollY)
-          that.scroller.scale = 1 - parseFloat((that.scroller.maxScrollY - that.scroller.y) / 30)
-          if (that.scroller.disabled) {
-            return
-          }
-          if (that.scroller.maxScrollY <= that.scroller.y + 30) {
-            that.scroller.disabled = true
-            await that.loadNextPage()
-            that.scroller.disabled = false
-            that.scroller.target.refresh()
-          }
-        })
+        }, 800)
+      },
+      onPullingUp () {
+        setTimeout(async () => {
+          await this.loadNextPage()
+        }, 800)
+      },
+      initPageScroller () {
+//        const that = this
+//        if (!this.scroller.target) {
+//          this.scroller.target = new IScroll(this.$refs[this.scroller.containerRef2], {
+//            mouseWheel: true,
+//            click: true,
+//            scrollbars: true,
+//            fadeScrollbars: true,
+//            probeType: 3
+//          })
+//        } else {
+//          this.scroller.target.refresh()
+//        }
+//        this.scroller.target.on('scroll', async function () {
+//          that.scroller.y = Math.abs(this.y)
+//          that.scroller.maxScrollY = Math.abs(this.maxScrollY)
+//          that.scroller.scale = 1 - parseFloat((that.scroller.maxScrollY - that.scroller.y) / 30)
+//          if (that.scroller.disabled) {
+//            return
+//          }
+//          if (that.scroller.maxScrollY <= that.scroller.y + 30) {
+//            that.scroller.disabled = true
+//            await that.loadNextPage()
+//            that.scroller.disabled = false
+//            that.scroller.target.refresh()
+//          }
+//        })
       },
       async list (args) {
         if (args && args.isInit) {
@@ -269,11 +297,14 @@
           await this.list({
             isInit: false
           })
+        } else {
+          this.$refs[this.scroller.containerRef2].forceUpdate()
         }
       }
     },
     components: {
-      ArticleHeader: () => import('./Header.vue')
+      ArticleHeader: () => import('./Header.vue'),
+      ZpmScroll: () => import('../../../coms/ZpmScroll/ZpmScroll.vue')
     }
   }
 </script>

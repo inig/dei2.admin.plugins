@@ -4,7 +4,7 @@
       <div ref="listWrapper">
         <slot>
           <!--<ul class="list-content">-->
-            <!--<li @click="clickItem($event,item)" class="list-item" v-for="item in data">{{item}}</li>-->
+          <!--<li @click="clickItem($event,item)" class="list-item" v-for="item in data">{{item}}</li>-->
           <!--</ul>-->
         </slot>
       </div>
@@ -14,7 +14,7 @@
       >
         <div class="pullup-wrapper" v-if="pullUpLoad">
           <div class="before-trigger" v-if="!isPullUpLoad">
-            <div style="font-size: 13px; color: #888; text-align: center;" v-html="pullUpTxt"></div>
+            <span>{{pullUpTxt}}</span>
           </div>
           <div class="after-trigger" v-else>
             <loading></loading>
@@ -37,7 +37,7 @@
           <div v-if="isPullingDown" class="loading">
             <loading></loading>
           </div>
-          <div v-else style="font-size: 13px; color: #888; text-align: center;" v-html="refreshTxt"></div>
+          <div v-else><span>{{refreshTxt}}</span></div>
         </div>
       </div>
     </slot>
@@ -50,8 +50,8 @@
   import Bubble from './Bubble.vue'
 
   const COMPONENT_NAME = 'scroll'
-//  const DIRECTION_H = 'horizontal'
-//  const DIRECTION_V = 'vertical'
+  const DIRECTION_H = 'horizontal'
+  const DIRECTION_V = 'vertical'
 
   const getRect = function (el) {
     if (el instanceof window.SVGElement) {
@@ -71,37 +71,6 @@
       }
     }
   }
-
-  const OPTIONS = {
-    scrollbar: {
-      fade: true,
-      interactive: false
-    },
-    pullDownRefresh: {
-      threshold: 90,
-      stop: 40,
-      txt: '刷新成功'
-    },
-    pullUpLoad: {
-      threshold: 0,
-      txt: {
-        more: '加载更多',
-        noMore: '无更多数据'
-      }
-    },
-    startX: 0,
-    startY: 0,
-    scrollX: false,
-    scrollY: true,
-    click: true,
-//            tap: true,
-    probeType: 1, // 非实时的触发 scroll 事件
-    mouseWheel: {
-      speed: 20,
-      invert: false
-    }
-  }
-
   export default {
     name: COMPONENT_NAME,
     props: {
@@ -111,17 +80,13 @@
           return []
         }
       },
-      options: {
-        type: Object,
-        default: {}
+      probeType: {
+        type: Number,
+        default: 1
       },
-      pullDownRefresh: {
-        type: null,
-        default: false
-      },
-      pullUpLoad: {
-        type: null,
-        default: false
+      click: {
+        type: Boolean,
+        default: true
       },
       listenScroll: {
         type: Boolean,
@@ -131,9 +96,37 @@
         type: Boolean,
         default: false
       },
+      direction: {
+        type: String,
+        default: DIRECTION_V
+      },
+      scrollbar: {
+        type: null,
+        default: false
+      },
+      pullDownRefresh: {
+        type: null,
+        default: false
+      },
+      pullUpLoad: {
+        type: null,
+        default: false
+      },
+      startY: {
+        type: Number,
+        default: 0
+      },
       refreshDelay: {
         type: Number,
         default: 20
+      },
+      freeScroll: {
+        type: Boolean,
+        default: false
+      },
+      mouseWheel: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -144,20 +137,19 @@
         isPullUpLoad: false,
         pullUpDirty: true,
         pullDownStyle: '',
-        bubbleY: 0,
-        scrollOptions: {}
+        bubbleY: 0
       }
     },
     computed: {
       pullUpTxt () {
-        const moreTxt = (this.options.pullUpLoad && this.options.pullUpLoad.txt && this.options.pullUpLoad.txt.more) || (OPTIONS.pullUpLoad.txt.more)
+        const moreTxt = this.pullUpLoad && this.pullUpLoad.txt && this.pullUpLoad.txt.more
 
-        const noMoreTxt = (this.options.pullUpLoad && this.options.pullUpLoad.txt && this.options.pullUpLoad.txt.noMore) || (OPTIONS.pullUpLoad.txt.noMore)
+        const noMoreTxt = this.pullUpLoad && this.pullUpLoad.txt && this.pullUpLoad.txt.noMore
 
         return this.pullUpDirty ? moreTxt : noMoreTxt
       },
       refreshTxt () {
-        return (this.options.pullDownRefresh && this.options.pullDownRefresh.txt) || (OPTIONS.pullDownRefresh.txt)
+        return this.pullDownRefresh && this.pullDownRefresh.txt
       }
     },
     created () {
@@ -177,8 +169,20 @@
           this.$refs.listWrapper.style.minHeight = `${getRect(this.$refs.wrapper).height + 1}px`
         }
 
-        this.scrollOptions = Object.assign({}, OPTIONS, this.options)
-        this.scroll = new BScroll(this.$refs.wrapper, this.scrollOptions)
+        let options = {
+          probeType: this.probeType,
+          click: this.click,
+          scrollY: this.freeScroll || this.direction === DIRECTION_V,
+          scrollX: this.freeScroll || this.direction === DIRECTION_H,
+          scrollbar: this.scrollbar,
+          pullDownRefresh: this.pullDownRefresh,
+          pullUpLoad: this.pullUpLoad,
+          startY: this.startY,
+          freeScroll: this.freeScroll,
+          mouseWheel: this.mouseWheel
+        }
+
+        this.scroll = new BScroll(this.$refs.wrapper, options)
 
         if (this.listenScroll) {
           this.scroll.on('scroll', (pos) => {
@@ -231,10 +235,7 @@
           this.isPullUpLoad = false
           this.scroll.finishPullUp()
           this.pullUpDirty = dirty
-          setTimeout(() => {
-            this.refresh()
-            this.scroll.scrollTo(this.scrollOptions.scrollX ? (this.scroll.maxScrollX - 1) : 0, this.scrollOptions.scrollY ? (this.scroll.maxScrollY - 1) : 0, 300)
-          }, 10)
+          this.refresh()
         } else {
           this.refresh()
         }
@@ -243,7 +244,6 @@
         this.scroll.on('pullingDown', () => {
           this.beforePullDown = false
           this.isPullingDown = true
-          this.pullUpDirty = true
           this.$emit('pullingDown')
         })
 
