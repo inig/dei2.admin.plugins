@@ -72,22 +72,10 @@
     }
   }
 
-  const OPTIONS = {
+  let OPTIONS = {
     scrollbar: {
       fade: true,
       interactive: false
-    },
-    pullDownRefresh: {
-      threshold: 90,
-      stop: 40,
-      txt: '刷新成功'
-    },
-    pullUpLoad: {
-      threshold: 0,
-      txt: {
-        more: '加载更多',
-        noMore: '无更多数据'
-      }
     },
     startX: 0,
     startY: 0,
@@ -106,14 +94,16 @@
     name: COMPONENT_NAME,
     props: {
       data: {
-        type: Array,
+        type: null,
         default: function () {
           return []
         }
       },
       options: {
         type: Object,
-        default: {}
+        default: function () {
+          return {}
+        }
       },
       pullDownRefresh: {
         type: null,
@@ -176,7 +166,26 @@
         if (this.$refs.listWrapper && (this.pullDownRefresh || this.pullUpLoad)) {
           this.$refs.listWrapper.style.minHeight = `${getRect(this.$refs.wrapper).height + 1}px`
         }
-
+        if (this.pullDownRefresh) {
+          OPTIONS = Object.assign({}, OPTIONS, {
+            pullDownRefresh: {
+              threshold: 90,
+              stop: 40,
+              txt: '刷新成功'
+            }
+          })
+        }
+        if (this.pullUpLoad) {
+          OPTIONS = Object.assign({}, OPTIONS, {
+            pullUpLoad: {
+              threshold: 0,
+              txt: {
+                more: '加载更多',
+                noMore: '无更多数据'
+              }
+            }
+          })
+        }
         this.scrollOptions = Object.assign({}, OPTIONS, this.options)
         this.scroll = new BScroll(this.$refs.wrapper, this.scrollOptions)
 
@@ -289,10 +298,13 @@
       }
     },
     watch: {
-      data () {
-        setTimeout(() => {
-          this.forceUpdate(true)
-        }, this.refreshDelay)
+      data: {
+        deep: true,
+        handler () {
+          setTimeout(() => {
+            this.forceUpdate(true)
+          }, this.refreshDelay)
+        }
       }
     },
     components: {
@@ -305,7 +317,7 @@
 <style>
   .list-wrapper {
     position: relative;
-    height: 100%;
+    /*height: 100%;*/
     overflow: hidden;
     background: #fff;
   }

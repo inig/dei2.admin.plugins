@@ -103,7 +103,7 @@ const store = new Vuex.Store({
     currentPageIndex: 0,
     socket: {
       // server: 'http://wss.dei2.com',
-      server: 'http://192.168.189.89',
+      server: 'http://127.0.0.1',
       port: '3010',
       path: '/sk',
       event: 'enkel-message',
@@ -144,7 +144,7 @@ const store = new Vuex.Store({
       }
     },
     requestInfo: {
-      baseUrl: 'http://192.168.189.89:3000',
+      baseUrl: 'http://127.0.0.1:3000',
       // baseUrl: 'https://talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
@@ -175,7 +175,9 @@ const store = new Vuex.Store({
       saveArticle: '/Zpm/article/save', // 保存文章内容
       createArticle: '/Zpm/article/create', // 新建文章
       getAllArticle: '/Zpm/article/getAll', // 获取文章列表，不需要登录状态
-      viewArticle: '/Zpm/article/content' // 根据文章id查询文章内容
+      viewArticle: '/Zpm/article/content', // 根据文章id查询文章内容
+      getAllComments: '/Zpm/comment/list', // 分页获取评论
+      sendComment: '/Zpm/comment/comment' // 发表评论
     },
     loginInfo: {
     },

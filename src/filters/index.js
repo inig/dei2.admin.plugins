@@ -60,3 +60,26 @@ export function timeFormat (text, formatStr) {
     .replace('ss', _second)
     .replace('s', date.getSeconds())
 }
+
+export function time (text) {
+  let date = new Date()
+  let now = date.getTime()
+  let targetTime = Number(text)
+  let outStr = ''
+  if (now - targetTime < 60 * 1000) {
+    // 刚刚， 小于1min
+    outStr = '刚刚'
+  } else if (now - targetTime < 60 * 60 * 1000) {
+    // xx分钟前  小于1小时
+    outStr = Math.ceil((now - targetTime) / (60 * 1000)) + '分钟前'
+  } else if (now - targetTime < 24 * 60 * 60 * 1000) {
+    // xx小时前 小于24小时
+    outStr = Math.ceil((now - targetTime) / (60 * 60 * 1000)) + '小时前'
+  } else if (now - targetTime < 28 * 24 * 60 * 60 * 1000) {
+    // xx天之前  小于28天
+    outStr = Math.ceil((now - targetTime) / (24 * 60 * 60 * 1000)) + '天之前'
+  } else {
+    outStr = timeFormat(text, 'YYYY年MM月DD日 hh时mm分ss秒')
+  }
+  return outStr
+}
