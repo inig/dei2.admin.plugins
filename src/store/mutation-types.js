@@ -113,6 +113,8 @@ export const HIDE_SIMULATOR_GRID = 'HIDE_SIMULATOR_GRID'
 
 export const UPDATE_ACTIVE_POSITION = 'UPDATE_ACTIVE_POSITION'
 
+export const SET_COMMENTS = 'SET_COMMENTS'
+
 // >>>> actions:
 
 // 登录1

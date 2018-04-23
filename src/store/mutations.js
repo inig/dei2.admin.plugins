@@ -216,5 +216,8 @@ export const mutations = {
   },
   [types.UPDATE_ACTIVE_POSITION] (state, data) {
     state.activePosition = data.position
+  },
+  [types.SET_COMMENTS] (state, data) {
+    state.article.comments = Object.assign({}, state.article.comments, data)
   }
 }

@@ -101,9 +101,12 @@ const store = new Vuex.Store({
     pageData: [], // 活动模板数据
     activityInfo: {}, // 活动模板数据
     currentPageIndex: 0,
+    article: {
+      comments: {}
+    },
     socket: {
       // server: 'http://wss.dei2.com',
-      server: 'http://127.0.0.1',
+      server: 'http://192.168.189.89',
       port: '3010',
       path: '/sk',
       event: 'enkel-message',
@@ -131,7 +134,10 @@ const store = new Vuex.Store({
       updatePluginList: 'update-plugin-list', // 更新我的插件列表
       updateAvatar: 'update-avatar', // 更新我的头像
       readMessage: 'read-message', // 消息置为已读
-      mainContentSizeChange: 'main-content-size-change'
+      mainContentSizeChange: 'main-content-size-change',
+      frontArticleLogin: 'front-article-login',
+      frontArticleRegister: 'front-article-register',
+      frontArticleCloseCommentList: 'front-article-close-comment-list'
     },
     assets: {
       maleAvatar: '/static/images/avatar_male_1.jpg',
@@ -144,7 +150,7 @@ const store = new Vuex.Store({
       }
     },
     requestInfo: {
-      baseUrl: 'http://127.0.0.1:3000',
+      baseUrl: 'http://192.168.189.89:3000',
       // baseUrl: 'https://talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',

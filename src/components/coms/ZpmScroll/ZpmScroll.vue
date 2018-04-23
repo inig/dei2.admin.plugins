@@ -90,6 +90,10 @@
     }
   }
 
+  const isDOM = function (obj) {
+    return (typeof HTMLElement === 'object') ? (obj instanceof HTMLElement) : (obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string')
+  }
+
   export default {
     name: COMPONENT_NAME,
     props: {
@@ -124,6 +128,10 @@
       refreshDelay: {
         type: Number,
         default: 20
+      },
+      scrollToEle: {
+        type: null,
+        default: ''
       }
     },
     data () {
@@ -156,10 +164,13 @@
     mounted () {
       setTimeout(() => {
         this.initScroll()
+        setTimeout(() => {
+          this.scrollToElement(this.scrollToEle, 800)
+        }, 800)
       }, 20)
     },
     methods: {
-      initScroll () {
+      initScroll (callback) {
         if (!this.$refs.wrapper) {
           return
         }
@@ -208,6 +219,8 @@
         if (this.pullUpLoad) {
           this._initPullUpLoad()
         }
+
+        callback && callback()
       },
       disable () {
         this.scroll && this.scroll.disable()
@@ -304,6 +317,12 @@
           setTimeout(() => {
             this.forceUpdate(true)
           }, this.refreshDelay)
+        }
+      },
+      scrollToEle (val) {
+        if (val && isDOM(val)) {
+          // 只接受DOM类型
+          this.scrollToElement(val, 800)
         }
       }
     },

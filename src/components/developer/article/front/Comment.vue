@@ -5,26 +5,36 @@
     </div>
     <div class="article_comment_main_container">
       <div class="article_comment_nickname_container">
-        <div class="article_comment_nickname" v-text="comment.nickname"></div>
+        <div class="article_comment_nickname">
+          <span v-text="comment.nickname"></span>
+          <span class="article_comment_author_tag" v-if="comment.phonenum === author">
+            楼主
+          </span>
+        </div>
         <div class="article_comment_like" :class="{active: comment.like && JSON.parse(comment.like).length > 0}">
           <Icon :type="comment.like && JSON.parse(comment.like).length > 0 ? 'ios-heart' : 'ios-heart-outline'" size="14" style="margin-right: 5px;"></Icon>
           <span v-text="comment.like && JSON.parse(comment.like).length > 0 ? JSON.parse(comment.like).length : '喜欢'"></span>
         </div>
       </div>
-      <div class="article_comment_content_container" v-text="comment.content"></div>
-      <div class="article_comment_feedback_container">
+      <div class="article_comment_content_container" @click="chooseComment">
+        <span v-html="comment.content.replace(/\n/g, '<br>')"></span>
+        <span v-if="comment.parent && comment.parent.content"><a href="javascript: void(0)">//@{{comment.parent.nickname}}: </a>{{comment.parent.content.substring(0, 100) + '...'}}</span>
+      </div>
+      <div class="article_comment_feedback_container" @click="chooseComment">
         {{comment.postTime | time}} <a class="feedback_text" href="javascript: void(0)">{{subComments.length > 0 ? subComments.length : ''}} 回复</a>
       </div>
-      <div class="sub_comments_container" v-if="subComments.length > 0">
-        <div class="sub_comments_item" v-for="(subComment, idx) in subComments" :key="subComment.uuid">
+      <div class="sub_comments_container" v-if="subComments.length > 0" @click="chooseComment">
+        <div class="sub_comments_item" v-for="(subComment, idx) in subComments.slice(0, listSubCommentsCount)" :key="subComment.uuid">
           <a class="sub_comments_item_text" href="javascript: void(0)" v-text="subComment.nickname + ': '"></a>
           <span v-text="subComment.content"></span>
         </div>
+        <div class="more_sub_comments_text" v-if="subComments.length > listSubCommentsCount">查看全部 <span style="font-size: 14px; color: #333; font-weight: bold;" v-text="subComments.length"></span> 条评论</div>
       </div>
     </div>
   </div>
 </template>
-<style scoped>
+<style scoped lang="scss">
+  @import "../../../../assets/css/theme";
   .article_comment_container {
     display: flex;
     align-items: flex-start;
@@ -70,6 +80,22 @@
     overflow: hidden;
     font-size: 12px;
     color: #2b85e4;
+  }
+  .article_comment_author_tag {
+    font-size: 12px;
+    padding: 0 4px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid $theme;
+    color: $theme;
+    border-radius: 2px;
+    display: inline-block;
+    -webkit-transform: scale(0.7);
+    -moz-transform: scale(0.7);
+    -ms-transform: scale(0.7);
+    -o-transform: scale(0.7);
+    transform: scale(0.7);
   }
   .article_comment_like {
     font-size: 12px;
@@ -125,6 +151,11 @@
   .sub_comments_item_text {
     color: #2b85e4;
   }
+  .more_sub_comments_text {
+    font-size: 12px;
+    margin-top: 15px;
+    color: #aaaaaa;
+  }
 </style>
 <script>
   export default {
@@ -136,41 +167,78 @@
           return {}
         }
       },
-      'comments': {
-        type: Array,
-        default: function () {
-          return []
-        }
-      },
+//      'comments': {
+//        type: Array,
+//        default: function () {
+//          return []
+//        }
+//      },
       'rootComment': {
         type: Boolean,
         default: false
+      },
+      'author': {
+        type: String,
+        default: ''
       }
     },
     data () {
       return {
-        subComments: []
+        listSubCommentsCount: 5 // 子评论最多显示的条数
+//        subComments: []
       }
     },
     computed: {
       // comments () {
       //   return this.article['zpm_comments']
       // }
+      comments () {
+        return this.$store.state.article.comments[this.comment.aid]
+      },
+      subComments () {
+        return this.formatSubComments(this.$store.state.article.comments[this.comment.aid])
+      }
     },
     created () {
-      this.subComments = this.findSubComments()
+//      this.formatSubComments()
     },
     methods: {
-      findSubComments () {
+      findSubComments (comments) {
         let i = 0
         let outArr = []
-        let comments = this.comments
+//        let comments = this.comments
         for (i; i < comments.length; i++) {
-          if (comments[i].rid === this.comment.uuid) {
+          if (comments[i].rid === this.comment.uuid && comments[i].aid === this.comment.aid) {
             outArr.push(comments[i])
           }
         }
         return outArr
+      },
+      formatSubComments (comments) {
+        if (!comments) {
+          return []
+        }
+        let subComments = this.findSubComments(comments)
+        let i = 0
+        for (i; i < subComments.length; i++) {
+          subComments[i].parent = this.findParentComment(subComments[i])
+        }
+        return subComments
+      },
+      findParentComment (comment) {
+        let i = 0
+        let outComment = {}
+        let comments = this.comments
+        for (i; i < comments.length; i++) {
+          if (comments[i].uuid === comment.pid && this.comment.uuid !== comment.pid) {
+            outComment = comments[i]
+            i = comments.length
+          }
+        }
+        return outComment
+      },
+      chooseComment () {
+        this.$emit('view', this.comment)
       }
     },
     components: {}

@@ -37,7 +37,7 @@
     </div>
     <div class="full_screen_popup" :class="{shown: fullScreenPopup.shown}">
       <keep-alive>
-        <login-or-register action="login" @close="closePopup"></login-or-register>
+        <login-or-register :action="action" @close="closePopup"></login-or-register>
       </keep-alive>
     </div>
   </div>
@@ -142,13 +142,27 @@
         assets: this.$store.state.assets,
         fullScreenPopup: {
           shown: false
-        }
+        },
+        eventHub: this.$store.state.eventHub,
+        events: this.$store.state.events,
+        action: 'login'
       }
     },
     computed: {
       loginInfo () {
         return this.$store.state.loginInfo
       }
+    },
+    created () {
+      const that = this
+      this.eventHub.$on(this.events.frontArticleLogin, function () {
+        that.action = 'login'
+        that.showPopup()
+      })
+      this.eventHub.$on(this.events.frontArticleRegister, function () {
+        that.action = 'register'
+        that.showPopup()
+      })
     },
     methods: {
       closePopup () {
