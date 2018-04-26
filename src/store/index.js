@@ -41,6 +41,8 @@ import * as getters from './getters'
 
 Vue.use(Vuex)
 
+const PROTOCOL = location.protocol
+
 const store = new Vuex.Store({
   actions: actions.actions,
   mutations: mutations.mutations,
@@ -105,8 +107,8 @@ const store = new Vuex.Store({
       comments: {}
     },
     socket: {
-      // server: 'http://wss.dei2.com',
-      server: 'http://192.168.189.89',
+      server: PROTOCOL + '//wss.dei2.com',
+      // server: PROTOCOL + '//192.168.189.89',
       port: '3010',
       path: '/sk',
       event: 'enkel-message',
@@ -150,8 +152,8 @@ const store = new Vuex.Store({
       }
     },
     requestInfo: {
-      baseUrl: 'http://192.168.189.89:3000',
-      // baseUrl: 'https://talkapi.dei2.com',
+      // baseUrl: PROTOCOL + '//192.168.189.89:3000',
+      baseUrl: PROTOCOL + '//talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
       modifyPassword: '/Zpm/user/modifyPassword',
