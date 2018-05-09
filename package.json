@@ -15,17 +15,24 @@
   },
   "dependencies": {
     "axios": "^0.17.1",
+    "better-scroll": "^1.10.0",
     "codemirror": "^5.33.0",
+    "dom-to-image": "^2.6.0",
     "install": "^0.10.2",
-    "iview": "^2.7.4",
+    "iscroll": "^5.2.0",
+    "iview": "^2.11.0",
     "jsonwebtoken": "^8.1.0",
     "marked": "^0.3.12",
+    "node-sass": "^4.7.2",
     "npm": "^5.6.0",
     "pageswitch": "^2.3.2",
+    "qrcodejs": "^1.0.0",
     "querystring": "^0.2.0",
+    "sass-loader": "^6.0.7",
     "socket.io": "^2.0.4",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-touch": "^2.0.0-beta.4"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

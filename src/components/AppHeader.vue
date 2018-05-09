@@ -14,6 +14,9 @@
           <div class="menu_toggle" @click="toggleMenu">
             <Icon type="navicon" size="26"></Icon>
           </div>
+          <div class="header_operation_area">
+            <component :is="appHeaderOperationArea.component"></component>
+          </div>
           <full-screen v-model="isFullScreen" @on-change="fullscreenChange" class="full_screen_icon"></full-screen>
           <div class="layout-header-icon-container">
             <div @click="navToMessage" class="message-icon">
@@ -61,6 +64,14 @@
     height: 60px;
     background-color: #ffffff;
   }
+  .header_operation_area {
+    position: absolute;
+    left: 40px;
+    top: 0;
+    width: calc(100% - 340px);
+    height: 60px;
+    background-color: transparent;
+  }
   .layout{
     /*border: 1px solid #d7dde4;*/
     background: #f5f7f9;
@@ -85,7 +96,7 @@
   }
   .layout-header .menu_toggle {
     position: absolute;
-    left: 20px;
+    left: 12px;
     cursor: pointer;
   }
   .layout-header-icon-container {
@@ -214,6 +225,9 @@
             break
         }
         return _currentRole
+      },
+      appHeaderOperationArea () {
+        return this.$store.state.appHeaderOperationArea
       }
     },
     created () {

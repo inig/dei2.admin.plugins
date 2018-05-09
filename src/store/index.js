@@ -41,6 +41,8 @@ import * as getters from './getters'
 
 Vue.use(Vuex)
 
+const PROTOCOL = location.protocol
+
 const store = new Vuex.Store({
   actions: actions.actions,
   mutations: mutations.mutations,
@@ -60,6 +62,12 @@ const store = new Vuex.Store({
     minSpanRight: 19,
     isFullScreen: false,
     menuFold: false, // 左侧菜单是否折叠
+    appHeaderOperationArea: {}, // header空白区域
+    fullScreenPopup: {
+      shown: false,
+      subCom: {},
+      subComStyle: {}
+    },
     simulator: {
       name: 'iPhone 6',
       width: 375,
@@ -67,17 +75,40 @@ const store = new Vuex.Store({
       dpr: 2,
       scale: 1
     },
+    grid: {
+      shown: true,
+      lineWidth: 1,
+      lineColor: '#bbb',
+      lineCountX: 10,
+      lineCountY: 20,
+      alignmentLineWidth: 2, // 对齐线宽度
+      alignmentLineColor: '#9900CC', // 对齐线颜色
+      alignmentLineSensitive: 10 // 小于10px显示对齐线
+    }, // 辅助网格线
+    activePosition: {
+      left: 1,
+      top: 1,
+      right: 1,
+      bottom: 1,
+      center: 1, // 水平方向
+      middle: 1 // 竖直方向
+    },
     activeComponent: {
       uuid: '',
       type: '',
       template: {}
     },
+    activityInfoChanged: false, // 用户是否编辑了活动内容，活动内容有变化则能保存，否则不用保存
     simulatorPageType: 'zpm-page',
     pageData: [], // 活动模板数据
+    activityInfo: {}, // 活动模板数据
     currentPageIndex: 0,
+    article: {
+      comments: {}
+    },
     socket: {
-      server: 'http://wss.dei2.com',
-      // server: 'http://127.0.0.1',
+      server: PROTOCOL + '//wss.dei2.com',
+      // server: PROTOCOL + '//192.168.189.89',
       port: '3010',
       path: '/sk',
       event: 'enkel-message',
@@ -96,21 +127,33 @@ const store = new Vuex.Store({
       bodyClick: 'body-click',
       simulatorChanged: 'simulator-changed', // 模拟器属性变化
       activeComponentChanged: 'active-component-changed', // 激活状态的组件变化
+      saveActivity: 'save-activity', // 保存活动
+      saveActivityBefore: 'save-activity-before', // 开始保存活动
+      saveActivityCallback: 'save-activity-callback', // 保存活动回调
+      removeActivity: 'remove-activity', // 删除了一个活动
       getNewMessage: 'get-new-message', // 获取到新消息
       updatePluginFileContent: 'update-plugin-file-content', // 更新插件内容
       updatePluginList: 'update-plugin-list', // 更新我的插件列表
       updateAvatar: 'update-avatar', // 更新我的头像
       readMessage: 'read-message', // 消息置为已读
-      mainContentSizeChange: 'main-content-size-change'
+      mainContentSizeChange: 'main-content-size-change',
+      frontArticleLogin: 'front-article-login',
+      frontArticleRegister: 'front-article-register',
+      frontArticleCloseCommentList: 'front-article-close-comment-list'
     },
     assets: {
       maleAvatar: '/static/images/avatar_male_1.jpg',
       femaleAvatar: '/static/images/avatar_female_1.jpg',
-      defaultActivity127x200: '/static/images/127x200.png'
+      defaultActivity127x200: '/static/images/127x200.png',
+      inigLogo: '/static/images/inig.png',
+      ads: {
+        inig: '/static/images/ads/logo_inig_3.jpg',
+        dei2: '/static/images/ads/logo_dei2_2.jpg'
+      }
     },
     requestInfo: {
-      // baseUrl: 'http://127.0.0.1:3000',
-      baseUrl: 'https://talkapi.dei2.com',
+      // baseUrl: PROTOCOL + '//192.168.189.89:3000',
+      baseUrl: PROTOCOL + '//talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
       modifyPassword: '/Zpm/user/modifyPassword',
@@ -133,7 +176,16 @@ const store = new Vuex.Store({
       listActivity: '/Zpm/activity/list', // 查询所有活动
       createActivity: '/Zpm/activity/create', // 新建活动
       editActivity: '/Zpm/activity/edit', // 编辑活动
-      getActivity: '/Zpm/activity/getTemplateData' // 获取活动模板数据
+      deleteActivity: '/Zpm/activity/delete', // 删除活动
+      getActivity: '/Zpm/activity/getTemplateData', // 获取活动模板数据
+      getPreviewActivity: '/Zpm/activity/getPreviewTemplateData', // 获取活动预览数据
+      listArticle: '/Zpm/article/list', // 查询文章列表
+      saveArticle: '/Zpm/article/save', // 保存文章内容
+      createArticle: '/Zpm/article/create', // 新建文章
+      getAllArticle: '/Zpm/article/getAll', // 获取文章列表，不需要登录状态
+      viewArticle: '/Zpm/article/content', // 根据文章id查询文章内容
+      getAllComments: '/Zpm/comment/list', // 分页获取评论
+      sendComment: '/Zpm/comment/comment' // 发表评论
     },
     loginInfo: {
     },
@@ -161,7 +213,7 @@ const store = new Vuex.Store({
         name: '普通用户'
       }
     ],
-    needlessLogin: ['Login', 'Register', 'Forget'] // 不需要登录的页面
+    needlessLogin: ['Login', 'Register', 'Forget', 'ActivityPreview', 'ArticleList', 'ArticleView'] // 不需要登录的页面
   }
 })
 

@@ -64,8 +64,19 @@ export const SET_SIMULATOR = 'SET_SIMULATOR'
 // 激活组件
 export const ACTIVE_COMPONENT = 'ACTIVE_COMPONENT'
 
+// 添加组件
+export const ADD_COMPONENT = 'ADD_COMPONENT'
+
 // 保存活动模板数据至本地store，非数据库
 export const SAVE_LOCAL_TEMPLATE = 'SAVE_LOCAL_TEMPLATE'
+
+// 本地活动数据，新增一页
+export const ADD_LOCAL_PAGE = 'ADD_LOCAL_PAGE'
+// 本地活动数据，删除一页
+export const DEL_LOCAL_PAGE = 'DEL_LOCAL_PAGE'
+
+// 更新活动的整体属性
+export const UPDATE_ACTIVITY_PROPERTY = 'UPDATE_ACTIVITY_PROPERTY'
 
 // 初始化活动模板数据
 export const INIT_LOCAL_TEMPLATE = 'INIT_LOCAL_TEMPLATE'
@@ -78,6 +89,31 @@ export const NEXT_PAGE = 'NEXT_PAGE'
 
 // 跳转到指定页
 export const SET_CURRENT_PAGE_INDEX = 'SET_CURRENT_PAGE_INDEX'
+
+// 显示全屏弹框
+export const SHOW_FULL_SCREEN_POPUP = 'SHOW_FULL_SCREEN_POPUP'
+
+// 关闭全屏弹框
+export const HIDE_FULL_SCREEN_POPUP = 'HIDE_FULL_SCREEN_POPUP'
+
+// 活动数据改变了
+export const ACTIVITY_INFO_CHANGED = 'ACTIVITY_INFO_CHANGED'
+
+// 活动数据未变化
+export const ACTIVITY_INFO_UNCHANGED = 'ACTIVITY_INFO_UNCHANGED'
+
+// 修改app header空白区域
+export const SET_APP_HEAER = 'SET_APP_HEADER'
+
+// 显示simulator的网格辅助线
+export const SHOW_SIMULATOR_GRID = 'SHOW_SIMULATOR_GRID'
+
+// 隐藏simulator的网格辅助线
+export const HIDE_SIMULATOR_GRID = 'HIDE_SIMULATOR_GRID'
+
+export const UPDATE_ACTIVE_POSITION = 'UPDATE_ACTIVE_POSITION'
+
+export const SET_COMMENTS = 'SET_COMMENTS'
 
 // >>>> actions:
 
@@ -116,3 +152,6 @@ export const COUNT_MESSAGE = 'COUNT_MESSAGE'
 
 // AJAX请求，=> Promise1
 export const AJAX = 'AJAX'
+
+// AJAX请求, 不需要登录状态的请求
+export const AJAX2 = 'AJAX2'

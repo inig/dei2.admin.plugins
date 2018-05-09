@@ -57,6 +57,7 @@
   @import "../../assets/css/markdown.css";
   .plugin_container {
     width: 100%;
+    padding: 20px;
     font-size: 14px;
     box-sizing: border-box;
     overflow: hidden;
@@ -158,8 +159,8 @@
         editor: {},
         contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
         codeContainerRef: 'code-container-ref',
-        currentPlugin: '',
-        currentFileName: '',
+//        currentPlugin: '',
+//        currentFileName: '',
         fileContent: '',
         markdownContent: '',
         showMarkDown: false,
@@ -208,11 +209,33 @@
       },
       allPlugins () {
         return this.$store.state.allPlugins
+      },
+      currentPlugin () {
+        let _pluginName = this.$route.params.pluginName
+        if (!_pluginName) {
+          let _pathArr = this.$route.fullPath.split('/')
+          if (_pathArr.length <= 3) {
+            _pluginName = _pathArr[1]
+          } else {
+            _pluginName = _pathArr[2]
+          }
+        }
+        return _pluginName
+      },
+      currentFileName () {
+        let _fileName = this.$route.params.fileName
+        if (!_fileName) {
+          let _pathArr = this.$route.fullPath.split('/')
+          if (_pathArr.length <= 3) {
+            _fileName = _pathArr[2]
+          } else {
+            _fileName = _pathArr[3]
+          }
+        }
+        return _fileName
       }
     },
     async created () {
-      this.currentPlugin = this.$route.params.pluginName
-      this.currentFileName = this.$route.params.fileName
       this.eventHub.$on(this.events.updatePluginFileContent, await this.updatePluginFileContent)
       await this.updatePluginFileContent({
         plugin: this.currentPlugin,
@@ -221,12 +244,16 @@
     },
     watch: {
       '$route': async function (value) {
-        this.currentPlugin = value.params.pluginName
-        this.currentFileName = value.params.fileName
-        await this.updatePluginFileContent({
-          plugin: this.currentPlugin,
-          filename: this.currentFileName
-        })
+        if (value.fullPath.split('/')[1] === 'plugin') {
+          await this.updatePluginFileContent({
+            plugin: this.currentPlugin,
+            filename: this.currentFileName
+          })
+        } else {
+          try {
+            this.$store.state.loaders[this.contentRouterViewLoader].hide()
+          } catch (err) {}
+        }
       }
     },
     methods: {
@@ -254,18 +281,23 @@
             plugin: args.plugin,
             filename: args.filename
           })
-          if (_fileData.data.plugin === args.plugin && _fileData.data.filename === args.filename) {
-            this.fileContent = _fileData.data.content
-            let fileSuffix = this.currentFileName.replace(/^.+\.(.+)$/, '$1').toLowerCase()
-            if (fileSuffix === 'md') {
-              this.triggerOffset = 50
-              this.showMarkDown = true
-              this.markdownContent = marked(this.fileContent)
-            } else {
-              this.triggerOffset = 100
-              this.markdownContent = ''
-              this.showMarkDown = false
-              this.previewMarkDownFile = false
+          if (_fileData.status !== 200) {
+            this.$Message.error(_fileData.message)
+            this.fileContent = ''
+          } else {
+            if (_fileData.data.plugin === args.plugin && _fileData.data.filename === args.filename) {
+              this.fileContent = _fileData.data.content
+              let fileSuffix = this.currentFileName.replace(/^.+\.(.+)$/, '$1').toLowerCase()
+              if (fileSuffix === 'md') {
+                this.triggerOffset = 50
+                this.showMarkDown = true
+                this.markdownContent = marked(this.fileContent)
+              } else {
+                this.triggerOffset = 100
+                this.markdownContent = ''
+                this.showMarkDown = false
+                this.previewMarkDownFile = false
+              }
             }
           }
         } catch (err) {

@@ -35,6 +35,7 @@
  */
 
 import * as types from './mutation-types'
+import utils from '../utils/index'
 
 const findTemplateByUUID = function (uuid, arr, deep, sub) {
   let _deep = deep // deep为1或2
@@ -106,8 +107,12 @@ export const mutations = {
   [types.ACTIVE_COMPONENT] (state, data) {
     Object.assign(state.activeComponent, data)
   },
+  [types.ADD_COMPONENT] (state, data) {
+    let thisPage = state.activityInfo.data.pages[state.currentPageIndex].children
+    thisPage.push(data)
+  },
   [types.INIT_LOCAL_TEMPLATE] (state, data) {
-    state.pageData = data.template
+    state.activityInfo = data.template
   },
   [types.PREV_PAGE] (state) {
     // 上一页
@@ -117,14 +122,17 @@ export const mutations = {
   },
   [types.NEXT_PAGE] (state) {
     // 下一页
-    if (state.currentPageIndex < state.pageData.length - 1) {
+    if (state.currentPageIndex < state.activityInfo.data.pages.length - 1) {
       state.currentPageIndex += 1
     }
   },
   [types.SET_CURRENT_PAGE_INDEX] (state, data) {
-    if (Number(data.index) >= 0 && Number(data.index) <= state.pageData.length - 1) {
+    if (Number(data.index) >= 0 && Number(data.index) <= state.activityInfo.data.pages.length - 1) {
       state.currentPageIndex = Number(data.index)
     }
+  },
+  [types.UPDATE_ACTIVITY_PROPERTY] (state, data) {
+    Object.assign(state.activityInfo.data, data)
   },
   [types.SAVE_LOCAL_TEMPLATE] (state, data) {
     /**
@@ -132,7 +140,8 @@ export const mutations = {
      * uuid: xxxxxxx
      * template: {}
      */
-    let _pageData = state.pageData
+    let _pageData = state.activityInfo.data.pages
+    // let _pageData = state.pageData
     let _pageIndex = -1
     let _componentIndex = -1
     if (data.type === state.simulatorPageType) {
@@ -161,5 +170,54 @@ export const mutations = {
         }
       }
     }
+  },
+  [types.ADD_LOCAL_PAGE] (state, data) {
+    let _uuid = utils.getUUID('zpm-page-')
+    state.activityInfo.data && state.activityInfo.data.pages && state.activityInfo.data.pages.splice(Number(data.index) + 1, 0, Object.assign({}, data.template, {
+      uuid: _uuid
+    }))
+    state.currentPageIndex += 1
+  },
+  [types.DEL_LOCAL_PAGE] (state, data) {
+    if (state.activityInfo.data && state.activityInfo.data.pages && state.activityInfo.data.pages.length > 1) {
+      state.activityInfo.data.pages.splice(Number(data.index), 1)
+      if (state.currentPageIndex > 0) {
+        state.currentPageIndex -= 1
+      } else if (state.currentPageIndex === 0) {
+        state.currentPageIndex = 0
+      } else {}
+    }
+  },
+  [types.SHOW_FULL_SCREEN_POPUP] (state, data) {
+    Object.assign(state.fullScreenPopup, data, {
+      shown: true
+    })
+  },
+  [types.HIDE_FULL_SCREEN_POPUP] (state) {
+    state.fullScreenPopup = {
+      shown: false,
+      subCom: ''
+    }
+  },
+  [types.ACTIVITY_INFO_CHANGED] (state) {
+    state.activityInfoChanged = true
+  },
+  [types.ACTIVITY_INFO_UNCHANGED] (state) {
+    state.activityInfoChanged = false
+  },
+  [types.SET_APP_HEAER] (state, data) {
+    state.appHeaderOperationArea = data
+  },
+  [types.SHOW_SIMULATOR_GRID] (state) {
+    state.grid.shown = true
+  },
+  [types.HIDE_SIMULATOR_GRID] (state) {
+    state.grid.shown = false
+  },
+  [types.UPDATE_ACTIVE_POSITION] (state, data) {
+    state.activePosition = data.position
+  },
+  [types.SET_COMMENTS] (state, data) {
+    state.article.comments = Object.assign({}, state.article.comments, data)
   }
 }

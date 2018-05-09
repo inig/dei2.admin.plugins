@@ -8,7 +8,9 @@ import store from './store'
 import * as filters from './filters'
 import mixins from './mixins'
 import iView from 'iview'
+import jwt from 'jsonwebtoken'
 import utils from './utils/index'
+import ZpmCapture from './assets/js/ZpmCapture'
 // import codemirror from 'codemirror/lib/codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/fold/foldgutter.css'
@@ -20,6 +22,13 @@ import './assets/css/animate.css/animate.min.css'
 // import SharedWorker from './ajax.worker'
 
 sync(store, router)
+
+Vue.use(ZpmCapture)
+
+const VueTouch = require('vue-touch')
+Vue.use(VueTouch, {name: 'v-touch'})
+
+require('./directives/index')
 
 Vue.config.productionTip = false
 
@@ -50,6 +59,7 @@ Vue.use(iView)
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   const _state = router.app.$options.store.state
+  _state.appHeaderOperationArea = {}
   let _localUserInfo = utils.storage.getItem(_state.localStorageKeys.userInfo)
   if (to.meta && to.meta.title) {
     utils.kit.title(to.meta.title)
@@ -60,6 +70,17 @@ router.beforeEach((to, from, next) => {
       name: 'NotFound'
     })
   } else {
+    const secret = 'com.dei2'
+    let _status = jwt.verify(_localUserInfo.token, secret, (err, decoded) => {
+      return err || {}
+    })
+    if (_status.name === 'TokenExpiredError') {
+      _localUserInfo.token = ''
+      next({
+        replace: true,
+        name: 'Login'
+      })
+    }
     if (utils.isEmptyObj(_localUserInfo)) {
       if (_state.needlessLogin.indexOf(to.name) === -1) {
         next({

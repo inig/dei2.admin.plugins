@@ -68,7 +68,7 @@
     },
     computed: {
       componentData () {
-        return this.$store.state.pageData[this.$store.state.currentPageIndex]
+        return this.$store.state.activityInfo.data.pages[this.$store.state.currentPageIndex]
       }
     },
     methods: {
