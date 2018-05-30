@@ -31,7 +31,21 @@
       title="新建文章"
       :loading="newArticle.loading"
       @on-ok="createNewArticle">
-      <Input v-model="newArticle.title" placeholder="给文章起个标题先" style="width: 100%;"/>
+      <Form :model="newArticle" :label-width="40">
+        <FormItem label="标题">
+          <Input v-model="newArticle.title" placeholder="给文章起个标题先" style="width: 100%;"/>
+        </FormItem>
+        <FormItem label="标签">
+          <Select v-model="newArticle.tag" filterable multiple>
+            <OptionGroup v-for="(g, index) in allTags" :key="g.value" :label="g.text">
+              <Option v-for="(t, idx) in g.children" :key="t.value" :value="t.value" :label="t.text">
+                <span v-text="t.text" :title="t.message"></span>
+                <span style="float: right; color: #cccccc;" v-text="t.message"></span>
+              </Option>
+            </OptionGroup>
+          </Select>
+        </FormItem>
+      </Form>
     </Modal>
   </div>
 </template>
@@ -121,9 +135,11 @@
         totalCounts: 0,
         totalPages: 1,
         offsetCount: 0,
+        allTags: [],
         newArticle: {
           shown: false,
           title: '',
+          tag: [],
           loading: false
         }
       }
@@ -138,8 +154,34 @@
         isInit: true,
         author: this.loginInfo.phonenum
       })
+
+      await this.getAllTags()
     },
     methods: {
+      async getAllTags () {
+        /**
+         * 获取所有标签
+         */
+        let allTags = await this.$store.dispatch(types.AJAX2, {
+          url: this.requestInfo.getAllTags
+        })
+        if (allTags.status === 200) {
+          this.allTags = this.formatAllTags(allTags.data.list)
+        }
+      },
+      formatAllTags (tags) {
+        let outTags = {}
+        for (let i = 0; i < tags.length; i++) {
+          if (tags[i].parent === '0') {
+            outTags[tags[i].value] = Object.assign({}, tags[i], {
+              children: []
+            })
+          } else {
+            outTags[tags[i].parent] && outTags[tags[i].parent].children.push(tags[i])
+          }
+        }
+        return Object.values(outTags)
+      },
       showCreateNewArticleModal () {
         this.newArticle.shown = true
       },
@@ -147,7 +189,8 @@
         let createdData = await this.$store.dispatch(types.AJAX, {
           url: this.requestInfo.createArticle,
           data: {
-            title: this.newArticle.title
+            title: this.newArticle.title,
+            tag: this.newArticle.tag.join(';')
           }
         })
         if (createdData.status === 200) {

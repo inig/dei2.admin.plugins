@@ -63,4 +63,9 @@
   .CodeMirror {
     height: 100% !important;
   }
+
+  .ivu-select-multiple .ivu-select-item-selected:after {
+    margin-top: -5px;
+    margin-right: 5px;
+  }
 </style>
