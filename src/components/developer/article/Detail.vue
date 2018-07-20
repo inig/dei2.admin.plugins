@@ -259,23 +259,53 @@
               if (ev.metaKey && ev.shiftKey && ev.keyCode === 83) {
                 // mac下 command + shift + s
                 that.save()
+              } else if (ev.metaKey && ev.keyCode === 83) {
+                // mac下 command + s
+                that.save()
+                ev.preventDefault()
+                return false
               } else if (ev.metaKey && ev.shiftKey && ev.keyCode === 80) {
                 // 预览 command + shift + p
                 that.togglePreview()
+              } else if (ev.metaKey && ev.keyCode === 80) {
+                // 预览 command + p
+                that.togglePreview()
+                ev.preventDefault()
+                return false
               } else if (ev.metaKey && ev.shiftKey && ev.keyCode === 69) {
                 // 编辑文章 command + shift + e
                 that.togglePreview()
+              } else if (ev.metaKey && ev.keyCode === 69) {
+                // 编辑文章 command + e
+                that.togglePreview()
+                ev.preventDefault()
+                return false
               }
             } else {
               if (ev.ctrlKey && ev.shiftKey && ev.keyCode === 83) {
                 // windows下  control + shift + s 保存
                 that.save()
+              } else if (ev.ctrlKey && ev.keyCode === 83) {
+                // windows下  control + shift + s 保存
+                that.save()
+                ev.preventDefault()
+                return false
+              } else if (ev.ctrlKey && ev.shiftKey && ev.keyCode === 38) {
+                // 预览 command + shift + p
+                that.togglePreview()
               } else if (ev.ctrlKey && ev.keyCode === 38) {
                 // 预览 command + shift + p
+                that.togglePreview()
+                ev.preventDefault()
+                return false
+              } else if (ev.ctrlKey && ev.shiftKey && ev.keyCode === 40) {
+                // 编辑文章 command + shift + e
                 that.togglePreview()
               } else if (ev.ctrlKey && ev.keyCode === 40) {
                 // 编辑文章 command + shift + e
                 that.togglePreview()
+                ev.preventDefault()
+                return false
               }
             }
           }
