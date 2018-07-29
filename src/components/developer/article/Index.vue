@@ -301,7 +301,7 @@
           shown: true,
           uuid: _attrs.uuid,
           title: _attrs.title,
-          tag: _attrs.tags.split(';'),
+          tag: (_attrs.tags.trim() === '') ? [] : _attrs.tags.split(';'),
           postYear: _attrs.postYear,
           index: Number(_attrs.index)
         })

@@ -123,6 +123,7 @@ const store = new Vuex.Store({
       userInfo: 'user-info'
     },
     eventHub: new Vue(),
+    allArticleTags: [],
     events: {
       bodyClick: 'body-click',
       simulatorChanged: 'simulator-changed', // 模拟器属性变化
@@ -185,6 +186,7 @@ const store = new Vuex.Store({
       getAllArticle: '/Zpm/article/getAll', // 获取文章列表，不需要登录状态
       viewArticle: '/Zpm/article/content', // 根据文章id查询文章内容
       getAllTags: '/Zpm/tag/getAll', // 获取所有文章的标签
+      modifyTag: '/Zpm/article/modifyTag', // 修改文章标签
       getAllComments: '/Zpm/comment/list', // 分页获取评论
       sendComment: '/Zpm/comment/comment' // 发表评论
     },
