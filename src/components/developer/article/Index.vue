@@ -6,7 +6,16 @@
         <span class="title">{{postYear}}年</span>
         <div class="content" v-for="(article, index) in postYears[postYear]" :key="index">
           <div class="content_inner">
-            <p class="article_title" :data-uuid="article.uuid" @click="gotoArticleDetail">-【{{article.title}}】</p>
+            <p class="article_title" :data-uuid="article.uuid.replace(/^([a-zA-Z0-9]*).*/, '$1')" @click="gotoArticleDetail">-【{{article.title}}】</p>
+            <!--<p class="post_time">{{article.tag}}</p>-->
+            <div class="member_level_tag">
+              <p class="member_level_tag_item" v-for="(t, i) in filterTags(article.tag).split(';')" :key="i" v-text="t"></p>
+              <Tooltip content="修改标签" placement="right">
+                <div class="modify_tag_icon" :data-post-year="postYear" :data-index="index" :data-title="article.title" :data-tags="article.tag" :data-uuid="article.uuid.replace(/^([a-zA-Z0-9]*).*/, '$1')" @click="showModifyTagModal">
+                  <Icon type="ios-cog" size="24" style="pointer-events: none;" />
+                </div>
+              </Tooltip>
+            </div>
             <p class="post_time">更新时间：{{article.updateTime | timeFormat('M月D日 hh:mm:ss')}}</p>
             <p class="post_time">作者：{{article['zpm_user'] && article['zpm_user'].nickname}}</p>
           </div>
@@ -37,7 +46,29 @@
         </FormItem>
         <FormItem label="标签">
           <Select v-model="newArticle.tag" filterable multiple>
-            <OptionGroup v-for="(g, index) in allTags" :key="g.value" :label="g.text">
+            <OptionGroup v-for="(g, index) in allTagsForAdd" :key="g.value" :label="g.text">
+              <Option v-for="(t, idx) in g.children" :key="t.value" :value="t.value" :label="t.text">
+                <span v-text="t.text" :title="t.message"></span>
+                <span style="float: right; color: #cccccc;" v-text="t.message"></span>
+              </Option>
+            </OptionGroup>
+          </Select>
+        </FormItem>
+      </Form>
+    </Modal>
+
+    <Modal
+      v-model="modifyTag.shown"
+      title="修改文章标签"
+      :loading="modifyTag.loading"
+      @on-ok="confirmModifyTag">
+      <Form :model="modifyTag" :label-width="40">
+        <FormItem label="标题">
+          <input v-model="modifyTag.title" disabled class="ban_input"/>
+        </FormItem>
+        <FormItem label="标签">
+          <Select v-model="modifyTag.tag" filterable multiple>
+            <OptionGroup v-for="(g, index) in allTagsForAdd" :key="g.value" :label="g.text">
               <Option v-for="(t, idx) in g.children" :key="t.value" :value="t.value" :label="t.text">
                 <span v-text="t.text" :title="t.message"></span>
                 <span style="float: right; color: #cccccc;" v-text="t.message"></span>
@@ -77,6 +108,24 @@
     display: inline-flex;
     flex-direction: column;
     align-items: flex-start;
+  }
+  .member_level_tag {
+    height: 22px;
+    line-height: 22px;
+    margin: 5px 0 5px 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .member_level_tag_item {
+    margin: 0 4px 0 0;
+    padding: 0 8px;
+    border: none;
+    border-radius: 3px;
+    font-size: 12px;
+    background-color: seagreen;
+    color: #ffffff;
   }
   .post_time {
     /*margin-right: 10px;*/
@@ -120,6 +169,27 @@
     color: $theme;
     cursor: pointer;
   }
+
+  .ban_input {
+    display: inline-block;
+    width: 100%;
+    height: 32px;
+    line-height: 1.5;
+    padding: 4px 7px;
+    font-size: 12px;
+    border-radius: 4px;
+    color: #495060;
+    background-image: none;
+    position: relative;
+    cursor: text;
+    transition: border .2s ease-in-out, background .2s ease-in-out, box-shadow .2s ease-in-out;
+    border: none;
+    background-color: transparent;
+  }
+  .modify_tag_icon {
+    cursor: pointer;
+    margin-left: 5px;
+  }
 </style>
 <script>
   import * as types from '../../../store/mutation-types'
@@ -131,15 +201,27 @@
         articles: [],
         postYears: {},
         pageIndex: 1,
-        pageSize: 2,
+        pageSize: 20,
         totalCounts: 0,
         totalPages: 1,
         offsetCount: 0,
-        allTags: [],
+        // allTags: [],
+        allTags: {},
+        allTagsArr: [],
+        allTagsForAdd: [],
         newArticle: {
           shown: false,
           title: '',
           tag: [],
+          loading: false
+        },
+        modifyTag: {
+          shown: false,
+          uuid: '',
+          title: '',
+          tag: [],
+          postYear: '',
+          index: -1,
           loading: false
         }
       }
@@ -158,6 +240,12 @@
       await this.getAllTags()
     },
     methods: {
+      filterTags (tags) {
+        const that = this
+        return tags.replace(/(([a-zA-Z0-9]+)(;?))/g, function (item, item2, item3, item4) {
+          return (that.allTags[item3] ? that.allTags[item3].text : item3) + item4
+        })
+      },
       async getAllTags () {
         /**
          * 获取所有标签
@@ -166,9 +254,34 @@
           url: this.requestInfo.getAllTags
         })
         if (allTags.status === 200) {
-          this.allTags = this.formatAllTags(allTags.data.list)
+          this.allTagsArr = Object.assign([], allTags.data.list)
+          this.allTags = this.formatTags(allTags.data.list)
+          this.allTagsForAdd = this.formatAllTags(allTags.data.list)
+          this.$store.commit(types.CACHE_ALL_ARTICLE_TAGS, {
+            tags: this.allTagsArr
+          })
         }
       },
+      formatTags (tags) {
+        let outTags = {}
+        for (let i = 0; i < tags.length; i++) {
+          if (tags[i].parent !== '0') {
+            outTags[tags[i].value] = tags[i]
+          }
+        }
+        return outTags
+      },
+      // async getAllTags () {
+      //   /**
+      //    * 获取所有标签
+      //    */
+      //   let allTags = await this.$store.dispatch(types.AJAX2, {
+      //     url: this.requestInfo.getAllTags
+      //   })
+      //   if (allTags.status === 200) {
+      //     this.allTags = this.formatAllTags(allTags.data.list)
+      //   }
+      // },
       formatAllTags (tags) {
         let outTags = {}
         for (let i = 0; i < tags.length; i++) {
@@ -181,6 +294,32 @@
           }
         }
         return Object.values(outTags)
+      },
+      showModifyTagModal (e) {
+        let _attrs = e.target.dataset
+        this.modifyTag = Object.assign(this.modifyTag, {
+          shown: true,
+          uuid: _attrs.uuid,
+          title: _attrs.title,
+          tag: _attrs.tags.split(';'),
+          postYear: _attrs.postYear,
+          index: Number(_attrs.index)
+        })
+      },
+      async confirmModifyTag () {
+        let modifyData = await this.$store.dispatch(types.AJAX, {
+          url: this.requestInfo.modifyTag,
+          data: {
+            uuid: this.modifyTag.uuid,
+            tag: this.modifyTag.tag.join(';')
+          }
+        })
+        if (modifyData.status === 200) {
+          this.postYears[this.modifyTag.postYear][this.modifyTag.index]['tag'] = this.modifyTag.tag.join(';')
+          this.$Message.success('修改成功')
+        } else {
+          this.$Message.error('标签修改失败，请稍后重试')
+        }
       },
       showCreateNewArticleModal () {
         this.newArticle.shown = true
@@ -206,6 +345,14 @@
           this.$Message.error('文章保存失败，请稍后重试')
         }
         this.newArticle.title = ''
+        this.newArticle.tag = []
+        this.gotoArticleDetail({
+          target: {
+            dataset: {
+              uuid: createdData.data.uuid
+            }
+          }
+        })
       },
       formatPostYears (list) {
         let _postYears = JSON.parse(JSON.stringify(this.postYears))

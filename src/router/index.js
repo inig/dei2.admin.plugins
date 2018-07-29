@@ -98,7 +98,7 @@ export const contentRouter = {
       path: '/article/index',
       name: 'ArticleIndex',
       meta: {
-        title: '文章管理'
+        title: '文章列表'
       },
       components: {
         ContentRouter: () => import('../components/developer/article/Index.vue')

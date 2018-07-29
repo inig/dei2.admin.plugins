@@ -115,6 +115,8 @@ export const UPDATE_ACTIVE_POSITION = 'UPDATE_ACTIVE_POSITION'
 
 export const SET_COMMENTS = 'SET_COMMENTS'
 
+export const CACHE_ALL_ARTICLE_TAGS = 'CACHE_ALL_ARTICLE_TAGS'
+
 // >>>> actions:
 
 // 登录1

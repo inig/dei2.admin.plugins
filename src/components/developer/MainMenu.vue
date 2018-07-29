@@ -130,12 +130,12 @@
           },
           {
             name: 'article',
-            text: '内容管理',
+            text: '文章管理',
             icon: 'compose',
             children: [
               {
                 name: 'index',
-                text: '文章管理'
+                text: '文章列表'
               }
             ]
           }
