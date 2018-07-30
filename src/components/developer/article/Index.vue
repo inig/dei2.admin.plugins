@@ -393,11 +393,13 @@
           url: this.requestInfo.modifyTag,
           data: {
             uuid: this.modifyTag.uuid,
+            album: this.modifyTag.album.trim(),
             tag: this.modifyTag.tag.join(';')
           }
         })
         if (modifyData.status === 200) {
           this.postYears[this.modifyTag.postYear][this.modifyTag.index]['tag'] = this.modifyTag.tag.join(';')
+          this.postYears[this.modifyTag.postYear][this.modifyTag.index]['album'] = this.modifyTag.album.trim()
           this.$Message.success('修改成功')
         } else {
           this.$Message.error('标签修改失败，请稍后重试')
