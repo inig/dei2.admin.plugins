@@ -147,13 +147,14 @@ const store = new Vuex.Store({
       femaleAvatar: '/static/images/avatar_female_1.jpg',
       defaultActivity127x200: '/static/images/127x200.png',
       inigLogo: '/static/images/inig.png',
+      articleAlbum: 'https://static.dei2.com/live/images/article.jpeg',
       ads: {
         inig: '/static/images/ads/logo_inig_3.jpg',
         dei2: '/static/images/ads/logo_dei2_2.jpg'
       }
     },
     requestInfo: {
-      // baseUrl: PROTOCOL + '//192.168.189.89:3000',
+      // baseUrl: PROTOCOL + '//10.2.4.229:3000',
       baseUrl: PROTOCOL + '//talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',

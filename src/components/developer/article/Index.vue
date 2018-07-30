@@ -11,7 +11,7 @@
             <div class="member_level_tag">
               <p class="member_level_tag_item" v-for="(t, i) in filterTags(article.tag).split(';')" :key="i" v-text="t"></p>
               <Tooltip content="修改标签" placement="right">
-                <div class="modify_tag_icon" :data-post-year="postYear" :data-index="index" :data-title="article.title" :data-tags="article.tag" :data-uuid="article.uuid.replace(/^([a-zA-Z0-9]*).*/, '$1')" @click="showModifyTagModal">
+                <div class="modify_tag_icon" :data-post-year="postYear" :data-index="index" :data-album="article.album" :data-title="article.title" :data-tags="article.tag" :data-uuid="article.uuid.replace(/^([a-zA-Z0-9]*).*/, '$1')" @click="showModifyTagModal">
                   <Icon type="ios-cog" size="24" style="pointer-events: none;" />
                 </div>
               </Tooltip>
@@ -41,6 +41,18 @@
       :loading="newArticle.loading"
       @on-ok="createNewArticle">
       <Form :model="newArticle" :label-width="40">
+        <FormItem label="封面">
+          <div class="upload_item">
+            <upload-image width="200" height="134" @before-upload="beforeUpload" @progress="uploadImageProgress" @success="setArticleAlbum" @fail="uploadFailed">
+              <img class="article_album" style="opacity: 1!important;" :src="newArticle.album || assets.articleAlbum" alt="封面">
+            </upload-image>
+            <div class="progress_item" v-if="uploadProgress.shown">
+              <i-circle :percent="uploadProgress.percent">
+                <span class="demo-Circle-inner" style="font-size:24px">{{uploadProgress.percent}}%</span>
+              </i-circle>
+            </div>
+          </div>
+        </FormItem>
         <FormItem label="标题">
           <Input v-model="newArticle.title" placeholder="给文章起个标题先" style="width: 100%;"/>
         </FormItem>
@@ -63,6 +75,18 @@
       :loading="modifyTag.loading"
       @on-ok="confirmModifyTag">
       <Form :model="modifyTag" :label-width="40">
+        <FormItem label="封面">
+          <div class="upload_item">
+            <upload-image width="200" height="134" @before-upload="beforeUpload" @progress="uploadImageProgress" @success="setArticleAlbum2" @fail="uploadFailed">
+              <img class="article_album" style="opacity: 1!important;" :src="modifyTag.album || assets.articleAlbum" alt="封面">
+            </upload-image>
+            <div class="progress_item" v-if="uploadProgress.shown">
+              <i-circle :percent="uploadProgress.percent">
+                <span class="demo-Circle-inner" style="font-size:24px">{{uploadProgress.percent}}%</span>
+              </i-circle>
+            </div>
+          </div>
+        </FormItem>
         <FormItem label="标题">
           <input v-model="modifyTag.title" disabled class="ban_input"/>
         </FormItem>
@@ -190,13 +214,40 @@
     cursor: pointer;
     margin-left: 5px;
   }
+
+  .article_album {
+    max-width: 200px;
+    max-height: 134px;
+  }
+
+  .upload_item {
+    width: 200px;
+    height: 134px;
+    background-color: #f0f0f0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .upload_item .progress_item {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 200px;
+    height: 134px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FFFFFF;
+  }
 </style>
 <script>
   import * as types from '../../../store/mutation-types'
+  import UploadImage from '../../coms/UploadImage'
   export default {
     name: 'ArticleIndex',
     data () {
       return {
+        assets: this.$store.state.assets,
         requestInfo: this.$store.state.requestInfo,
         articles: [],
         postYears: {},
@@ -211,6 +262,7 @@
         allTagsForAdd: [],
         newArticle: {
           shown: false,
+          album: '',
           title: '',
           tag: [],
           loading: false
@@ -218,11 +270,16 @@
         modifyTag: {
           shown: false,
           uuid: '',
+          album: '',
           title: '',
           tag: [],
           postYear: '',
           index: -1,
           loading: false
+        },
+        uploadProgress: {
+          shown: false,
+          percent: 0
         }
       }
     },
@@ -240,6 +297,30 @@
       await this.getAllTags()
     },
     methods: {
+      beforeUpload () {
+        this.uploadProgress.shown = true
+        this.uploadProgress.percent = 0
+      },
+      uploadImageProgress (event, file, fileList) {
+        this.uploadProgress.percent = parseFloat(event.percent.toFixed(2))
+      },
+      setArticleAlbum (data) {
+        this.newArticle.album = data.path
+        setTimeout(() => {
+          this.uploadProgress.shown = false
+        }, 800)
+      },
+      uploadFailed () {
+        setTimeout(() => {
+          this.uploadProgress.shown = false
+        }, 800)
+      },
+      setArticleAlbum2 (data) {
+        this.modifyTag.album = data.path
+        setTimeout(() => {
+          this.uploadProgress.shown = false
+        }, 800)
+      },
       filterTags (tags) {
         const that = this
         return tags.replace(/(([a-zA-Z0-9]+)(;?))/g, function (item, item2, item3, item4) {
@@ -300,6 +381,7 @@
         this.modifyTag = Object.assign(this.modifyTag, {
           shown: true,
           uuid: _attrs.uuid,
+          album: _attrs.album || this.assets.articleAlbum,
           title: _attrs.title,
           tag: (_attrs.tags.trim() === '') ? [] : _attrs.tags.split(';'),
           postYear: _attrs.postYear,
@@ -328,6 +410,7 @@
         let createdData = await this.$store.dispatch(types.AJAX, {
           url: this.requestInfo.createArticle,
           data: {
+            album: this.newArticle.album,
             title: this.newArticle.title,
             tag: this.newArticle.tag.join(';')
           }
@@ -346,6 +429,7 @@
         }
         this.newArticle.title = ''
         this.newArticle.tag = []
+        this.newArticle.album = ''
         this.gotoArticleDetail({
           target: {
             dataset: {
@@ -418,6 +502,8 @@
         })
       }
     },
-    components: {}
+    components: {
+      UploadImage
+    }
   }
 </script>
