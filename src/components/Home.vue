@@ -2,7 +2,6 @@
     <component :is="currentHome"></component>
 </template>
 <style>
-
 </style>
 <script>
   // import utils from '../utils'
