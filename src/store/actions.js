@@ -38,7 +38,7 @@ import axios from 'axios'
 import utils from '../utils'
 const querystring = require('querystring')
 const instance = axios.create({
-  timeout: 3000
+  timeout: 6000
 })
 const noop = function () {}
 export const actions = {
