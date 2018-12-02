@@ -44,7 +44,7 @@ module.exports = {
     new SWPrecacheWebpackPlugin({
       cacheId: 'admin-plugins-dei2',
       filename: 'sw.js',
-      staticFileGlobs: ['dist/**/*.{js,html,css,png,jpeg,gif}'],
+      staticFileGlobs: ['dist/**/*.{js,html,css,jpg,png,jpeg,gif}'],
       minify: true,
       stripPrefix: 'dist/',
       importScripts: [
