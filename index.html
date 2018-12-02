@@ -16,6 +16,7 @@
       navigator.serviceWorker
         .register('/sw.js')
         .then(registration => {
+          // registration.update()
         })
         .catch(err => {
           console.log('ServiceWorker registration failed: ', err)
