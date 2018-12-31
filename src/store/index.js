@@ -36,8 +36,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as actions from './actions'
-import * as mutations from './mutations'
 import * as getters from './getters'
+import * as mutations from './mutations'
 
 Vue.use(Vuex)
 
@@ -107,8 +107,8 @@ const store = new Vuex.Store({
       comments: {}
     },
     socket: {
-      server: PROTOCOL + '//wss.dei2.com',
-      // server: PROTOCOL + '//192.168.189.89',
+      // server: PROTOCOL + '//wss.dei2.com',
+      server: PROTOCOL + '//127.0.0.1',
       port: '3010',
       path: '/sk',
       event: 'enkel-message',
@@ -154,8 +154,8 @@ const store = new Vuex.Store({
       }
     },
     requestInfo: {
-      // baseUrl: PROTOCOL + '//10.2.4.229:3000',
-      baseUrl: PROTOCOL + '//talkapi.dei2.com',
+      baseUrl: PROTOCOL + '//127.0.0.1:3000',
+      // baseUrl: PROTOCOL + '//talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
       modifyPassword: '/Zpm/user/modifyPassword',

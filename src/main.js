@@ -26,7 +26,7 @@ sync(store, router)
 Vue.use(ZpmCapture)
 
 const VueTouch = require('vue-touch')
-Vue.use(VueTouch, {name: 'v-touch'})
+Vue.use(VueTouch, { name: 'v-touch' })
 
 require('./directives/index')
 
@@ -112,3 +112,9 @@ new Vue({
   // template: '<App/>',
   // components: { App }
 })
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+  })
+}

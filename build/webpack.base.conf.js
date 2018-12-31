@@ -4,7 +4,7 @@ const utils = require('./utils')
 const webpack = require('webpack')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
+const WorkboxPlugin = require('workbox-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -40,18 +40,7 @@ module.exports = {
       '@': resolve('src'),
     }
   },
-  plugins: [
-    new SWPrecacheWebpackPlugin({
-      cacheId: 'admin-plugins-dei2',
-      filename: 'sw.js',
-      staticFileGlobs: ['dist/**/*.{js,html,css,jpg,png,jpeg,gif}'],
-      minify: true,
-      stripPrefix: 'dist/',
-      importScripts: [
-        '/static/js/custom-sw.js'
-      ]
-    })
-  ],
+  plugins: [new WorkboxPlugin.InjectManifest(config.workbox)],
   module: {
     rules: [
       ...(config.dev.useEslint ? [createLintingRule()] : []),
