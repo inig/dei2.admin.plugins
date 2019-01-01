@@ -119,8 +119,8 @@ export const contentRouter = {
       redirect: '/'
     },
     {
-      path: '/plugin/:pluginName/:fileName',
-      name: 'Plugin',
+      path: '/plugin/:pluginName/:fileName/detail',
+      name: 'PluginDetail',
       meta: {
         title: '用户插件'
       },

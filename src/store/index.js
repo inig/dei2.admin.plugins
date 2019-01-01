@@ -124,6 +124,7 @@ const store = new Vuex.Store({
     },
     eventHub: new Vue(),
     allArticleTags: [],
+    online: true,
     events: {
       bodyClick: 'body-click',
       simulatorChanged: 'simulator-changed', // 模拟器属性变化

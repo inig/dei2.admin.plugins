@@ -117,6 +117,10 @@ export const SET_COMMENTS = 'SET_COMMENTS'
 
 export const CACHE_ALL_ARTICLE_TAGS = 'CACHE_ALL_ARTICLE_TAGS'
 
+export const ONLINE = 'ONLINE'
+
+export const OFFLINE = 'OFFLINE'
+
 // >>>> actions:
 
 // 登录1

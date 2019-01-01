@@ -185,7 +185,7 @@ export const mutations = {
         state.currentPageIndex -= 1
       } else if (state.currentPageIndex === 0) {
         state.currentPageIndex = 0
-      } else {}
+      } else { }
     }
   },
   [types.SHOW_FULL_SCREEN_POPUP] (state, data) {
@@ -222,5 +222,11 @@ export const mutations = {
   },
   [types.CACHE_ALL_ARTICLE_TAGS] (state, data) {
     state.allArticleTags = data.tags
+  },
+  [types.ONLINE] (state) {
+    state.online = true
+  },
+  [types.OFFLINE] (state) {
+    state.online = false
   }
 }

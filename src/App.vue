@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import * as types from './store/mutation-types'
 import utils from './utils'
 export default {
   name: 'app',
@@ -18,29 +19,31 @@ export default {
       eventHub: this.$store.state.eventHub
     }
   },
-  created () {
+  mounted () {
     const that = this
     document.onclick = function () {
       that.eventHub.$emit(that.events.bodyClick)
     }
     window.addEventListener('online', () => {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.ready.then(reg => {
-          return reg.sync.register('online')
-        }).then(res => {
-        })
-      }
-      this.$Message.success('网络已连接')
+      // if ('serviceWorker' in navigator) {
+      //   navigator.serviceWorker.ready.then(reg => {
+      //     return reg.sync.register('online')
+      //   }).then(res => {
+      //   })
+      // }
+      // this.$Message.success('网络已连接')
+      this.$store.commit(types.ONLINE)
     }, false)
 
     window.addEventListener('offline', () => {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.ready.then(reg => {
-          return reg.sync.register('offline')
-        }).then(res => {
-        })
-      }
-      this.$Message.info('网络已断开')
+      // if ('serviceWorker' in navigator) {
+      //   navigator.serviceWorker.ready.then(reg => {
+      //     return reg.sync.register('offline')
+      //   }).then(res => {
+      //   })
+      // }
+      // this.$Message.info('网络已断开')
+      this.$store.commit(types.OFFLINE)
     }, false)
   },
   computed: {
