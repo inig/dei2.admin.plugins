@@ -29,8 +29,8 @@ sudo npm install zpm_cli -g
       <pre class="beauty_code"><code>
 zpm init [, project_template] [, project_name] [, project_path]
       </code></pre>
-      <button style="padding: 4px 20px; margin-top: 50px; background-color: transparent; color: #fff; border-radius: 5px;"
-              @click="sm">发送消息</button>
+      <!-- <button style="padding: 4px 20px; margin-top: 50px; background-color: transparent; color: #fff; border-radius: 5px;"
+              @click="sm">发送消息</button> -->
     </div>
   </div>
 </template>
