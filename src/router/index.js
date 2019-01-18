@@ -129,6 +129,16 @@ export const contentRouter = {
       }
     },
     {
+      path: '/component/index',
+      name: 'ComponentIndex',
+      meta: {
+        title: '组件管理'
+      },
+      components: {
+        ContentRouter: () => import('../components/developer/Component/Index.vue')
+      }
+    },
+    {
       path: '/personal',
       name: 'Personal',
       meta: {

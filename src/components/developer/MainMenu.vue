@@ -75,25 +75,36 @@ export default {
   data () {
     return {
       allPlugins: [],
-      contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
+      // contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
       eventHub: this.$store.state.eventHub,
       events: this.$store.state.events,
       socketEvents: this.$store.state.socketEvents,
       socket: this.$store.state.socket,
       requestInfo: this.$store.state.requestInfo,
       menuItems: [
+        // {
+        //   name: 'plugin',
+        //   text: '插件管理',
+        //   icon: 'wrench',
+        //   children: [
+        //     {
+        //       name: 'myPlugins',
+        //       text: '我的插件'
+        //     },
+        //     {
+        //       name: 'otherPlugins',
+        //       text: '别人的插件'
+        //     }
+        //   ]
+        // },
         {
-          name: 'plugin',
-          text: '插件管理',
+          name: 'component',
+          text: '组件管理',
           icon: 'wrench',
           children: [
             {
-              name: 'myPlugins',
-              text: '我的插件'
-            },
-            {
-              name: 'otherPlugins',
-              text: '别人的插件'
+              name: 'index',
+              text: '组件列表'
             }
           ]
         },
@@ -117,6 +128,9 @@ export default {
     },
     currentMenu () {
       return this.$route.fullPath.split('/')[1]
+    },
+    contentRouterViewLoader () {
+      return this.$store.state.contentRouterViewLoader
     },
     currentPlugin () {
       let _pluginName = this.$route.params.pluginName
@@ -226,11 +240,13 @@ export default {
     navToPluginView (e) {
       //        this.$router.replace(`/${e.split('-')[0]}/${e.split('-')[1]}/${e.split('-')[2]}`)
       let _targetPath = ''
-      if (e.split('-')[0] === 'plugin') {
-        _targetPath = `/plugin/${e.split('-')[1]}/${e.split('-')[2]}/detail`
-      } else {
-        _targetPath = `/${e.split('-')[1]}/${e.split('-')[2]}`
-      }
+      // if (e.split('-')[0] === 'plugin') {
+      //   _targetPath = `/plugin/${e.split('-')[1]}/${e.split('-')[2]}/detail`
+      // } else {
+      //   _targetPath = `/${e.split('-')[1]}/${e.split('-')[2]}`
+      // }
+      let _tr = e.split('-').reverse()
+      _targetPath += '/' + _tr[1] + '/' + _tr[0]
       if (this.$route.fullPath !== _targetPath) {
         // 跳转目录 跟 当前目录不一样，则跳转
         try {

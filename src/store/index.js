@@ -117,8 +117,8 @@ const store = new Vuex.Store({
       comments: {}
     },
     socket: {
-      server: PROTOCOL + '//wss.dei2.com',
-      // server: PROTOCOL + '//127.0.0.1',
+      // server: PROTOCOL + '//wss.dei2.com',
+      server: PROTOCOL + '//127.0.0.1',
       port: '3010',
       path: '/sk',
       event: 'enkel-message',
@@ -165,8 +165,8 @@ const store = new Vuex.Store({
       }
     },
     requestInfo: {
-      // baseUrl: PROTOCOL + '//127.0.0.1:3000',
-      baseUrl: PROTOCOL + '//talkapi.dei2.com',
+      baseUrl: PROTOCOL + '//127.0.0.1:3000',
+      // baseUrl: PROTOCOL + '//talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
       modifyPassword: '/Zpm/user/modifyPassword',

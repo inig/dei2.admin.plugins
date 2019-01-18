@@ -101,6 +101,8 @@ router.beforeEach((to, from, next) => {
 
 router.afterEach(to => {
   iView.LoadingBar.finish()
+  const _state = router.app.$options.store.state
+  _state.contentRouterViewLoader && _state.loaders[_state.contentRouterViewLoader] && _state.loaders[_state.contentRouterViewLoader].hide()
 })
 
 /* eslint-disable no-new */
