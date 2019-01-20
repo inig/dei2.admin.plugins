@@ -92,4 +92,8 @@ body {
   margin-top: -5px;
   margin-right: 5px;
 }
+
+.noresize textarea {
+  resize: none;
+}
 </style>

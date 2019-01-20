@@ -22,7 +22,7 @@
         </transition>
         <div class="menu_toggle"
              @click="toggleMenu">
-          <Icon type="navicon"
+          <Icon type="md-menu"
                 size="26"></Icon>
         </div>
         <div class="header_operation_area">
@@ -36,7 +36,7 @@
                class="message-icon">
             <Badge :count="messageValue"
                    class-name="message-count-badge">
-              <Icon type="ios-bell"
+              <Icon type="md-notifications"
                     :size="22"></Icon>
             </Badge>
           </div>
@@ -62,16 +62,16 @@
                  slot="extra"
                  @click.prevent="logout">
                 退出
-                <Icon type="log-out"></Icon>
+                <Icon type="md-power"></Icon>
               </a>
               <Menu width="200"
                     @on-select="navToUserSet">
                 <MenuItem name="personal">
-                <Icon type="clipboard"></Icon>
+                <Icon type="md-paper"></Icon>
                 个人中心
                 </MenuItem>
                 <MenuItem name="setting">
-                <Icon type="settings"></Icon>
+                <Icon type="md-settings"></Icon>
                 设置
                 </MenuItem>
               </Menu>
@@ -278,8 +278,10 @@ export default {
   },
   created () {
     this.$nextTick(async () => {
-      this.socket.client.on(this.socket.event, this.getNewMessage)
-      this.eventHub.$on(this.events.readMessage, this.readMessage)
+      if (!this.socket.ban) {
+        this.socket.client.on(this.socket.event, this.getNewMessage)
+        this.eventHub.$on(this.events.readMessage, this.readMessage)
+      }
       await this.getMessageCount({
         status: 1
       })

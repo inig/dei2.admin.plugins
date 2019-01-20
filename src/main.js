@@ -16,8 +16,9 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/fold/foldgutter.css'
 import './assets/css/codemirror/themes/zenburn.css'
 import './assets/css/codemirror/themes/dracula.css'
-import 'iview/dist/styles/iview.css'
+// import 'iview/dist/styles/iview.css'
 import './assets/css/animate.css/animate.min.css'
+import './assets/css/index.less'
 
 // import SharedWorker from './ajax.worker'
 

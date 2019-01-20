@@ -228,5 +228,8 @@ export const mutations = {
   },
   [types.OFFLINE] (state) {
     state.online = false
+  },
+  [types.COMPONENT_SEARCH] (state, data) {
+    state.componentSearch = data.value || ''
   }
 }

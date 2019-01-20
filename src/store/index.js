@@ -78,6 +78,7 @@ const store = new Vuex.Store({
       subCom: {},
       subComStyle: {}
     },
+    componentSearch: '', // 组件搜索
     simulator: {
       name: 'iPhone 6',
       width: 375,
@@ -117,8 +118,9 @@ const store = new Vuex.Store({
       comments: {}
     },
     socket: {
-      // server: PROTOCOL + '//wss.dei2.com',
-      server: PROTOCOL + '//127.0.0.1',
+      ban: true,
+      server: PROTOCOL + '//wss.dei2.com',
+      // server: PROTOCOL + '//127.0.0.1',
       port: '3010',
       path: '/sk',
       event: 'enkel-message',

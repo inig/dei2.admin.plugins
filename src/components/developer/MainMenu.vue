@@ -100,7 +100,7 @@ export default {
         {
           name: 'component',
           text: '组件管理',
-          icon: 'wrench',
+          icon: 'md-settings',
           children: [
             {
               name: 'index',
@@ -111,7 +111,7 @@ export default {
         {
           name: 'article',
           text: '文章管理',
-          icon: 'compose',
+          icon: 'md-albums',
           children: [
             {
               name: 'index',
@@ -169,7 +169,7 @@ export default {
     //      })
     this.$nextTick(() => {
       //        this.socket.client.off(this.socket.event)
-      this.socket.client.on(this.socket.event, this.getNewMessage)
+      !this.socket.ban && this.socket.client.on(this.socket.event, this.getNewMessage)
     })
   },
   methods: {

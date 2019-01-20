@@ -121,6 +121,8 @@ export const ONLINE = 'ONLINE'
 
 export const OFFLINE = 'OFFLINE'
 
+export const COMPONENT_SEARCH = 'COMPONENT_SEARCH'
+
 // >>>> actions:
 
 // 登录1
