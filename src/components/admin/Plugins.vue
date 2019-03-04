@@ -3,15 +3,25 @@
     <div class="root_plugin_list_wrapper">
       <div class="root_plugin_list_title">
         <span class="root_plugin_list_title_text">插件管理</span>
-        <Form class="root_plugin_list_filter_container" :label-width="70">
-          <FormItem class="root_plugin_list_filter_item" label="插件名">
-            <Input v-model="filterConditions.name" placeholder="请输入插件名" @on-enter="filterConditionsChanged"/>
+        <Form class="root_plugin_list_filter_container"
+              :label-width="70">
+          <FormItem class="root_plugin_list_filter_item"
+                    label="插件名">
+            <Input v-model="filterConditions.name"
+                   placeholder="请输入插件名"
+                   @on-enter="filterConditionsChanged" />
           </FormItem>
-          <FormItem class="root_plugin_list_filter_item" label="作者">
-            <Input v-model="filterConditions.author" placeholder="请输入手机号" @on-enter="filterConditionsChanged"/>
+          <FormItem class="root_plugin_list_filter_item"
+                    label="作者">
+            <Input v-model="filterConditions.author"
+                   placeholder="请输入手机号"
+                   @on-enter="filterConditionsChanged" />
           </FormItem>
-          <FormItem label="插件状态" class="root_plugin_list_filter_item">
-            <Select v-model="filterConditions.status" placeholder="请选择插件状态" @on-change="filterConditionsChanged">
+          <FormItem label="插件状态"
+                    class="root_plugin_list_filter_item">
+            <Select v-model="filterConditions.status"
+                    placeholder="请选择插件状态"
+                    @on-change="filterConditionsChanged">
               <Option :value="-1">全部</Option>
               <Option :value="0">不可用</Option>
               <Option :value="1">审核中</Option>
@@ -22,38 +32,50 @@
         </Form>
       </div>
       <div class="root_plugin_list_table">
-        <Table border :columns="pluginKeys" :data="plugins" :stripe="true"></Table>
+        <Table border
+               :columns="pluginKeys"
+               :data="plugins"
+               :stripe="true"></Table>
         <div class="root_plugin_pages_container">
-          <Page :total="totalCounts" size="small"
+          <Page :total="totalCounts"
+                size="small"
                 :page-size="currentPage.size"
                 :page-size-opts="currentPage.sizeOpts"
                 show-elevator
                 show-sizer
                 @on-change="switchPage"
-                @on-page-size-change="switchPageSize"
-          ></Page>
+                @on-page-size-change="switchPageSize"></Page>
         </div>
       </div>
     </div>
-    <Modal :title="'审核插件 ' + currentPlugin.name" v-model="setPluginModal"
-           ok-text="修改"
-           @on-ok="modifyPlugin"
-    >
-      <Form :model="currentPlugin" :label-width="80">
+    <Modal :title="'审核 ' + currentPlugin.name + ' - ' + (currentPlugin.zpm_user ? (currentPlugin.zpm_user.nickname || currentPlugin.zpm_user.username || currentPlugin.zpm_user.phonenum) : currentPlugin.author)"
+           v-model="setPluginModal"
+           ok-text="审核"
+           @on-ok="modifyPlugin">
+      <Form :model="currentPlugin"
+            :label-width="80">
         <FormItem label="插件状态">
           <Select v-model="currentPlugin.status">
-            <Option v-for="(item, index) in allPluginStatus" :value="item.value" v-text="item.name" :key="item.value"></Option>
+            <Option v-for="(item, index) in allPluginStatus"
+                    :value="item.value"
+                    v-text="item.name"
+                    :key="index"></Option>
           </Select>
         </FormItem>
-        <FormItem label="理由" v-if="currentPlugin.status !== 3 && currentPlugin.status !== 1">
-          <Input v-model="currentPlugin.remarks" type="textarea" :autosize="{minRows: 1, maxRows: 5}" placeholder="请输入该插件不可用或不通过的原因"/>
+        <FormItem label="理由"
+                  v-if="currentPlugin.status !== 3 && currentPlugin.status !== 1">
+          <Input v-model="currentPlugin.remarks"
+                 type="textarea"
+                 :autosize="{minRows: 1, maxRows: 5}"
+                 placeholder="请输入该插件不可用或不通过的原因" />
         </FormItem>
       </Form>
     </Modal>
-    <Modal title="删除插件" v-model="deletePluginModal"
-           @on-ok="deletePlugin"
-    >
-      <p>删除后将无法恢复，您确定要删除 <span style="color: #ed3f14;" v-text="plugins[deletePluginIndex] && plugins[deletePluginIndex].name"></span> 吗？</p>
+    <Modal title="删除插件"
+           v-model="deletePluginModal"
+           @on-ok="deletePlugin">
+      <p>删除后将无法恢复，您确定要删除 <span style="color: #ed3f14;"
+              v-text="plugins[deletePluginIndex] && plugins[deletePluginIndex].name"></span> 吗？</p>
     </Modal>
   </div>
 </template>
@@ -136,7 +158,10 @@
           },
           {
             title: '作者',
-            key: 'author'
+            key: 'author',
+            render: (h, params) => {
+              return h('span', params.row.zpm_user ? (params.row.zpm_user.nickname || params.row.zpm_user.username || params.row.zpm_user.phonenum) : params.row.author)
+            }
           },
           {
             title: '上传时间',
@@ -304,7 +329,7 @@
       },
       async getPluginList (args) {
         let _userList = await this.$store.dispatch(types.AJAX, {
-          url: this.requestInfo.listAllPlugins,
+          url: this.requestInfo.component.listAll,
           data: args
         })
         this.totalCounts = _userList.data.totalCounts
@@ -374,7 +399,7 @@
         }
         this.currentPlugin.remarks = _remarks
         let updatePluginData = await this.$store.dispatch(types.AJAX, {
-          url: this.requestInfo.updatePluginSettings,
+          url: this.requestInfo.component.updatePluginSettings,
           data: {
             name: this.currentPlugin.name,
             status: Number(this.currentPlugin.status),
@@ -413,10 +438,12 @@
         /**
          * 删除用户
          */
+        let _deletedData = JSON.parse(JSON.stringify(this.plugins[this.deletePluginIndex]))
         let deletePluginData = await this.$store.dispatch(types.AJAX, {
-          url: this.requestInfo.deletePlugin,
+          url: this.requestInfo.component.delete,
           data: {
-            name: this.plugins[this.deletePluginIndex].name
+            name: this.plugins[this.deletePluginIndex].name,
+            uuid: this.plugins[this.deletePluginIndex].uuid
           }
         })
         if (deletePluginData.status === 200) {
@@ -426,6 +453,19 @@
             pageSize: this.currentPage.size
           })
           this.$Message.success('删除成功')
+          this.$store.dispatch(types.SEND_MESSAGE, {
+            to: {
+              phonenum: _deletedData.author,
+              username: '',
+              role: -1
+            },
+            message: {
+              type: this.socketEvents.deletePlugin,
+              data: _deletedData,
+              title: '插件删除',
+              value: `您的插件${_deletedData.name}已经被删除`
+            }
+          })
         } else {
           this.$Message.error('删除失败')
         }

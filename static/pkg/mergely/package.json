@@ -1,0 +1,84 @@
+{
+  "_from": "mergely",
+  "_id": "mergely@4.0.7",
+  "_inBundle": false,
+  "_integrity": "sha512-KC7MUDHZRduhIv6IXQVf2NtxqMnqHt969yD4kI+b7gcINeLJPE514sCTaST0aQGguv6JMmYuLFR4/8vzw4pDXA==",
+  "_location": "/mergely",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "mergely",
+    "name": "mergely",
+    "escapedName": "mergely",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/mergely/-/mergely-4.0.7.tgz",
+  "_shasum": "00c09297c294e58004afdd47fd18a6f1dfbab7b5",
+  "_spec": "mergely",
+  "_where": "/Keith/git/ls/plugin_tools/src",
+  "author": {
+    "name": "Jamie Peabody",
+    "email": "jamie.peabody@gmail.com",
+    "url": "http://mergely.com"
+  },
+  "bugs": {
+    "url": "https://github.com/wickedest/Mergely/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "A javascript UI for diff/merge",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "codemirror": "^5.32.0",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.5",
+    "image-webpack-loader": "^3.4.2",
+    "jquery": "^3.2.1",
+    "karma": "^2.0.0",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage-istanbul-reporter": "^1.3.0",
+    "karma-mocha": "^1.3.0",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-webpack": "^2.0.9",
+    "mocha": "^4.0.1",
+    "webpack": "^3.8.1"
+  },
+  "directories": {
+    "doc": "doc",
+    "example": "examples",
+    "test": "test"
+  },
+  "files": [
+    "lib",
+    "examples",
+    "README.md"
+  ],
+  "homepage": "https://github.com/wickedest/Mergely#readme",
+  "keywords": [
+    "merge",
+    "diff",
+    "myers"
+  ],
+  "license": "(GPL-3.0 OR LGPL-3.0 OR MPL-1.1 OR SEE LICENSE IN LICENSE)",
+  "main": "lib/mergely.js",
+  "name": "mergely",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wickedest/Mergely.git"
+  },
+  "scripts": {
+    "build": "rm -rf lib && webpack",
+    "test": "karma start",
+    "test:chrome": "karma start --browsers Chrome --singleRun=false"
+  },
+  "version": "4.0.7"
+}

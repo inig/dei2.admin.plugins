@@ -139,6 +139,16 @@ export const contentRouter = {
       }
     },
     {
+      path: '/component/:uuid',
+      name: 'ComponentDetail',
+      meta: {
+        title: '组件详情'
+      },
+      components: {
+        ContentRouter: () => import('../components/developer/Component/Detail.vue')
+      }
+    },
+    {
       path: '/personal',
       name: 'Personal',
       meta: {

@@ -1,10 +1,10 @@
 <template>
   <div class="developer_side_menu_container">
-    <div class="developer_side_menu_search_container">
+    <!-- <div class="developer_side_menu_search_container">
       <Input class="developer_side_menu_search"
              placeholder="搜索插件名"
              v-model="searchPluginName" />
-    </div>
+    </div> -->
     <main-menu :search-plugin-name="searchPluginName"></main-menu>
     <!--<Menu theme="dark" width="auto" class="main_menu_container" @on-select="navToPluginView" :active-name="`${currentPlugin}-${currentFileName}`">-->
     <!--<MenuGroup title="我的插件">-->
@@ -31,13 +31,14 @@
     <!--</Submenu>-->
     <!--</MenuGroup>-->
     <!--</Menu>-->
-    <div class="add_new_plugin_container">
+
+    <!-- <div class="add_new_plugin_container">
       <Tooltip class="tooltip_container"
                content="上传一个插件（*.zip）"
                placement="top">
         <upload-plugin height="60"></upload-plugin>
       </Tooltip>
-    </div>
+    </div> -->
   </div>
 </template>
 <style>
@@ -133,8 +134,8 @@ export default {
     }
   },
   async created () {
-    this.eventHub.$on(this.events.updatePluginList, await this.updatePluginList)
-    await this.updatePluginList()
+    // this.eventHub.$on(this.events.updatePluginList, await this.updatePluginList)
+    // await this.updatePluginList()
     this.$nextTick(() => {
       //        this.socket.client.off(this.socket.event)
       //        this.socket.client.on(this.socket.event, this.getNewMessage)

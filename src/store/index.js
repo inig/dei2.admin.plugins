@@ -118,7 +118,7 @@ const store = new Vuex.Store({
       comments: {}
     },
     socket: {
-      ban: true,
+      ban: false,
       server: PROTOCOL + '//wss.dei2.com',
       // server: PROTOCOL + '//127.0.0.1',
       port: '3010',
@@ -129,6 +129,7 @@ const store = new Vuex.Store({
     socketEvents: {
       changeUserRole: 'change-user-role',
       reviewPlugin: 'review-plugin',
+      deletePlugin: 'delete-plugin',
       sendMessage: 'send-message'
     },
     localStorageKeys: {
@@ -167,8 +168,8 @@ const store = new Vuex.Store({
       }
     },
     requestInfo: {
-      baseUrl: PROTOCOL + '//127.0.0.1:3000',
-      // baseUrl: PROTOCOL + '//talkapi.dei2.com',
+      // baseUrl: PROTOCOL + '//127.0.0.1:3000',
+      baseUrl: PROTOCOL + '//talkapi.dei2.com',
       login: '/Zpm/user/login',
       register: '/Zpm/user/register',
       modifyPassword: '/Zpm/user/modifyPassword',
@@ -202,7 +203,17 @@ const store = new Vuex.Store({
       getAllTags: '/Zpm/tag/getAll', // 获取所有文章的标签
       modifyTag: '/Zpm/article/modifyTag', // 修改文章标签
       getAllComments: '/Zpm/comment/list', // 分页获取评论
-      sendComment: '/Zpm/comment/comment' // 发表评论
+      sendComment: '/Zpm/comment/comment', // 发表评论
+      component: { // 组件 相关接口
+        add: '/Zpm/component/add', // 新增组件
+        delete: '/Zpm/component/deletePlugin', // 删除组件
+        list: '/Zpm/component/list', // 查询组件
+        ls: '/Zpm/component/ls', // 遍历组件目录结构
+        content: '/Zpm/component/content', // 获取文件内容
+        update: '/Zpm/component/update', // 更新组件的单个文件
+        listAll: '/Zpm/component/listAll', // 插件列表，用于root、admin插件管理
+        updatePluginSettings: '/Zpm/component/updatePluginSettings' // 审核插件
+      }
     },
     loginInfo: {
     },

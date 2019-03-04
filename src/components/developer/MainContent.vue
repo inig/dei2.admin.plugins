@@ -1,24 +1,25 @@
 <template>
   <div class="developer_main_content_container">
     <div class="layout-content">
-      <transition
-        name="file-upload-transition"
-        enter-active-class="animated fadeIn"
-        leave-active-class="animated fadeOut"
-      >
-        <div class="file_uploader_container" v-if="showFileUploader">
+      <transition name="file-upload-transition"
+                  enter-active-class="animated fadeIn"
+                  leave-active-class="animated fadeOut">
+        <div class="file_uploader_container"
+             v-if="showFileUploader">
           <upload-file :height="100"></upload-file>
         </div>
       </transition>
       <transition name="content-router-transition"
                   enter-active-class="animated fadeIn"
-                  leave-active-class="animated fadeOut"
-      >
+                  leave-active-class="animated fadeOut">
         <keep-alive>
-          <router-view class="content_router_view" :style="{height: showFileUploader ? 'calc(100% - 110px)' : '100%'}" name="ContentRouter"/>
+          <router-view class="content_router_view"
+                       :style="{height: showFileUploader ? 'calc(100% - 110px)' : '100%'}"
+                       name="ContentRouter" />
         </keep-alive>
       </transition>
-      <loading class="layout-content-loader" :data-ref="contentRouterViewLoader"></loading>
+      <loading class="layout-content-loader"
+               :data-ref="contentRouterViewLoader"></loading>
     </div>
   </div>
 </template>
@@ -58,8 +59,8 @@
     data () {
       return {
         showFileUploader: false, // 是否显示文件上传控件
-//        currentPlugin: '',
-//        currentFileName: '',
+        //        currentPlugin: '',
+        //        currentFileName: '',
         contentRouterViewLoader: this.$store.state.contentRouterViewLoader,
         showDefaultContent: true
       }
@@ -92,8 +93,8 @@
       }
     },
     created () {
-//      this.currentPlugin = this.$route.params.pluginName
-//      this.currentFileName = this.fileName
+      //      this.currentPlugin = this.$route.params.pluginName
+      //      this.currentFileName = this.fileName
       this.$nextTick(() => {
         let pluginInfo = this.findPluginInfoByName(this.$route.params.pluginName)
         this.showFileUploader = (String(pluginInfo.author) === String(this.loginInfo.phonenum))
@@ -101,8 +102,8 @@
     },
     watch: {
       '$route': function (value) {
-//        this.currentPlugin = value.params.pluginName
-//        this.currentFileName = value.params.fileName
+        //        this.currentPlugin = value.params.pluginName
+        //        this.currentFileName = value.params.fileName
         let pluginInfo = this.findPluginInfoByName(this.$route.params.pluginName)
         this.showFileUploader = (String(pluginInfo.author) === String(this.loginInfo.phonenum))
       }

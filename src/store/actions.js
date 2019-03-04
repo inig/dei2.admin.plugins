@@ -38,11 +38,11 @@ import axios from 'axios'
 import utils from '../utils'
 const querystring = require('querystring')
 const instance = axios.create({
-  timeout: 6000
+  timeout: 16000
 })
-const noop = function () {}
+const noop = function () { }
 export const actions = {
-  async [types.LOGIN] ({commit, state}, data) {
+  async [types.LOGIN] ({ commit, state }, data) {
     let callback = noop
     let error = noop
     if (data.callback) {
@@ -68,7 +68,7 @@ export const actions = {
       error(loginData)
     }
   },
-  async [types.REGISTER] ({commit, state}, data) {
+  async [types.REGISTER] ({ commit, state }, data) {
     let callback = noop
     let error = noop
     if (data.callback) {
@@ -94,7 +94,7 @@ export const actions = {
       error(registerData)
     }
   },
-  [types.AJAX] ({commit, state}, data) {
+  [types.AJAX] ({ commit, state }, data) {
     return new Promise((resolve, reject) => {
       let params = JSON.parse(JSON.stringify(data))
       if (params.url === '') {
@@ -126,7 +126,7 @@ export const actions = {
       })
     })
   },
-  [types.AJAX2] ({commit, state}, data) {
+  [types.AJAX2] ({ commit, state }, data) {
     return new Promise((resolve, reject) => {
       let params = JSON.parse(JSON.stringify(data))
       if (params.url === '') {
@@ -151,8 +151,57 @@ export const actions = {
       })
     })
   },
+  [types.AJAX3] ({ commit, state }, data) {
+    return new Promise((resolve, reject) => {
+      // let params = JSON.parse(JSON.stringify(data))
+      if (data.url === '') {
+        reject(new Error('url不能为空'))
+      }
+      // const xhr = new XMLHttpRequest()
+      // xhr.open(params.method || 'post', (params.baseUrl || state.requestInfo.baseUrl) + params.url, true)
+      // xhr.send(data.data)
+      // xhr.onload = function () {
+      //   if (xhr.status === 200) {
+      //     resolve(JSON.parse(xhr.responseText))
+      //   } else {
+      //     reject(new Error(xhr))
+      //   }
+      // }
+      instance({
+        method: data.method || 'get',
+        baseURL: data.baseUrl || state.requestInfo.baseUrl,
+        url: data.url,
+        data: data.data,
+        // transformRequest: [function (d) {
+        //   d.forEach((value, key) => {
+        //     console.log(key, '>>>3333333>>>', value)
+        //   })
+        //   let ret = ''
+        //   for (let it in d) {
+        //     ret += encodeURIComponent(it) + '=' + encodeURIComponent(d[it]) + '&'
+        //   }
+        //   return ret
+        // }],
+        headers: {
+          // 'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then((res) => {
+        if (res.config) {
+          delete res.config
+        }
+        if (res.status === 200) {
+          resolve(res.data)
+        } else {
+          reject(res)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
   // 获取用户信息
-  async [types.GET_USER_INFO] ({commit, state}, data) {
+  async [types.GET_USER_INFO] ({ commit, state }, data) {
     let callback = noop
     let error = noop
     if (data.callback) {
@@ -179,7 +228,7 @@ export const actions = {
     }
   },
   // 更新用户信息
-  async [types.UPDATE_USER_INFO] ({commit, state}, data) {
+  async [types.UPDATE_USER_INFO] ({ commit, state }, data) {
     let callback = noop
     let error = noop
     if (data.callback) {
@@ -206,7 +255,7 @@ export const actions = {
     }
   },
   // 修改密码
-  async [types.MODIFY_PASSWORD] ({commit, state}, data) {
+  async [types.MODIFY_PASSWORD] ({ commit, state }, data) {
     let callback = noop
     let error = noop
     if (data.callback) {
@@ -232,7 +281,7 @@ export const actions = {
       error(userData)
     }
   },
-  async [types.SAVE_MESSAGE] ({commit, state}, data) {
+  async [types.SAVE_MESSAGE] ({ commit, state }, data) {
     return new Promise((resolve, reject) => {
       data.uuid = utils.getUUID()
       instance({
@@ -254,7 +303,7 @@ export const actions = {
       })
     })
   },
-  async [types.SEND_MESSAGE] ({commit, state}, data) {
+  async [types.SEND_MESSAGE] ({ commit, state }, data) {
     let _data = JSON.parse(JSON.stringify(data))
     Object.assign(_data.message, {
       sendTime: (+new Date())

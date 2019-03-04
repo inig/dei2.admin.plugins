@@ -163,3 +163,6 @@ export const AJAX = 'AJAX'
 
 // AJAX请求, 不需要登录状态的请求
 export const AJAX2 = 'AJAX2'
+
+// AJAX请求，FormData
+export const AJAX3 = 'AJAX3'
