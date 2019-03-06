@@ -117,6 +117,10 @@ const webpackConfig = merge(baseWebpackConfig, {
         from: path.resolve(__dirname, '../static'),
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
+      },
+      {
+        from: path.resolve(__dirname, '../baidu_verify_RVCalilQjP.html'),
+        to: path.resolve(__dirname, '../dist/')
       }
     ])
   ]
